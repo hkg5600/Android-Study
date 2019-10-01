@@ -1,9 +1,12 @@
 package com.example.sns.di
 
 import com.example.sns.adapter.PostAdapter
+import com.example.sns.network.api.LoginApi
 import com.example.sns.network.api.PostApi
-import com.example.sns.network.service.PostService
-import com.example.sns.network.service.PostServiceImpl
+import com.example.sns.network.api.UserApi
+import com.example.sns.network.service.*
+import com.example.sns.room.repository.TokenRepository
+import com.example.sns.ui.login.LoginActivityViewModel
 import com.example.sns.ui.main.MainActivityViewModel
 import com.example.sns.ui.post.PostViewModel
 import com.example.sns.utils.BASE_URL
@@ -22,20 +25,33 @@ val retrofit: Retrofit = Retrofit
     .build()
 
 private val postApi : PostApi = retrofit.create(PostApi::class.java)
+private val loginApi : LoginApi = retrofit.create(LoginApi::class.java)
+private val userApi : UserApi = retrofit.create(UserApi::class.java)
 
 val networkModule = module {
     single { postApi }
+    single { loginApi }
+    single { userApi }
 }
 
 var serviceModel = module {
     factory<PostService> {
         PostServiceImpl(get())
     }
+
+    factory<LoginService> {
+        LoginServiceImpl(get())
+    }
+
+    factory<UserInfoService> {
+        UserInfoServiceImpl(get())
+    }
 }
 
 var viewModelPart = module {
-    viewModel { MainActivityViewModel() }
-    viewModel { PostViewModel(get()) }
+    viewModel { MainActivityViewModel(get(), get()) }
+    viewModel { PostViewModel(get(), get()) }
+    viewModel { LoginActivityViewModel(get(), get()) }
 }
 
 var adapterPart = module {
@@ -44,4 +60,10 @@ var adapterPart = module {
     }
 }
 
-var myDiModule = listOf(viewModelPart, networkModule, serviceModel, adapterPart)
+var repositoryPart = module {
+     factory {
+         TokenRepository(get())
+     }
+}
+
+var myDiModule = listOf(viewModelPart, networkModule, serviceModel, adapterPart, repositoryPart)

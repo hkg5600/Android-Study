@@ -1,5 +1,6 @@
 package com.example.sns.ui.post
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,19 +8,18 @@ import com.example.sns.base.BaseViewModel
 import com.example.sns.network.Response
 import com.example.sns.network.model.Post
 import com.example.sns.network.service.PostService
+import com.example.sns.room.repository.TokenRepository
 import com.example.sns.utils.SingleLiveEvent
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
-class PostViewModel(private val postService: PostService) : BaseViewModel() {
+class PostViewModel(private val postService: PostService, application: Application) : BaseViewModel() {
 
+    private val repository: TokenRepository = TokenRepository(application)
     val success: SingleLiveEvent<Any> = SingleLiveEvent()
     var liveData : MutableLiveData<ArrayList<Post>> = MutableLiveData()
-    //private val _postResponseLiveData = Single<ArrayList<Post>>()
-    //val postResponseLiveData: Single<ArrayList<Post>>
-      //  get() = _postResponseLiveData
 
     fun getPost() {
         Log.d("Msg", "in getPost Method")
@@ -45,4 +45,6 @@ class PostViewModel(private val postService: PostService) : BaseViewModel() {
                 })
         )
     }
+
+
 }

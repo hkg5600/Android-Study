@@ -55,6 +55,7 @@ dependencies {
     // rxjava
     implementation "io.reactivex.rxjava2:rxjava:2.2.10"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    implementation "androidx.room:room-rxjava2:$room_version"
 
     // koin
     implementation "org.koin:koin-androidx-scope:1.0.2"

@@ -37,7 +37,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         viewDataBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
         viewDataBinding.recyclerView.setHasFixedSize(true)
         viewDataBinding.recyclerView.adapter = postAdapter
-
+        viewDataBinding.swipeRefreshLayout.setOnRefreshListener(this)
     }
 
     override fun initDataBinding() {
@@ -72,6 +72,8 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun onRefresh() {
-
+        Log.d("Msg", "Refresh")
+        viewModel.getPost()
+        viewDataBinding.swipeRefreshLayout.isRefreshing = false
     }
 }

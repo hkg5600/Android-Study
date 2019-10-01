@@ -2,6 +2,8 @@ package com.example.sns.ui.main
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.example.sns.R
 import com.example.sns.adapter.PagerAdapter
 import com.example.sns.base.BaseActivity
@@ -29,11 +31,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
     }
 
     override fun initDataBinding() {
-
+        viewModel.succeess.observe(this, Observer {
+            Log.d("Success", "success to insert user")
+        })
     }
 
     override fun initAfterBinding() {
-
+        Log.d("Msg", "main activity")
+        viewModel.getToken()
     }
 
 }

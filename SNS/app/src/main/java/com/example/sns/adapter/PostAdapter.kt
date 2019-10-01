@@ -35,7 +35,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             with(holder) {
                 title.text = data.title
                 text.text = data.text
-                create_at.text = data.created_at
+                create_at.text = data.created_at.toString()
                 owner.text = data.owner
             }
         }
