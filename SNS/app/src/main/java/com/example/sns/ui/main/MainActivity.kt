@@ -20,25 +20,26 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
     override val viewModel: MainActivityViewModel by viewModel()
 
     override fun initStartView() {
-        Log.d("Msg", "in MainActivity")
-        val mPagerAdapter = PagerAdapter(supportFragmentManager)
 
-        val pager = viewDataBinding.viewPager
-        val tabs : TabLayout = viewDataBinding.tabs
-        pager.adapter = mPagerAdapter
-        tabs.setupWithViewPager(pager)
-        Log.d("Msg", "finish main activity")
+
     }
 
     override fun initDataBinding() {
         viewModel.succeess.observe(this, Observer {
             Log.d("Success", "success to insert user")
+            val mPagerAdapter = PagerAdapter(supportFragmentManager)
+            val pager = viewDataBinding.viewPager
+            val tabs : TabLayout = viewDataBinding.tabs
+            pager.adapter = mPagerAdapter
+            tabs.setupWithViewPager(pager)
+            Log.d("Msg", "finish main activity")
         })
     }
 
     override fun initAfterBinding() {
-        Log.d("Msg", "main activity")
+        Log.d("Msg", "get token")
         viewModel.getToken()
+        Log.d("Msg", "in MainActivity")
     }
 
 }

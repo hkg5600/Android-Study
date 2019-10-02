@@ -6,6 +6,7 @@ import com.example.sns.base.BaseViewModel
 import com.example.sns.network.Response
 import com.example.sns.network.model.UserInfo
 import com.example.sns.network.service.UserInfoService
+import com.example.sns.room.model.Follower
 import com.example.sns.room.model.Token
 import com.example.sns.room.model.User
 import com.example.sns.room.repository.TokenRepository
@@ -49,6 +50,7 @@ class MainActivityViewModel(private val service: UserInfoService, application: A
                     override fun onSuccess(t: retrofit2.Response<Response<UserInfo>>) {
                         if (t.isSuccessful) {
                             t.body()?.data?.let {
+                                Log.d("Msg", "get user")
                                 insertUser(it)
                             }
                         }
@@ -64,7 +66,7 @@ class MainActivityViewModel(private val service: UserInfoService, application: A
 
     fun insertUser(userInfo: UserInfo) {
         addDisposable(
-            userRepository.insertUser(User(user_id = userInfo.user_id, id = userInfo.id, name = userInfo.name))
+            userRepository.insertUser(User(user_id = userInfo.user_id, id = userInfo.id, name = userInfo.name, followers = Follower(listOf(userInfo.followers.toString()))))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
