@@ -18,10 +18,8 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 class PostViewModel(private val postService: PostService, application: Application) :
-    BaseViewModel() {
+    BaseViewModel(application) {
 
-    private val repository: UserRepository = UserRepository(application)
-    val success: SingleLiveEvent<Any> = SingleLiveEvent()
     var liveData: MutableLiveData<ArrayList<Post>> = MutableLiveData()
 
     fun getPost(followers : List<String>) {
@@ -49,23 +47,23 @@ class PostViewModel(private val postService: PostService, application: Applicati
         )
     }
 
-    fun getUserInfo() {
-        Log.d("Msg", "in get user info")
-        addDisposable(
-            repository.getUser()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<User>() {
-                    override fun onSuccess(t: User) {
-                        getPost(t.followers.user_id)
-                    }
-
-                    override fun onError(e: Throwable) {
-
-                    }
-                })
-        )
-    }
+//    override fun getUserInfo() {
+//        Log.d("Msg", "in get user info")
+//        addDisposable(
+//            repository.getUser()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeWith(object : DisposableSingleObserver<User>() {
+//                    override fun onSuccess(t: User) {
+//                        getPost(t.followers.user_id)
+//                    }
+//
+//                    override fun onError(e: Throwable) {
+//
+//                    }
+//                })
+//        )
+//    }
 
 
 }

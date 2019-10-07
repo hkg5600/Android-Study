@@ -14,9 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.login.LoginActivity"></activity>
+        <activity android:name=".ui.add_post.AddPost"></activity>
+        <activity android:name=".ui.login.LoginActivity" />
         <activity
-            android:name=".ui.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

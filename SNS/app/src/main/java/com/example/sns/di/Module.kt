@@ -6,9 +6,12 @@ import com.example.sns.network.api.PostApi
 import com.example.sns.network.api.UserApi
 import com.example.sns.network.service.*
 import com.example.sns.room.repository.TokenRepository
+import com.example.sns.ui.add_post.AddPostViewModel
 import com.example.sns.ui.login.LoginActivityViewModel
 import com.example.sns.ui.main.MainActivityViewModel
 import com.example.sns.ui.post.PostViewModel
+import com.example.sns.ui.splash.SplashActivity
+import com.example.sns.ui.splash.SplashActivityViewModel
 import com.example.sns.utils.BASE_URL
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
@@ -24,9 +27,9 @@ val retrofit: Retrofit = Retrofit
     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
     .build()
 
-private val postApi : PostApi = retrofit.create(PostApi::class.java)
-private val loginApi : LoginApi = retrofit.create(LoginApi::class.java)
-private val userApi : UserApi = retrofit.create(UserApi::class.java)
+private val postApi: PostApi = retrofit.create(PostApi::class.java)
+private val loginApi: LoginApi = retrofit.create(LoginApi::class.java)
+private val userApi: UserApi = retrofit.create(UserApi::class.java)
 
 val networkModule = module {
     single { postApi }
@@ -49,9 +52,11 @@ var serviceModel = module {
 }
 
 var viewModelPart = module {
+    viewModel { SplashActivityViewModel(get()) }
     viewModel { MainActivityViewModel(get(), get()) }
     viewModel { PostViewModel(get(), get()) }
-    viewModel { LoginActivityViewModel(get(), get()) }
+    viewModel { LoginActivityViewModel(get(), get(), get()) }
+    viewModel { AddPostViewModel(get(), get()) }
 }
 
 var adapterPart = module {
@@ -61,9 +66,9 @@ var adapterPart = module {
 }
 
 var repositoryPart = module {
-     factory {
-         TokenRepository(get())
-     }
+    factory {
+        TokenRepository(get())
+    }
 }
 
 var myDiModule = listOf(viewModelPart, networkModule, serviceModel, adapterPart, repositoryPart)

@@ -17,12 +17,9 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 class MainActivityViewModel(private val service: UserInfoService, application: Application) :
-    BaseViewModel() {
-    private val tokenRepository: TokenRepository = TokenRepository(application)
-    private val userRepository: UserRepository = UserRepository(application)
-    val succeess: SingleLiveEvent<Any> = SingleLiveEvent()
+    BaseViewModel(application) {
 
-    fun getToken() {
+    override fun getToken() {
         addDisposable(
             tokenRepository.getToken()
                 .subscribeOn(Schedulers.io())
@@ -72,7 +69,7 @@ class MainActivityViewModel(private val service: UserInfoService, application: A
                 .subscribe(
                     {
                         Log.d("Success", "success to insert User Info")
-                        succeess.call()
+                        success.call()
                     },
                     { error -> Log.d("Error insert User", "${error.message}")}
                 )

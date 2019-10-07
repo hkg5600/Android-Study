@@ -1,5 +1,6 @@
 package com.example.sns.ui.post
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.example.sns.adapter.PostAdapter
 import com.example.sns.base.BaseFragment
 import com.example.sns.databinding.FragmentPagePostBinding
 import com.example.sns.network.model.Post
+import com.example.sns.ui.add_post.AddPost
 import com.example.sns.ui.main.MainActivityViewModel
 import kotlinx.android.synthetic.main.fragment_page_post.*
 import kotlinx.android.synthetic.main.fragment_page_post.view.*
@@ -50,15 +52,17 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
             }
         })
 
-        //viewDataBinding.swipeRefreshLayout.setOnClickListener
+        viewModel.user.observe(this, Observer {
+            viewModel.getPost(viewModel.user.value?.followers?.user_id!!)
+        })
 
         viewDataBinding.buttonAdd.setOnClickListener {
-
+            startActivity(Intent(activity, AddPost::class.java))
         }
     }
 
     override fun initAfterBinding() {
-        viewModel.getUserInfo()
+
     }
 
     var swipeLayout: SwipeRefreshLayout? = null
@@ -73,7 +77,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
     override fun onRefresh() {
         Log.d("Msg", "Refresh")
-        viewModel.getUserInfo()
+        viewModel.getPost(viewModel.user.value?.followers?.user_id!!)
         viewDataBinding.swipeRefreshLayout.isRefreshing = false
     }
 }
