@@ -1,8 +1,8 @@
 package com.example.sns.network.api
 
 import com.example.sns.network.Response
+import com.example.sns.network.model.Follower
 import com.example.sns.network.model.Post
-import com.example.sns.room.model.Follower
 import io.reactivex.Single
 import retrofit2.http.*
 

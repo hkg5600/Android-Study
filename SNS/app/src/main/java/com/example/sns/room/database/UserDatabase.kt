@@ -11,7 +11,7 @@ import com.example.sns.room.model.User
 import org.koin.core.instance.holder.Instance
 
 
-@Database(entities = [User::class], version = 8, exportSchema = false)
+@Database(entities = [User::class], version = 9, exportSchema = false)
 @TypeConverters(FollowerConverter::class)
 abstract class UserDatabase : RoomDatabase(){
 

@@ -58,7 +58,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initAfterBinding() {
-        viewModel.getPost()
+        viewModel.getUserInfo()
     }
 
     var swipeLayout: SwipeRefreshLayout? = null
@@ -73,7 +73,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
     override fun onRefresh() {
         Log.d("Msg", "Refresh")
-        viewModel.getPost()
+        viewModel.getUserInfo()
         viewDataBinding.swipeRefreshLayout.isRefreshing = false
     }
 }
