@@ -13,7 +13,6 @@ import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityMainBinding
 import com.example.sns.ui.login.LoginActivity
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() {

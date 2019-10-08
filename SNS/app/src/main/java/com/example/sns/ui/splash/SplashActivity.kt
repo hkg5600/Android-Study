@@ -17,8 +17,8 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.token.observe(this, Observer {
             when(it) {
-                else -> startActivity(Intent(this, LoginActivity::class.java))
-                //else -> startActivity(Intent(this, MainActivity::class.java))
+                "" -> startActivity(Intent(this, LoginActivity::class.java))
+                else -> startActivity(Intent(this, MainActivity::class.java))
             }
             finish()
         })

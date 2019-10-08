@@ -8,7 +8,7 @@ import com.example.sns.R
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityLoginBinding
 import com.example.sns.ui.main.MainActivity
-import kotlinx.android.synthetic.main.activity_login.*
+//import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>() {

@@ -19,8 +19,6 @@ import com.example.sns.databinding.FragmentPagePostBinding
 import com.example.sns.network.model.Post
 import com.example.sns.ui.add_post.AddPost
 import com.example.sns.ui.main.MainActivityViewModel
-import kotlinx.android.synthetic.main.fragment_page_post.*
-import kotlinx.android.synthetic.main.fragment_page_post.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -40,6 +38,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         viewDataBinding.recyclerView.setHasFixedSize(true)
         viewDataBinding.recyclerView.adapter = postAdapter
         viewDataBinding.swipeRefreshLayout.setOnRefreshListener(this)
+
     }
 
     override fun initDataBinding() {
@@ -47,8 +46,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         viewModel.success.observe(this, Observer {
             Log.d("Succeess", "liveData In")
             it.let {
-                postAdapter.setPost(viewModel.liveData.value!!)
-                Log.d("Data", "${viewModel.liveData.value}")
+                postAdapter.setPost(viewModel.liveData)
             }
         })
 

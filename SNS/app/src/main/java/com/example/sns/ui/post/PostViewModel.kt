@@ -2,6 +2,7 @@ package com.example.sns.ui.post
 
 import android.app.Application
 import android.util.Log
+import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.sns.base.BaseViewModel
@@ -12,6 +13,7 @@ import com.example.sns.room.model.User
 import com.example.sns.room.repository.TokenRepository
 import com.example.sns.room.repository.UserRepository
 import com.example.sns.utils.SingleLiveEvent
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableSingleObserver
@@ -20,7 +22,7 @@ import io.reactivex.schedulers.Schedulers
 class PostViewModel(private val postService: PostService, application: Application) :
     BaseViewModel(application) {
 
-    var liveData: MutableLiveData<ArrayList<Post>> = MutableLiveData()
+    var liveData: ObservableArrayList<Post> = ObservableArrayList()
 
     fun getPost(followers : List<String>) {
         Log.d("Msg", "in getPost Method")
@@ -32,10 +34,11 @@ class PostViewModel(private val postService: PostService, application: Applicati
                     DisposableSingleObserver<retrofit2.Response<Response<ArrayList<Post>>>>() {
                     override fun onSuccess(t: retrofit2.Response<Response<ArrayList<Post>>>) {
                         if (t.isSuccessful) {
-                            t.body()?.data?.let {
-                                liveData.value = it
+                            t.body()?.data?.let { data ->
+                                data.forEach {
+                                    liveData.add(it)
+                                }
                             }
-                            Log.d("Data", "${liveData.value}")
                         }
                         success.call()
                     }
