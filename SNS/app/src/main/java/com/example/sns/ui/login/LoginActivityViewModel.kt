@@ -2,6 +2,7 @@ package com.example.sns.ui.login
 
 import android.app.Application
 import android.util.Log
+import androidx.databinding.ObservableField
 import com.example.sns.base.BaseViewModel
 import com.example.sns.network.Response
 import com.example.sns.network.model.LoginData
@@ -18,10 +19,12 @@ import io.reactivex.schedulers.Schedulers
 
 class LoginActivityViewModel(private val service: UserInfoService, private val loginService: LoginService, application: Application) : BaseViewModel(application) {
 
+    val id = ObservableField<String>()
+    val pw = ObservableField<String>()
 
-    fun login(id: String, pw: String) {
+    fun login() {
         addDisposable(
-            loginService.login(id, pw)
+            loginService.login(id.get()!!, pw.get()!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<retrofit2.Response<Response<LoginData>>>() {

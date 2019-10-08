@@ -23,4 +23,8 @@ class TokenRepository(application: Application) {
         return tokenDao.insert(entity)
     }
 
+    fun deleteToken() : Completable {
+        return tokenDao.deleteToken()
+    }
+
 }

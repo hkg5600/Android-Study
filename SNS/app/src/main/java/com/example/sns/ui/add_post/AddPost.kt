@@ -1,6 +1,8 @@
 package com.example.sns.ui.add_post
 
 import android.content.Intent
+import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.Observer
 import com.example.sns.R
 import com.example.sns.base.BaseActivity
@@ -15,7 +17,7 @@ class AddPost : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
     override val viewModel: AddPostViewModel by viewModel()
 
     override fun initStartView() {
-        viewModel.getUserInfo()
+
         viewDataBinding.button.setOnClickListener {
             viewModel.addPost(
                 viewDataBinding.title.text.toString(),
@@ -33,6 +35,8 @@ class AddPost : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
     override fun initAfterBinding() {
 
     }
+
+
 
 
 }

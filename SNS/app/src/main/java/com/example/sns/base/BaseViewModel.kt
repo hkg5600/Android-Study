@@ -20,10 +20,10 @@ import io.reactivex.schedulers.Schedulers
 abstract class BaseViewModel(application: Application) : ViewModel() {
     val tokenRepository = TokenRepository(application)
     val userRepository = UserRepository(application)
-    val success : SingleLiveEvent<Any> = SingleLiveEvent()
+    val success: SingleLiveEvent<Any> = SingleLiveEvent()
     private val compositeDisposable = CompositeDisposable()
-    var token : MutableLiveData<String> = MutableLiveData()
-    var user : MutableLiveData<User> = MutableLiveData()
+    var token: MutableLiveData<String> = MutableLiveData()
+    var user: MutableLiveData<User> = MutableLiveData()
 
     init {
         getToken()
