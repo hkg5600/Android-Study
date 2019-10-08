@@ -37,12 +37,13 @@ abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment()
     ): View? {
 
         viewDataBinding = DataBindingUtil.inflate(inflater, layoutResourceId, container, false)
+        viewDataBinding.executePendingBindings()
 
 //BaseFragment
         initStartView()
         initDataBinding()
         initAfterBinding()
-        viewDataBinding.executePendingBindings()
+
         return viewDataBinding.root
     }
 

@@ -3,6 +3,7 @@ package com.example.sns.ui.add_post
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.sns.R
 import com.example.sns.base.BaseActivity
@@ -28,6 +29,7 @@ class AddPost : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
 
     override fun initDataBinding() {
         viewModel.success.observe(this, Observer {
+            Toast.makeText(this, "Success to add post", Toast.LENGTH_SHORT)
             startActivity(Intent(this, MainActivity::class.java))
         })
     }

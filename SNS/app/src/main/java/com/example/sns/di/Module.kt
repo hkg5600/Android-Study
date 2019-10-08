@@ -12,6 +12,7 @@ import com.example.sns.ui.main.MainActivityViewModel
 import com.example.sns.ui.post.PostViewModel
 import com.example.sns.ui.splash.SplashActivity
 import com.example.sns.ui.splash.SplashActivityViewModel
+import com.example.sns.ui.userInfo.UserInfoViewModel
 import com.example.sns.utils.BASE_URL
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
@@ -57,6 +58,7 @@ var viewModelPart = module {
     viewModel { PostViewModel(get(), get()) }
     viewModel { LoginActivityViewModel(get(), get(), get()) }
     viewModel { AddPostViewModel(get(), get()) }
+    viewModel { UserInfoViewModel(get()) }
 }
 
 var adapterPart = module {

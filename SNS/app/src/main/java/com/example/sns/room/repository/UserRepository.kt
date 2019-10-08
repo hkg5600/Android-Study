@@ -25,4 +25,8 @@ class UserRepository(application: Application) {
     fun insertUser(entity: User): Completable {
         return userDao.insert(entity)
     }
+
+    fun deleteUesr() : Completable {
+        return userDao.deleteUser()
+    }
 }

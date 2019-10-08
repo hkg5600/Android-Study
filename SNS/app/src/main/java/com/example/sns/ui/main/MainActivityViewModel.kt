@@ -77,8 +77,29 @@ class MainActivityViewModel(private val service: UserInfoService, application: A
     }
 
     fun logout() {
+        deleteToken()
+        deleteUser()
+    }
+
+    private fun deleteToken() {
         addDisposable(
             tokenRepository.deleteToken()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        Log.d("Succeess", "success")
+                    },
+                    {
+                        Log.d("Error", "${it.message}")
+                    }
+                )
+        )
+    }
+
+    private fun deleteUser() {
+        addDisposable(
+            userRepository.deleteUesr()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
