@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="76dp"
             android:text="LOGIN"
-            android:onClick="@{() -> vm.login()}"
+            android:onClick="@{() -> vm.checkValue()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"

@@ -11,8 +11,6 @@ interface LoginService {
 }
 
 class LoginServiceImpl(private val api: LoginApi) : LoginService {
-    override fun login(id: String, pw: String): Single<retrofit2.Response<Response<LoginData>>> {
-        return api.login(Login(id, pw))
-    }
+    override fun login(id: String, pw: String) = api.login(Login(id, pw))
 
 }

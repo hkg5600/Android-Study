@@ -81,7 +81,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="140dp"
-            android:text="@{data.userInfo.userName}"
+            android:text="@{data.userInfo.user_id}"
             android:textSize="20dp"
             app:layout_constraintBottom_toTopOf="@+id/scrollView2"
             app:layout_constraintEnd_toStartOf="@+id/text_follower"

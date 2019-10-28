@@ -9,15 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sns.R
 import com.example.sns.databinding.PostItemBinding
 import com.example.sns.network.model.Post
+import com.example.sns.utils.DateTimeConverter
 
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
 
     var postList = ObservableArrayList<Post>()
 
-    fun setPost(postList: ObservableArrayList<Post>) {
-        Log.d("Msg", "In setPost")
-        this.postList = postList
+    fun setPost(postList: ArrayList<Post>) {
+        this.postList.clear()
+        postList.forEach {
+            this.postList.add(it)
+        }
         notifyDataSetChanged()
     }
 

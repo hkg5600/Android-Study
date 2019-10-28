@@ -7,11 +7,9 @@ import com.example.sns.room.model.Token
 import io.reactivex.Single
 
 interface UserInfoService {
-    fun getUserInfo(token: Token) : Single<retrofit2.Response<Response<UserInfo>>>
+    fun getUserInfo(token: String) : Single<retrofit2.Response<Response<UserInfo>>>
 }
 
 class UserInfoServiceImpl(private val api: UserApi) : UserInfoService {
-    override fun getUserInfo(token: Token): Single<retrofit2.Response<Response<UserInfo>>> {
-        return api.getUserInfo("Token " + token.token)
-    }
+    override fun getUserInfo(token: String) = api.getUserInfo("Token $token")
 }

@@ -15,8 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class UserInfoPage : BaseFragment<FragmentPageUserInfoBinding, UserInfoViewModel>(),
     SwipeRefreshLayout.OnRefreshListener {
 
-    override val layoutResourceId: Int
-        get() = R.layout.fragment_page_user_info
+
+    override val layoutResourceId = R.layout.fragment_page_user_info
 
     override val viewModel: UserInfoViewModel by viewModel()
 
@@ -27,23 +27,19 @@ class UserInfoPage : BaseFragment<FragmentPageUserInfoBinding, UserInfoViewModel
         return fragment
     }
 
-    override fun initStartView() {
+    override fun initView() {
 
     }
 
-    override fun initDataBinding() {
-        viewModel.user.observe(this, Observer {
-            Log.d("Msg", "get user start")
-            viewModel.getUser()
-        })
+    override fun initObserver() {
 
-        viewModel.success.observe(this, Observer {
-            val test = viewModel.userInfo.get()?.userName!!
-            Toast.makeText(activity, "$test", Toast.LENGTH_SHORT).show()
-        })
     }
 
-    override fun initAfterBinding() {
+    override fun initListener() {
+
+    }
+
+    override fun initViewModel() {
 
     }
 
