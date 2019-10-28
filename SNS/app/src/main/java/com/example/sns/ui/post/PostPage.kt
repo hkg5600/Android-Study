@@ -23,6 +23,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     SwipeRefreshLayout.OnRefreshListener {
 
     val ADD_POST = 1
+
     override val layoutResourceId = R.layout.fragment_page_post
 
     override val viewModel: PostViewModel by viewModel()

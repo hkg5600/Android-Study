@@ -14,38 +14,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-        <Button
-            android:id="@+id/btn_add_follower"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginBottom="28dp"
-            android:text="Add Follower"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-            app:layout_constraintEnd_toStartOf="@+id/btn_my_info"
-            app:layout_constraintStart_toStartOf="parent"
-            bind:ignore="MissingConstraints" />
-
-        <Button
-            android:id="@+id/btn_my_info"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="28dp"
-            android:text="My Info"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_add_follower"
-            bind:ignore="MissingConstraints" />
-
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
             android:layout_height="365dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            bind:layout_editor_absoluteX="0dp">
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
@@ -53,52 +27,14 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/darker_gray">
 
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/recycler_view"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--                    bind:listitem="@layout/post_item" />-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    bind:listitem="@layout/post_item" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </ScrollView>
-
-        <TextView
-            android:id="@+id/text_follower"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="68dp"
-            android:layout_marginEnd="68dp"
-            android:text="follower"
-            app:layout_constraintBottom_toBottomOf="@+id/text_name"
-            app:layout_constraintEnd_toStartOf="@id/text_following"
-            app:layout_constraintStart_toEndOf="@+id/text_name"
-            bind:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/text_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="28dp"
-            android:layout_marginBottom="140dp"
-            android:text="@{data.userInfo.user_id}"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-            app:layout_constraintEnd_toStartOf="@+id/text_follower"
-            app:layout_constraintStart_toStartOf="parent"
-            bind:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/text_following"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="100dp"
-            android:text="following"
-            app:layout_constraintBottom_toBottomOf="@+id/text_follower"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/text_follower"
-            bind:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

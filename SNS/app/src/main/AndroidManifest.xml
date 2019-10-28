@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.add_post.AddPostActivity"></activity>
+
+        <activity android:name=".ui.add_post.AddPostActivity" />
         <activity android:name=".ui.login.LoginActivity" />
         <activity
             android:name=".ui.splash.SplashActivity"
