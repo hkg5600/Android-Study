@@ -19,7 +19,8 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     fun setPost(postList: ArrayList<Post>) {
         this.postList.clear()
         postList.forEach {
-            this.postList.add(it)
+            val data = Post(it.id, it.title, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at))
+            this.postList.add(data)
         }
         notifyDataSetChanged()
     }

@@ -10,6 +10,7 @@ import com.example.sns.R
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityAddPostBinding
 import com.example.sns.ui.main.MainActivity
+import kotlinx.android.synthetic.main.app_bar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
@@ -20,7 +21,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
     override val viewModel: AddPostViewModel by viewModel()
 
     override fun initView() {
-
+        setSupportActionBar(toolbar)
         viewDataBinding.viewModel = viewModel
     }
 

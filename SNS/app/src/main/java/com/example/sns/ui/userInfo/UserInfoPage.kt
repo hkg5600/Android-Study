@@ -20,13 +20,6 @@ class UserInfoPage : BaseFragment<FragmentPageUserInfoBinding, UserInfoViewModel
 
     override val viewModel: UserInfoViewModel by viewModel()
 
-    fun newInstance(): UserInfoPage {
-        val args = Bundle()
-        val fragment = UserInfoPage()
-        fragment.arguments = args
-        return fragment
-    }
-
     override fun initView() {
 
     }

@@ -85,7 +85,6 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
 
         override fun onError(e: Throwable) {
             Log.d("Error", "${e.message}")
-            error.value = "error"
             success.call()
         }
     }
@@ -116,7 +115,6 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
     }
 
     override fun onCleared() {
-        Log.d("Msg", "onCleared")
         compositeDisposable.clear()
         super.onCleared()
     }

@@ -62,14 +62,6 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
     var swipeLayout: SwipeRefreshLayout? = null
 
-    fun newInstance(): PostPage {
-        Log.d("Msg", "new Instance")
-        val args = Bundle()
-        val fragment = PostPage()
-        fragment.arguments = args
-        return fragment
-    }
-
     override fun onRefresh() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         refreshPostList()

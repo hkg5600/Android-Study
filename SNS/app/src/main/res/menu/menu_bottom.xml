@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_post"
+        android:icon="@drawable/ic_post"
+        android:title="POST"/>
+    <item
+        android:id="@+id/menu_my_info"
+        android:icon="@drawable/ic_info"
+        android:title="MY INFO"/>
+    <item
+        android:id="@+id/menu_follower"
+        android:icon="@drawable/ic_follower"
+        android:title="FOLLOWER"/>
+
+</menu>

@@ -10,14 +10,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.login.LoginActivity"
-        android:background="@android:color/tertiary_text_light">
+        tools:context=".ui.login.LoginActivity">
 
         <EditText
             android:id="@+id/editTextId"
-            android:layout_width="225dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="227dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
             android:hint="ID"
             android:text="@={vm.id}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -27,28 +28,28 @@
 
         <EditText
             android:id="@+id/editTextPw"
-            android:layout_width="225dp"
-            android:layout_height="53dp"
-            android:layout_marginTop="76dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:hint="PASSWORD"
             android:text="@={vm.pw}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextId"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextId" />
 
         <Button
             android:id="@+id/loginBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="76dp"
-            android:text="LOGIN"
+            android:layout_width="122dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="50dp"
             android:onClick="@{() -> vm.checkValue()}"
+            android:text="LOGIN"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextPw"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextPw" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

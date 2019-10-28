@@ -1,21 +1,18 @@
 package com.example.sns.ui.main
 
 import android.content.Intent
-import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.sns.R
-import com.example.sns.adapter.PagerAdapter
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityMainBinding
-import com.example.sns.network.model.Follower
 import com.example.sns.network.model.UserInfo
 import com.example.sns.ui.login.LoginActivity
+import com.example.sns.ui.post.PostPage
+import com.example.sns.ui.userInfo.UserInfoPage
 import com.example.sns.utils.UserObject
-import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.app_bar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() {
@@ -24,9 +21,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
 
     override val viewModel: MainActivityViewModel by viewModel()
 
+    private val postPage = PostPage()
+    private val userInfoPage = UserInfoPage()
+
     override fun initView() {
-
-
+        setSupportActionBar(toolbar)
     }
 
     override fun initObserver() {
@@ -35,7 +34,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             when (it) {
                 is UserInfo -> {
                     UserObject.userInfo = it
-                    initPage()
+                    initNavigation()
                 }
             }
         })
@@ -44,9 +43,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             when (it) {
                 "delete Token" -> {
                     startActivity(Intent(this, LoginActivity::class.java))
-                    makeToast("success to log out")
+                    makeToast("로그아웃 성공")
                 }
-                else -> makeToast("failed to log out")
+                else -> makeToast("로그아웃에 실패했습니다")
             }
         })
     }
@@ -73,11 +72,18 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             else -> super.onOptionsItemSelected(item)
         }
 
-    private fun initPage() {
-        val mPagerAdapter = PagerAdapter(supportFragmentManager)
-        val pager = viewDataBinding.viewPager
-        val tabs: TabLayout = viewDataBinding.tabs
-        pager.adapter = mPagerAdapter
-        tabs.setupWithViewPager(pager)
+
+    private fun initNavigation() {
+        var transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
+
+        viewDataBinding.bottomNavigationView.setOnNavigationItemSelectedListener{
+            transaction = supportFragmentManager.beginTransaction()
+            when(it.itemId) {
+                R.id.menu_post -> transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
+                R.id.menu_my_info -> transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
+            }
+            true
+        }
     }
 }
