@@ -51,7 +51,7 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
         override fun onSuccess(t: Any) = filterResponseWithMsg(t)
 
         override fun onError(e: Throwable) {
-            Log.d("Error", "${e.message}")
+            Log.d("Error Msg", "${e.message}")
             error.value = "error"
         }
 
@@ -62,7 +62,7 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
         override fun onSuccess(t: Any) = filterResponseWithData(t)
 
         override fun onError(e: Throwable) {
-            Log.d("Error", "${e.message}")
+            Log.d("Error Data", "${e.message}")
             error.value = "error"
         }
 

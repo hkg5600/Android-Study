@@ -3,4 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="permissionMsg">접근 권한이 필요합니다</string>
+    <string name="permissionDenied">[설정] > [권한] 에서 권한을 허용할 수 있습니다.</string>
+    <string name="show_more">더보기</string>
 </resources>
