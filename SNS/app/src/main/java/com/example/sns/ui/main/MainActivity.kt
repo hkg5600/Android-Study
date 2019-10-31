@@ -3,6 +3,7 @@ package com.example.sns.ui.main
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import androidx.lifecycle.Observer
 import com.example.sns.R
 import com.example.sns.base.BaseActivity
@@ -28,18 +29,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
 
     override fun initView() {
         setSupportActionBar(toolbar)
+        initNavigation()
     }
 
     override fun initObserver() {
-
-        viewModel.data.observe(this, Observer {
-            when (it) {
-                is UserInfo -> {
-                    UserObject.userInfo = it
-                    initNavigation()
-                }
-            }
-        })
 
         viewModel.roomSuccess.observe(this, Observer {
             when (it) {
@@ -57,7 +50,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
     }
 
     override fun initViewModel() {
-        viewModel.getUser()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

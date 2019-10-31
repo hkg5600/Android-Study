@@ -35,7 +35,7 @@ abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatA
 
         viewDataBinding = DataBindingUtil.setContentView(this, layoutResourceId)
         viewDataBinding.executePendingBindings()
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         initView()
         initObserver()
         initListener()

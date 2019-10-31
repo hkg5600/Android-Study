@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.marginEnd
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +16,7 @@ import com.example.sns.databinding.PostItemBinding
 import com.example.sns.network.model.Post
 import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.post_item.view.*
-import org.w3c.dom.Text
 
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
@@ -56,6 +55,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
                 width = 850
             }
+
             holder.textView.layoutParams = params
             holder.btnShow.visibility = View.GONE
             notifyDataSetChanged()
@@ -92,19 +92,18 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         val textView: TextView = binding.textViewText
 
         fun bind(item: Post) {
-            binding.item = item
+            binding.imgView.visibility = View.GONE
             if (item.image != null) {
                 itemView.run {
                     Glide.with(context).load(item.image).into(img_view)
+                    binding.imgView.visibility = View.VISIBLE
                 }
-            } else {
-                binding.imgView.visibility = View.GONE
             }
-
+            binding.item = item
         }
     }
 
-    fun clearSelectedItem() {
+    private fun clearSelectedItem() {
         var position: Int
         for (index: Int in 0 until selectedItem.size()) {
             position = selectedItem.keyAt(index)

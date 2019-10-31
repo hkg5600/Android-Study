@@ -10,12 +10,6 @@ import com.example.sns.utils.UserObject
 class MainActivityViewModel(private val service: UserInfoService, application: Application) :
     BaseViewModel(application) {
 
-    var logoutSuccess : MutableLiveData<Boolean> = MutableLiveData()
-
-    fun getUser() {
-        addDisposable(service.getUserInfo(TokenObject.token), getDataObserver())
-    }
-
     fun logout() {
         deleteToken()
         deleteUser()

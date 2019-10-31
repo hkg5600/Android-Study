@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="32dp"
-            android:onClick="@{() -> viewModel.checkData()}"
+            android:onClick="@{() -> viewModel.checkNetwork()()}"
             android:src="@drawable/ic_send" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

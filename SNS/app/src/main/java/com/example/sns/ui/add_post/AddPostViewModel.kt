@@ -15,18 +15,14 @@ class AddPostViewModel(private val postService: PostService, application: Applic
     var file: MultipartBody.Part? = null
 
     val text = ObservableField<String>()
+    fun checkNetwork() = if (UserObject.userInfo != null) checkData()  else makeToast("네트워크 연결 후 시도해 주세요")
 
-    fun checkData() = if (text.get() != null) hasFile() else null
+    private fun checkData() = if (text.get() != null) hasFile() else null
 
     private fun hasFile() = if (file == null) addPostWithoutFIle() else addPostWithFIle()
 
-//    private fun makeRequestBody() {
-//        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), text.get()!!)
-//        val multipartData = MultipartBody.Part.createFormData("text", requestFile)
-//    }
+    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo?.value?.user_id!!, file!!), getMsgObserver())
 
-    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo?.user_id!!, file!!), getMsgObserver())
-
-    private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(text.get()!!, UserObject.userInfo?.user_id!!), getMsgObserver())
+    private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(text.get()!!, UserObject.userInfo?.value?.user_id!!), getMsgObserver())
 
 }

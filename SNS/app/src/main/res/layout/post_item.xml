@@ -34,8 +34,9 @@
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 tool:text="Text"
                 android:text="@{item.text}"
                 android:textSize="15sp"
@@ -50,7 +51,7 @@
                 android:textSize="15sp"
                 app:layout_constraintStart_toEndOf="@+id/text_view_text"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginStart="5dp"
                 android:visibility="gone"/>
             <ImageView

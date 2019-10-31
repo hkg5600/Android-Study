@@ -2,6 +2,7 @@ package com.example.sns.base
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sns.network.Response
@@ -17,7 +18,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
-abstract class BaseViewModel(application: Application) : ViewModel() {
+abstract class BaseViewModel(val application: Application) : ViewModel() {
     val tokenRepository = TokenRepository(application)
     val success: SingleLiveEvent<Any> = SingleLiveEvent()
     private val compositeDisposable = CompositeDisposable()
@@ -39,7 +40,7 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
                 {
                     roomSuccess.value = msg
                 },
-                { error.value = "failed to insert" })
+                { error.value = "failed" })
         )
     }
 
@@ -52,7 +53,7 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
 
         override fun onError(e: Throwable) {
             Log.d("Error Msg", "${e.message}")
-            error.value = "error"
+            error.value = "failed to connect"
         }
 
     }
@@ -63,7 +64,7 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
 
         override fun onError(e: Throwable) {
             Log.d("Error Data", "${e.message}")
-            error.value = "error"
+            error.value = "failed to connect"
         }
 
     }
@@ -117,6 +118,9 @@ abstract class BaseViewModel(application: Application) : ViewModel() {
     override fun onCleared() {
         compositeDisposable.clear()
         super.onCleared()
+    }
+    fun makeToast(msg: String) {
+        Toast.makeText(application.applicationContext, msg, Toast.LENGTH_SHORT).show()
     }
 
 }

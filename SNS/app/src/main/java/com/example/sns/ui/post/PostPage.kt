@@ -13,6 +13,7 @@ import com.example.sns.base.BaseFragment
 import com.example.sns.databinding.FragmentPagePostBinding
 import com.example.sns.network.model.Follower
 import com.example.sns.network.model.Post
+import com.example.sns.network.model.UserInfo
 import com.example.sns.network.response.PostList
 import com.example.sns.ui.add_post.AddPostActivity
 import com.example.sns.utils.UserObject
@@ -45,8 +46,26 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                 is PostList -> {
                     postAdapter.setPost(it.post)
                 }
+                is UserInfo -> {
+                    UserObject.userInfo?.value = it
+                }
             }
         })
+
+        UserObject.userInfo.let {
+            it?.observe(this, Observer {
+                refreshPostList()
+            })
+        }
+
+        viewModel.error.observe(this, Observer {
+            if (it == "failed to connect") {
+                makeToast("네트워크 신호가 약합니다")
+                viewModel.getUser()
+            }
+        })
+
+
 
     }
 
@@ -58,7 +77,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
     override fun initViewModel() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
-        refreshPostList()
+        viewModel.getUser()
     }
 
     var swipeLayout: SwipeRefreshLayout? = null
@@ -75,6 +94,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     private fun refreshPostList() {
-        viewModel.getPost(Follower(UserObject.userInfo?.followers!!))
+        viewModel.getPost(Follower(UserObject.userInfo?.value?.followers!!))
+
     }
 }
