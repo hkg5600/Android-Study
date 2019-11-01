@@ -1,12 +1,15 @@
 package com.example.sns.ui.add_post
 
+import OnSwipeTouchListener
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -33,13 +36,12 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
     override val viewModel: AddPostViewModel by viewModel()
 
-    private var permission: Boolean = false
-
 
     override fun initView() {
-        checkPermission()
         title = ""
         setSupportActionBar(toolbar)
+        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         viewDataBinding.viewModel = viewModel
     }
 
@@ -53,55 +55,38 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
                 }
             }
         })
+
     }
 
     override fun initViewModel() {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
-        viewDataBinding.buttonImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK).apply {
-                type = "image/*"
+        viewDataBinding.holderLayout.setOnTouchListener(object : OnSwipeTouchListener() {
+            override fun onSwipeLeft() {
+                val intent = Intent(Intent.ACTION_PICK).apply {
+                    type = "image/*"
+                }
+                startActivityForResult(intent, PICK_FROM_ALBUM)
             }
-            startActivityForResult(intent, PICK_FROM_ALBUM)
-        }
+        })
     }
 
-    private fun checkPermission() {
-        if (ContextCompat.checkSelfPermission(
-                (this),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            tedPermission()
-        } else {
-            permission = true
-        }
-    }
-
-    private fun tedPermission() {
-
-        val permissionListener: PermissionListener = object : PermissionListener {
-            override fun onPermissionGranted() {
-                permission = true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                makeToast("취소되었습니다")
+                finish()
             }
 
-            override fun onPermissionDenied(deniedPermissions: ArrayList<String>?) {
-                permission = false
+            R.id.save_post -> {
+                viewModel.checkNetwork()
             }
         }
 
-        TedPermission.with(this)
-            .setPermissionListener(permissionListener)
-            .setRationaleMessage(getString(R.string.permissionMsg))
-            .setDeniedMessage(getString(R.string.permissionDenied))
-            .setPermissions(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            .check()
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -112,13 +97,16 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             val file = File(filePath)
             if (file.exists()) {
                 Log.d("Path", "$filePath")
-                val requestFile =
-                    RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                val multipartData =
-                    MultipartBody.Part.createFormData("image", file.name, requestFile)
+                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                val multipartData = MultipartBody.Part.createFormData("image", file.name, requestFile)
                 viewModel.file = multipartData
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.add_post, menu)
+        return true
     }
 
 }

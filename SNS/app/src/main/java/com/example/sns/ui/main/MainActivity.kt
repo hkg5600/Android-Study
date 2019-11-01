@@ -1,9 +1,12 @@
 package com.example.sns.ui.main
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.sns.R
 import com.example.sns.base.BaseActivity
@@ -14,6 +17,8 @@ import com.example.sns.ui.login.LoginActivity
 import com.example.sns.ui.post.PostPage
 import com.example.sns.ui.userInfo.UserInfoPage
 import com.example.sns.utils.UserObject
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.app_bar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -27,9 +32,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
     private val userInfoPage = UserInfoPage()
     private val followerPage = FollowerPage()
 
+    private var permission: Boolean = false
+
     override fun initView() {
         setSupportActionBar(toolbar)
         initNavigation()
+        checkPermission()
     }
 
     override fun initObserver() {
@@ -81,5 +89,42 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             }
             true
         }
+    }
+
+    private fun checkPermission() {
+        if (ContextCompat.checkSelfPermission(
+                (this),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            tedPermission()
+
+        } else {
+            permission = true
+        }
+    }
+
+    private fun tedPermission() {
+
+        val permissionListener: PermissionListener = object : PermissionListener {
+            override fun onPermissionGranted() {
+                permission = true
+            }
+
+            override fun onPermissionDenied(deniedPermissions: ArrayList<String>?) {
+                permission = false
+            }
+        }
+
+        TedPermission.with(this)
+            .setPermissionListener(permissionListener)
+            .setRationaleMessage(getString(R.string.permissionMsg))
+            .setDeniedMessage(getString(R.string.permissionDenied))
+            .setPermissions(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            .check()
     }
 }
