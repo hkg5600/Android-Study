@@ -38,7 +38,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
     override fun initView() {
         checkPermission()
-
+        title = ""
         setSupportActionBar(toolbar)
         viewDataBinding.viewModel = viewModel
     }

@@ -11,12 +11,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.sns.R
 import com.example.sns.databinding.PostItemBinding
 import com.example.sns.network.model.Post
 import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
 import kotlinx.android.synthetic.main.post_item.view.*
+import android.R
+import com.squareup.picasso.Picasso
 
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
@@ -38,7 +39,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         PostHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.post_item,
+                com.example.sns.R.layout.post_item,
                 parent,
                 false
             )
@@ -53,9 +54,8 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             selectedItem.put(position, true)
             val params = holder.textView.layoutParams.apply {
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
-                width = 850
+                width = 0
             }
-
             holder.textView.layoutParams = params
             holder.btnShow.visibility = View.GONE
             notifyDataSetChanged()
@@ -65,14 +65,14 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         if (selectedItem.get(position, false)) {
             val params = holder.textView.layoutParams.apply {
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
-                width = 850
+                width = 0
             }
             holder.textView.layoutParams = params
             holder.btnShow.visibility = View.GONE
         } else {
             val params = holder.textView.layoutParams.apply {
-                height = 50
-                width = 150
+                height = 60
+                width = 0
             }
             holder.textView.layoutParams = params
         }
@@ -92,11 +92,11 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         val textView: TextView = binding.textViewText
 
         fun bind(item: Post) {
-            binding.imgView.visibility = View.GONE
+            binding.imgViewHolder.visibility = View.GONE
             if (item.image != null) {
                 itemView.run {
                     Glide.with(context).load(item.image).into(img_view)
-                    binding.imgView.visibility = View.VISIBLE
+                    binding.imgViewHolder.visibility = View.VISIBLE
                 }
             }
             binding.item = item
@@ -120,4 +120,5 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             holder: PostHolder
         )
     }
+
 }

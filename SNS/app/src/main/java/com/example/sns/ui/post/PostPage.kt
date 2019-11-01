@@ -45,18 +45,17 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
             when (it) {
                 is PostList -> {
                     postAdapter.setPost(it.post)
+                    viewDataBinding.recyclerView.scrollToPosition(0)
                 }
                 is UserInfo -> {
-                    UserObject.userInfo?.value = it
+                    UserObject.userInfo.value = it
                 }
             }
         })
 
-        UserObject.userInfo.let {
-            it?.observe(this, Observer {
-                refreshPostList()
-            })
-        }
+        UserObject.userInfo.observe(this, Observer {
+            refreshPostList()
+        })
 
         viewModel.error.observe(this, Observer {
             if (it == "failed to connect") {
@@ -94,7 +93,6 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     private fun refreshPostList() {
-        viewModel.getPost(Follower(UserObject.userInfo?.value?.followers!!))
-
+        viewModel.getPost(Follower(UserObject.userInfo.value?.followers!!))
     }
 }

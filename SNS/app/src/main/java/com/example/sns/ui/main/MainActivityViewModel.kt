@@ -21,6 +21,6 @@ class MainActivityViewModel(private val service: UserInfoService, application: A
     }
 
     private fun deleteUser() {
-        UserObject.userInfo = null
+        //UserObject.userInfo.value = null
     }
 }
