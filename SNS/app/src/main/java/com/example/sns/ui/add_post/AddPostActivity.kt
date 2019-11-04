@@ -26,6 +26,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.net.URLStreamHandler
 
 
 class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
@@ -62,16 +63,23 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
     }
 
+
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
         viewDataBinding.holderLayout.setOnTouchListener(object : OnSwipeTouchListener() {
             override fun onSwipeLeft() {
-                val intent = Intent(Intent.ACTION_PICK).apply {
-                    type = "image/*"
-                }
-                startActivityForResult(intent, PICK_FROM_ALBUM)
+                goToAlbum()
             }
         })
+    }
+
+    fun goToAlbum() {
+        val intent = Intent().apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            action = Intent.ACTION_GET_CONTENT
+        }
+        startActivityForResult(Intent.createChooser(intent,"사진"), PICK_FROM_ALBUM)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -98,7 +106,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             if (file.exists()) {
                 Log.d("Path", "$filePath")
                 val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                val multipartData = MultipartBody.Part.createFormData("image", file.name, requestFile)
+                val multipartData = MultipartBody.Part.createFormData("image", "file.jpg", requestFile)
                 viewModel.file = multipartData
             }
         }

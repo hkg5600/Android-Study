@@ -1,12 +1,10 @@
 package com.example.sns.adapter
 
-import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.marginEnd
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +14,6 @@ import com.example.sns.network.model.Post
 import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
 import kotlinx.android.synthetic.main.post_item.view.*
-import android.R
-import com.squareup.picasso.Picasso
 
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
@@ -29,7 +25,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     fun setPost(postList: ArrayList<Post>) {
         this.postList.clear()
         postList.forEach {
-            val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), if (it.image != null) BASE_URL + it.image else null)
+            val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images)
             this.postList.add(data)
         }
         notifyDataSetChanged()
@@ -93,9 +89,9 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
 
         fun bind(item: Post) {
             binding.imgViewHolder.visibility = View.GONE
-            if (item.image != null) {
+            if (item.images.isNotEmpty()) {
                 itemView.run {
-                    Glide.with(context).load(item.image).into(img_view)
+                    Glide.with(context).load(BASE_URL+ item.images[0].image).into(img_view)
                     binding.imgViewHolder.visibility = View.VISIBLE
                 }
             }

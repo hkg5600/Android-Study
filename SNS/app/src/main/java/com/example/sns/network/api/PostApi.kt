@@ -10,13 +10,13 @@ import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface PostApi {
-    @POST("/api/user/post/")
+    @POST("/api/post/post/")
     fun getPost(@Body follower: Follower): Single<retrofit2.Response<Response<PostList>>>
 
-    @POST("/api/user/add_post/")
+    @POST("/api/post/add_post/")
     fun addPostWithoutFile(@Body post: PostRequest): Single<retrofit2.Response<Response<Any>>>
 
     @Multipart
-    @POST("/api/user/add_post/")
+    @POST("/api/post/add_post/")
     fun addPostWithFile(@Part file: MultipartBody.Part, @Part("text") text: RequestBody, @Part("owner") owner: RequestBody): Single<retrofit2.Response<Response<Any>>>
 }

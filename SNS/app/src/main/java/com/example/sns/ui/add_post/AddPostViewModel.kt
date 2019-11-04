@@ -21,8 +21,8 @@ class AddPostViewModel(private val postService: PostService, application: Applic
 
     private fun hasFile() = if (file == null) addPostWithoutFIle() else addPostWithFIle()
 
-    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo?.value?.user_id!!, file!!), getMsgObserver())
+    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo.value?.user_id!!, file!!), getMsgObserver())
 
-    private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(text.get()!!, UserObject.userInfo?.value?.user_id!!), getMsgObserver())
+    private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(text.get()!!, UserObject.userInfo.value?.user_id!!), getMsgObserver())
 
 }

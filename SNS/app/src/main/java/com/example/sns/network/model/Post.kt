@@ -6,5 +6,5 @@ data class Post(
     val text: String,
     val owner: String,
     val created_at: String,
-    val image: String?
+    val images : ArrayList<PostImage>
 )
