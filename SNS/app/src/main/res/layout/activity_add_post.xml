@@ -22,19 +22,25 @@
             android:layout_height="match_parent"
             tools:context=".ui.add_post.AddPostActivity">
 
-            <EditText
-                android:id="@+id/text"
+<!--            <EditText-->
+<!--                android:id="@+id/text"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:maxLines="10"-->
+<!--                android:layout_marginTop="30dp"-->
+<!--                android:layout_marginStart="24dp"-->
+<!--                android:layout_marginEnd="24dp"-->
+<!--                android:hint="Text"-->
+<!--                android:text="@={viewModel.text}"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent" />-->
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="10"
-                android:layout_marginTop="30dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:hint="Text"
-                android:text="@={viewModel.text}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_height="match_parent"
+                tools:listitem="@layout/image_item" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

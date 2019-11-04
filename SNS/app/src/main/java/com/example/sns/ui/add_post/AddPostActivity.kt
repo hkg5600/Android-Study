@@ -1,32 +1,27 @@
 package com.example.sns.ui.add_post
 
 import OnSwipeTouchListener
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.sns.R
+import com.example.sns.adapter.ImageAdapter
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityAddPostBinding
-import com.example.sns.ui.main.MainActivity
+import com.example.sns.di.adapterPart
 import com.example.sns.utils.FileManager
 import kotlinx.android.synthetic.main.app_bar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.TedPermission
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.koin.android.ext.android.inject
 import java.io.File
-import java.net.URLStreamHandler
 
 
 class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
@@ -37,12 +32,22 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
     override val viewModel: AddPostViewModel by viewModel()
 
-
+    private val imageAdapter: ImageAdapter by inject()
     override fun initView() {
         title = ""
         setSupportActionBar(toolbar)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        viewDataBinding.recyclerView.run {
+            layoutManager = StaggeredGridLayoutManager(3, 1).apply {
+                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+                orientation = StaggeredGridLayoutManager.VERTICAL
+            }
+            setHasFixedSize(true)
+            adapter = imageAdapter
+        }
+
         viewDataBinding.viewModel = viewModel
     }
 
@@ -60,7 +65,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
     }
 
     override fun initViewModel() {
-
+        imageAdapter.setImage(goToAlbum())
     }
 
 
@@ -68,19 +73,13 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
     override fun initListener() {
         viewDataBinding.holderLayout.setOnTouchListener(object : OnSwipeTouchListener() {
             override fun onSwipeLeft() {
-                goToAlbum()
+
+
             }
         })
     }
 
-    fun goToAlbum() {
-        val intent = Intent().apply {
-            type = "image/*"
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            action = Intent.ACTION_GET_CONTENT
-        }
-        startActivityForResult(Intent.createChooser(intent,"사진"), PICK_FROM_ALBUM)
-    }
+    private fun goToAlbum() = viewModel.getImageFromGallery(this)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -106,7 +105,8 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             if (file.exists()) {
                 Log.d("Path", "$filePath")
                 val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                val multipartData = MultipartBody.Part.createFormData("image", "file.jpg", requestFile)
+                val multipartData =
+                    MultipartBody.Part.createFormData("image", "file.jpg", requestFile)
                 viewModel.file = multipartData
             }
         }

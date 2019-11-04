@@ -1,16 +1,18 @@
 package com.example.sns.ui.add_post
 
 import android.app.Application
+import android.provider.MediaStore
 import androidx.databinding.ObservableField
 import com.example.sns.base.BaseViewModel
 import com.example.sns.network.service.PostService
 import com.example.sns.utils.UserObject
-import okhttp3.MediaType
+import kotlinx.coroutines.CoroutineScope
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import android.app.Activity
+import android.util.Log
 
-class AddPostViewModel(private val postService: PostService, application: Application) :
-    BaseViewModel(application) {
+
+class AddPostViewModel(private val postService: PostService, application: Application) : BaseViewModel(application) {
 
     var file: MultipartBody.Part? = null
 
@@ -24,5 +26,30 @@ class AddPostViewModel(private val postService: PostService, application: Applic
     private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo.value?.user_id!!, file!!), getMsgObserver())
 
     private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(text.get()!!, UserObject.userInfo.value?.user_id!!), getMsgObserver())
+
+    fun getImageFromGallery(context: Activity): ArrayList<String> {
+        val galleryImageUrls: ArrayList<String> = ArrayList()
+        val columns = arrayOf(
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media._ID
+        )//get all columns of type images
+        val orderBy = MediaStore.Images.Media.DATE_TAKEN//order data by date
+
+        val imageCursor = context.managedQuery(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns,
+            null, null, "$orderBy DESC"
+        )
+
+        for (i in 0 until imageCursor.count) {
+            imageCursor.moveToPosition(i)
+            val dataColumnIndex =
+                imageCursor.getColumnIndex(MediaStore.Images.Media.DATA)//get column index
+            galleryImageUrls.add(imageCursor.getString(dataColumnIndex))//get Image from column index
+
+        }
+        return galleryImageUrls
+    }
+
+
 
 }

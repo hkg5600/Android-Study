@@ -1,5 +1,6 @@
 package com.example.sns.di
 
+import com.example.sns.adapter.ImageAdapter
 import com.example.sns.adapter.PostAdapter
 import com.example.sns.network.api.LoginApi
 import com.example.sns.network.api.PostApi
@@ -64,6 +65,9 @@ var viewModelPart = module {
 var adapterPart = module {
     factory {
         PostAdapter()
+    }
+    factory {
+        ImageAdapter(get())
     }
 }
 
