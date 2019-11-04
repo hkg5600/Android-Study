@@ -55,11 +55,13 @@ class ImageAdapter(val application: Application) :
         holder.imgView.setOnClickListener {
             if (selectedItem.get(position, false)) {
                 holder.holder.setBackgroundColor(Color.parseColor("#ffffff"))
+                holder.check.visibility = View.GONE
                 selectedItem.put(position, false)
                 selectedImageList.remove(imageList[position])
                 testNum--
             } else {
-                holder.holder.setBackgroundColor(Color.parseColor("#FF0179FA"))
+                holder.holder.setBackgroundColor(Color.parseColor("#9187FF"))
+                holder.check.visibility = View.VISIBLE
                 selectedItem.put(position, true)
                 selectedImageList.add(imageList[position])
                 testNum++
@@ -67,9 +69,11 @@ class ImageAdapter(val application: Application) :
         }
 
         if (selectedItem.get(position, false)) {
-            holder.holder.setBackgroundColor(Color.parseColor("#FF0179FA"))
+            holder.holder.setBackgroundColor(Color.parseColor("#9187FF"))
+            holder.check.visibility = View.VISIBLE
         } else {
             holder.holder.setBackgroundColor(Color.parseColor("#ffffff"))
+            holder.check.visibility = View.GONE
         }
 
         holder.bind(imageList[position])
@@ -77,7 +81,7 @@ class ImageAdapter(val application: Application) :
 
     inner class ImageHolder(private val binding: ImageItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        val check : ImageView = binding.imgCheck
         val holder: CardView = binding.holderLayout
         val imgView: ImageView = binding.imageView
         fun bind(item: Image) {
