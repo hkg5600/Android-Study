@@ -15,8 +15,6 @@ class LoginActivityViewModel(
     val id = ObservableField<String>()
     val pw = ObservableField<String>()
 
-    fun checkValue() = if (id.get() != null && pw.get() != null) login() else null
-
     fun login() = addDisposable(loginService.login(id.get()!!, pw.get()!!), getDataObserver())
 
     fun insertToken(token: String) =

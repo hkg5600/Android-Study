@@ -7,19 +7,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/img_view_holder"
+        <RelativeLayout
+            android:id="@+id/img_view_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/image_holder">
+
+            <ImageView
+                android:id="@+id/img_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/image_holder">
-                <ImageView
-                    android:id="@+id/img_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:adjustViewBounds="true" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:adjustViewBounds="true"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/text_view_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="15dp"
+                android:textColor="#000000"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:text="페이지" />
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 </layout>

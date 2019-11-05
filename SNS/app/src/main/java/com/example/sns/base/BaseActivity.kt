@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.gc.materialdesign.widgets.ProgressDialog
 
 abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatActivity() {
 
@@ -28,11 +29,12 @@ abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatA
 
     abstract fun initViewModel()
 
+    lateinit var progressDialog : ProgressDialog
+
     private var isSetBackButtonValid = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewDataBinding = DataBindingUtil.setContentView(this, layoutResourceId)
         viewDataBinding.executePendingBindings()
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)

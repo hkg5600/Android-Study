@@ -23,9 +23,15 @@ import java.io.File
 import android.text.Editable
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
+import com.example.sns.utils.SingleLiveEvent
+import com.gc.materialdesign.widgets.ProgressDialog
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
 
 class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
+
+    val panelChanged: SingleLiveEvent<Any> = SingleLiveEvent()
 
     override val layoutResourceId = R.layout.activity_add_post
 
@@ -37,6 +43,9 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
         setSupportActionBar(toolbar)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        progressDialog = ProgressDialog(this, "저장중..").apply {
+            setCancelable(false)
+        }
 
         viewDataBinding.recyclerView.run {
             layoutManager = StaggeredGridLayoutManager(3, 1).apply {
@@ -55,8 +64,18 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             makeToast(it)
             when (it) {
                 "게시물 저장 성공" -> {
+                    progressDialog.dismiss()
                     setResult(Activity.RESULT_OK)
                     finish()
+                }
+            }
+        })
+
+        viewModel.error.observe(this, Observer {
+            when (it) {
+                "failed to connect" -> {
+                    finish()
+                    makeToast(resources.getString(R.string.network_error))
                 }
             }
         })
@@ -100,12 +119,41 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
                 }
             }
 
+
+        viewDataBinding.slidingPanel.setPanelSlideListener(object :
+            SlidingUpPanelLayout.PanelSlideListener,
+            SlidingPaneLayout.PanelSlideListener {
+            override fun onPanelSlide(panel: View, slideOffset: Float) {
+                hideKeyboard()
+            }
+
+            override fun onPanelClosed(panel: View) {
+                viewDataBinding.text.clearFocus()
+            }
+
+            override fun onPanelOpened(panel: View) {
+                showKeyboard()
+                viewDataBinding.text.requestFocus()
+            }
+
+            override fun onPanelStateChanged(
+                panel: View?,
+                previousState: SlidingUpPanelLayout.PanelState?,
+                newState: SlidingUpPanelLayout.PanelState?
+            ) {
+
+            }
+
+
+        })
     }
+
     private fun hideKeyboard(view: View) {
         val inputMethodManager =
             getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
     private fun goToAlbum() = viewModel.getImageFromGallery(this)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -117,6 +165,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
             R.id.save_post -> {
                 loadFile()
+                progressDialog.show()
                 viewModel.checkNetwork()
             }
 
@@ -141,7 +190,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
                             RequestBody.create(MediaType.parse("multipart/form-data"), file)
                         val multipartData =
                             MultipartBody.Part.createFormData(
-                                "image + ${this.indexOf(it)}",
+                                "image_${this.indexOf(it)}",
                                 "file.jpg",
                                 requestFile
                             )

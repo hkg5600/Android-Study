@@ -1,8 +1,10 @@
 package com.example.sns.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +15,8 @@ import com.example.sns.network.model.PostImage
 import com.example.sns.utils.BASE_URL
 import kotlinx.android.synthetic.main.post_image_item.view.*
 
-class PostImageAdapter( private var imageList : ArrayList<PostImage>) : RecyclerView.Adapter<PostImageAdapter.PostViewHolder>() {
+class PostImageAdapter(private var imageList: ArrayList<PostImage>) :
+    RecyclerView.Adapter<PostImageAdapter.PostViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PostViewHolder(
         DataBindingUtil.inflate(
@@ -23,15 +26,21 @@ class PostImageAdapter( private var imageList : ArrayList<PostImage>) : Recycler
 
     override fun getItemCount() = imageList.size
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.bind(imageList[position].image)
+        holder.textView.text = "${imageList.indexOf(imageList[position]) + 1}/${imageList.size}"
+        holder.bind(imageList[position])
     }
 
     inner class PostViewHolder(private val binding: PostImageItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: String) {
+
+        val textView: TextView = binding.textViewPosition
+
+        fun bind(item: PostImage) {
+
             itemView.run {
-                Glide.with(context).load(BASE_URL + item).into(img_view)
+                Glide.with(context).load(BASE_URL + item.image).into(img_view)
             }
 
         }

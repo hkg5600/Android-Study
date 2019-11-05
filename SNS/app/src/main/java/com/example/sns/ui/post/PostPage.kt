@@ -57,7 +57,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
         viewModel.error.observe(this, Observer {
             if (it == "failed to connect") {
-                makeToast("네트워크 신호가 약합니다")
+                makeToast(resources.getString(R.string.network_error))
                 viewModel.getUser()
             }
         })

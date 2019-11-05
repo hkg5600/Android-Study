@@ -26,6 +26,9 @@
             android:gravity="bottom"
             app:umanoPanelHeight="70dp"
             app:umanoShadowHeight="5dp"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
             tools:context=".ui.add_post.AddPostActivity">
 
             <RelativeLayout
@@ -52,6 +55,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/image_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"
@@ -62,6 +66,9 @@
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
                     tools:listitem="@layout/image_item" />
             </RelativeLayout>
         </androidx.slidingpanelayout.widget.SlidingPaneLayout>

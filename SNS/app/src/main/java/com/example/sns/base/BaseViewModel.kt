@@ -98,7 +98,7 @@ abstract class BaseViewModel(val application: Application) : ViewModel() {
             else error.value = t.body()?.message!!
         } else {
             Log.d("Error Body", t.errorBody().toString())
-            error.value = t.errorBody().toString()
+            error.value = "error"
         }
     }
 
@@ -111,7 +111,7 @@ abstract class BaseViewModel(val application: Application) : ViewModel() {
                 error.value = t.body()?.message!!
         } else {
             Log.d("Error Body", t.errorBody().toString())
-            error.value = t.errorBody().toString()
+            error.value = "error"
         }
     }
 

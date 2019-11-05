@@ -18,13 +18,15 @@
             android:layout_marginEnd="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="170dp"
+            android:layout_marginTop="130dp"
             android:hint="ID"
+            android:inputType="text"
+            android:maxLines="1"
             android:text="@={vm.id}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            android:imeOptions="actionNext" />
 
         <EditText
             android:id="@+id/editTextPw"
@@ -33,23 +35,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:maxLines="1"
+            android:inputType="textPassword"
             android:hint="PASSWORD"
             android:text="@={vm.pw}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextId" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextId"
+            android:imeOptions="actionSend"/>
 
         <Button
             android:id="@+id/loginBtn"
             android:layout_width="122dp"
             android:layout_height="40dp"
             android:layout_marginTop="50dp"
-            android:onClick="@{() -> vm.checkValue()}"
+            android:onClick="@{() -> vm.login()}"
             android:text="LOGIN"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextPw" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextPw"
+            android:enabled="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

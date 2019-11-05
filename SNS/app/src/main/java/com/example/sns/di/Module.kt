@@ -11,7 +11,6 @@ import com.example.sns.ui.add_post.AddPostViewModel
 import com.example.sns.ui.login.LoginActivityViewModel
 import com.example.sns.ui.main.MainActivityViewModel
 import com.example.sns.ui.post.PostViewModel
-import com.example.sns.ui.splash.SplashActivity
 import com.example.sns.ui.splash.SplashActivityViewModel
 import com.example.sns.ui.userInfo.UserInfoViewModel
 import com.example.sns.utils.BASE_URL
@@ -20,7 +19,15 @@ import org.koin.dsl.module.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
+
+var okHttpClient: OkHttpClient = OkHttpClient.Builder()
+    .connectTimeout(1, TimeUnit.MINUTES)
+    .readTimeout(30, TimeUnit.SECONDS)
+    .writeTimeout(25, TimeUnit.SECONDS)
+    .build()
 
 val retrofit: Retrofit = Retrofit
     .Builder()
