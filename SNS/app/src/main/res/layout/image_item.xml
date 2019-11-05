@@ -6,33 +6,38 @@
             name="item"
             type="com.example.sns.adapter.ImageAdapter.Image" />
     </data>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/holder_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginStart="3dp">
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp">
 
             <ImageView
                 android:id="@+id/image_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
+                android:scaleType="center"/>
 
-            <ImageView
-                android:id="@+id/img_check"
+            <TextView
+                android:id="@+id/text_view_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_check"
-                android:foregroundGravity="center_vertical|center_horizontal"
-                android:visibility="gone"/>
+                android:gravity="center"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:background="@drawable/rounded_corner"
+                android:layout_marginTop="3dp"
+                android:layout_marginStart="3dp"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

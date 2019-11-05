@@ -13,7 +13,6 @@ import com.example.sns.R
 import com.example.sns.adapter.ImageAdapter
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityAddPostBinding
-import com.example.sns.di.adapterPart
 import com.example.sns.utils.FileManager
 import kotlinx.android.synthetic.main.app_bar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,7 +21,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.koin.android.ext.android.inject
 import java.io.File
-
 
 class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
 
@@ -47,7 +45,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             setHasFixedSize(true)
             adapter = imageAdapter
         }
-
+        viewDataBinding.slidingPanel.openPane()
         viewDataBinding.viewModel = viewModel
     }
 
@@ -62,6 +60,10 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             }
         })
 
+        imageAdapter.overSize.observe(this, Observer {
+            makeToast("최대 13개까지 선택 가능합니다")
+        })
+
     }
 
     override fun initViewModel() {
@@ -69,14 +71,9 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
     }
 
 
-    @SuppressLint("ClickableViewAccessibility")
+
     override fun initListener() {
-        viewDataBinding.holderLayout.setOnTouchListener(object : OnSwipeTouchListener() {
-            override fun onSwipeLeft() {
 
-
-            }
-        })
     }
 
     private fun goToAlbum() = viewModel.getImageFromGallery(this)
@@ -117,4 +114,11 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
         return true
     }
 
+    override fun onBackPressed() {
+        if (viewDataBinding.slidingPanel.isOpen) {
+            viewDataBinding.slidingPanel.closePane()
+        } else {
+            super.onBackPressed()
+        }
+    }
 }

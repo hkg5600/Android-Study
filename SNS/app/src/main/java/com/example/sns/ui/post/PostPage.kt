@@ -23,8 +23,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     SwipeRefreshLayout.OnRefreshListener {
 
-    val ADD_POST = 1
-
     override val layoutResourceId = R.layout.fragment_page_post
 
     override val viewModel: PostViewModel by viewModel()
@@ -69,9 +67,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initListener() {
-        viewDataBinding.buttonAdd.setOnClickListener {
-            startActivityForResult(Intent(activity, AddPostActivity::class.java), ADD_POST)
-        }
+
     }
 
     override fun initViewModel() {
@@ -84,12 +80,6 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     override fun onRefresh() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         refreshPostList()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK)
-            refreshPostList()
     }
 
     private fun refreshPostList() {

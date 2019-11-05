@@ -12,7 +12,6 @@ class MainActivityViewModel(private val service: UserInfoService, application: A
 
     fun logout() {
         deleteToken()
-        deleteUser()
     }
 
     private fun deleteToken() {
@@ -20,7 +19,4 @@ class MainActivityViewModel(private val service: UserInfoService, application: A
             tokenRepository.deleteToken(), "delete Token")
     }
 
-    private fun deleteUser() {
-        //UserObject.userInfo.value = null
-    }
 }

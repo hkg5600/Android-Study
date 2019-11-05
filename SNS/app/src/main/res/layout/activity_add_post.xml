@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.sns.ui.add_post.AddPostViewModel" />
@@ -13,36 +14,51 @@
         android:id="@+id/holder_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <include
             android:id="@+id/appbar_layout"
             layout="@layout/app_bar" />
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_marginTop="55dp"
+
+        <androidx.slidingpanelayout.widget.SlidingPaneLayout
+            android:id="@+id/sliding_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="55dp"
+            android:gravity="bottom"
+            app:umanoPanelHeight="70dp"
+            app:umanoShadowHeight="5dp"
             tools:context=".ui.add_post.AddPostActivity">
 
-<!--            <EditText-->
-<!--                android:id="@+id/text"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:maxLines="10"-->
-<!--                android:layout_marginTop="30dp"-->
-<!--                android:layout_marginStart="24dp"-->
-<!--                android:layout_marginEnd="24dp"-->
-<!--                android:hint="Text"-->
-<!--                android:text="@={viewModel.text}"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent" />-->
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/image_item" />
+                android:layout_height="match_parent">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <EditText
+                    android:id="@+id/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="24dp"
+                    android:hint="Text"
+                    android:maxLines="11"
+                    android:text="@={viewModel.text}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/image_item" />
+            </RelativeLayout>
+        </androidx.slidingpanelayout.widget.SlidingPaneLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

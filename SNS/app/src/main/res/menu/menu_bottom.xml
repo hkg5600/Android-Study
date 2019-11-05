@@ -5,12 +5,15 @@
         android:icon="@drawable/ic_post"
         android:title="POST"/>
     <item
-        android:id="@+id/menu_my_info"
-        android:icon="@drawable/ic_info"
-        android:title="MY INFO"/>
+        android:id="@+id/menu_add_post"
+        android:icon="@drawable/ic_create"
+        android:title="Write"/>
     <item
         android:id="@+id/menu_follower"
         android:icon="@drawable/ic_follower"
         android:title="FOLLOWER"/>
-
+    <item
+        android:id="@+id/menu_my_info"
+        android:icon="@drawable/ic_info"
+        android:title="MY INFO"/>
 </menu>
