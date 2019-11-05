@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/share_post"
+        android:title="@string/share_post"/>
+    <item
+        android:id="@+id/hide_post"
+        android:title="@string/hide_post"/>
+    <item
+        android:id="@+id/un_follow"
+        android:title="@string/un_follow"/>
+</menu>

@@ -21,27 +21,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/img_profile"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/holder_user"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="5dp"
-                android:background="@drawable/profile_image_background"
-                android:src="@drawable/ic_person"/>
+                app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/text_view_owner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="5dp"
-                android:text="@{item.owner}"
-                app:layout_constraintStart_toEndOf="@+id/img_profile"
-                app:layout_constraintTop_toTopOf="parent"
-                tool:text="Owner" />
+                <ImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/profile_image_background"
+                    android:src="@drawable/ic_person"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_view_owner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@{item.owner}"
+                    app:layout_constraintStart_toEndOf="@+id/img_profile"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tool:text="Owner" />
+
+                <ImageButton
+                    android:id="@+id/button_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/option_btn_background"
+                    android:src="@drawable/ic_more"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/text_view_text"
@@ -77,33 +96,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
                 android:text="@{item.created_at}"
                 android:textSize="10sp"
-                android:layout_marginBottom="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 tool:text="0000년 00월 00일 00:00" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/img_view_holder"
                 android:layout_width="match_parent"
                 android:layout_height="380dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/image_holder"
+                app:layout_constraintBottom_toTopOf="@+id/text_view_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_view_owner"
-                app:layout_constraintBottom_toTopOf="@+id/text_view_text"
-                android:background="@drawable/image_holder">
+                app:layout_constraintTop_toBottomOf="@+id/holder_user">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

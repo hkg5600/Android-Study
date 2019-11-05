@@ -4,6 +4,8 @@ import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableArrayList
@@ -51,6 +53,11 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     override fun getItemCount() = postList.size
 
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
+        if (onItemClickListener != null) {
+            holder.btnOption.setOnClickListener {v ->
+                onItemClickListener?.onClick(v, position, holder)
+            }
+        }
 
         holder.btnShow.setOnClickListener {
             clearSelectedItem()
@@ -93,7 +100,8 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     class PostHolder(private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val btnShow: TextView = binding.textViewShow
         val textView: TextView = binding.textViewText
-        val viewPager: ViewPager2 = binding.viewPager
+        private val viewPager: ViewPager2 = binding.viewPager
+        val btnOption: ImageButton = binding.buttonOptions
 
         fun bind(item: Post) {
             binding.imgViewHolder.visibility = View.GONE

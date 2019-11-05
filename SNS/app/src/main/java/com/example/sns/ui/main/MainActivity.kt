@@ -99,6 +99,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         if (requestCode == ADD_POST) {
             var transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, PostPage()).commitAllowingStateLoss()
+            viewDataBinding.bottomNavigationView.selectedItemId = R.id.menu_post
         }
     }
 

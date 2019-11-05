@@ -50,9 +50,9 @@
             android:layout_height="40dp"
             android:layout_marginTop="50dp"
             android:onClick="@{() -> vm.login()}"
-            android:text="LOGIN"
+            android:text="@string/text_login"
+            android:background="@drawable/button_enable_color"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextPw"
             android:enabled="false"/>

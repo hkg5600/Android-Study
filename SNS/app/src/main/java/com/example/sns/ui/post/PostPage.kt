@@ -1,9 +1,14 @@
 package com.example.sns.ui.post
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -19,6 +24,7 @@ import com.example.sns.ui.add_post.AddPostActivity
 import com.example.sns.utils.UserObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.dsl.module.applicationContext
 
 open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     SwipeRefreshLayout.OnRefreshListener {
@@ -51,6 +57,13 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
             }
         })
 
+        viewModel.message.observe(this, Observer {
+            makeToast(it)
+            when(it) {
+                "게시물 삭제 성공" -> refreshPostList()
+            }
+        })
+
         UserObject.userInfo.observe(this, Observer {
             refreshPostList()
         })
@@ -63,10 +76,56 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         })
 
 
-
     }
 
     override fun initListener() {
+        postAdapter.onItemClickListener = object : PostAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
+                val p = PopupMenu(context, view)
+                if (UserObject.userInfo.value?.user_id == postAdapter.postList[position].owner) {
+                    activity?.menuInflater?.inflate(R.menu.menu_my_post_option, p.menu)
+                    p.apply {
+                        setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.delete_post -> {
+                                    val builder = AlertDialog.Builder(context)
+                                    val dialogView =layoutInflater.inflate(R.layout.custom_dialog, null )
+                                    builder.setView(dialogView).show()
+                                }
+                                R.id.edit_post -> {
+                                    makeToast("수정하기")
+                                }
+                                R.id.turn_off -> {
+                                    makeToast("알림 해제")
+                                }
+                            }
+                            false
+                        }
+                        show()
+                    }
+                } else {
+                    activity?.menuInflater?.inflate(R.menu.menu_others_post_option, p.menu)
+                    p.apply {
+                        setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.un_follow -> {
+                                    makeToast("팔로우 취소")
+                                }
+                                R.id.share_post -> {
+                                    makeToast("공유하기")
+                                }
+                                R.id.hide_post -> {
+                                    makeToast("숨기기")
+                                }
+                            }
+                            false
+                        }
+                        show()
+                    }
+                }
+            }
+        }
+
 
     }
 

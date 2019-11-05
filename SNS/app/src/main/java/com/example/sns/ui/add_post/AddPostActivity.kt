@@ -43,9 +43,6 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
         setSupportActionBar(toolbar)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        progressDialog = ProgressDialog(this, "저장중..").apply {
-            setCancelable(false)
-        }
 
         viewDataBinding.recyclerView.run {
             layoutManager = StaggeredGridLayoutManager(3, 1).apply {
@@ -64,7 +61,6 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             makeToast(it)
             when (it) {
                 "게시물 저장 성공" -> {
-                    progressDialog.dismiss()
                     setResult(Activity.RESULT_OK)
                     finish()
                 }
@@ -93,7 +89,6 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
     override fun initViewModel() {
         imageAdapter.setImage(goToAlbum())
     }
-
 
     override fun initListener() {
         viewDataBinding.text.addTextChangedListener(object : TextWatcher {
@@ -165,7 +160,6 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
             R.id.save_post -> {
                 loadFile()
-                progressDialog.show()
                 viewModel.checkNetwork()
             }
 
@@ -184,7 +178,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
                 this?.forEach {
                     val filePath =
                         FileManager.getRealPathFromURI(Uri.parse(it.uri), applicationContext)
-                    val file = File(filePath)
+                    val file = File(filePath!!)
                     if (file.exists()) {
                         val requestFile =
                             RequestBody.create(MediaType.parse("multipart/form-data"), file)

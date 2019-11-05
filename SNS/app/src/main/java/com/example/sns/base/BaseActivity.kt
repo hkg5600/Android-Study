@@ -29,8 +29,6 @@ abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatA
 
     abstract fun initViewModel()
 
-    lateinit var progressDialog : ProgressDialog
-
     private var isSetBackButtonValid = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

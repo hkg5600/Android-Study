@@ -10,4 +10,13 @@
     <string name="network_error">네트워크 신호가 약합니다</string>
     <string name="clear_select">선택 해제</string>
     <string name="save_post">작성</string>
+    <string name="text_login">LOGIN</string>
+    <string name="edit">수정하기</string>
+    <string name="delete">삭제하기</string>
+    <string name="turn_off">알림 해제</string>
+    <string name="hide_post">게시물 숨기기</string>
+    <string name="share_post">공유하기</string>
+    <string name="un_follow">팔로우 취소</string>
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
 </resources>
