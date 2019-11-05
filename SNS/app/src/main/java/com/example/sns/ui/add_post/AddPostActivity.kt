@@ -1,9 +1,8 @@
 package com.example.sns.ui.add_post
 
-import OnSwipeTouchListener
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
+import android.net.Uri
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -21,10 +20,12 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.koin.android.ext.android.inject
 import java.io.File
+import android.text.Editable
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+
 
 class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
-
-    private val PICK_FROM_ALBUM = 1
 
     override val layoutResourceId = R.layout.activity_add_post
 
@@ -64,6 +65,10 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             makeToast("최대 13개까지 선택 가능합니다")
         })
 
+        imageAdapter.onChanged.observe(this, Observer {
+            invalidateOptionsMenu()
+        })
+
     }
 
     override fun initViewModel() {
@@ -71,11 +76,36 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
     }
 
 
-
     override fun initListener() {
+        viewDataBinding.text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                invalidateOptionsMenu()
+            }
+
+        })
+
+        viewDataBinding.text.onFocusChangeListener =
+            View.OnFocusChangeListener { p0, p1 ->
+                if (!p1) {
+                    hideKeyboard(p0)
+                    viewDataBinding.text.clearFocus()
+                }
+            }
 
     }
-
+    private fun hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
     private fun goToAlbum() = viewModel.getImageFromGallery(this)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -86,37 +116,57 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             }
 
             R.id.save_post -> {
+                loadFile()
                 viewModel.checkNetwork()
+            }
+
+            R.id.clear_image -> {
+                imageAdapter.clearValue()
+                makeToast("모두 선택 해제했습니다")
             }
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
-            val uri = data?.data
-            val filePath = FileManager.getRealPathFromURI(uri!!, applicationContext)
-            val file = File(filePath)
-            if (file.exists()) {
-                Log.d("Path", "$filePath")
-                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                val multipartData =
-                    MultipartBody.Part.createFormData("image", "file.jpg", requestFile)
-                viewModel.file = multipartData
+    private fun loadFile() {
+        if (imageAdapter.selectedImageList.value?.isNotEmpty()!!) {
+            imageAdapter.selectedImageList.value.run {
+                this?.forEach {
+                    val filePath =
+                        FileManager.getRealPathFromURI(Uri.parse(it.uri), applicationContext)
+                    val file = File(filePath)
+                    if (file.exists()) {
+                        val requestFile =
+                            RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                        val multipartData =
+                            MultipartBody.Part.createFormData(
+                                "image + ${this.indexOf(it)}",
+                                "file.jpg",
+                                requestFile
+                            )
+                        viewModel.file.add(multipartData)
+                    }
+                }
             }
         }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.add_post, menu)
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.getItem(0)?.isEnabled = imageAdapter.selectedImageList.value?.isNotEmpty()!!
+        menu?.getItem(1)?.isEnabled = viewDataBinding.text.text.toString().isNotEmpty()
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onBackPressed() {
-        if (viewDataBinding.slidingPanel.isOpen) {
-            viewDataBinding.slidingPanel.closePane()
+        if (!viewDataBinding.slidingPanel.isOpen) {
+            viewDataBinding.slidingPanel.openPane()
         } else {
             super.onBackPressed()
         }

@@ -14,16 +14,15 @@ import android.util.Log
 
 class AddPostViewModel(private val postService: PostService, application: Application) : BaseViewModel(application) {
 
-    var file: MultipartBody.Part? = null
+    var file: ArrayList<MultipartBody.Part> = ArrayList()
 
     val text = ObservableField<String>()
-    fun checkNetwork() = if (UserObject.userInfo != null) checkData()  else makeToast("네트워크 연결 후 시도해 주세요")
+    fun checkNetwork() = if (UserObject.userInfo.value != null) hasFile()  else makeToast("네트워크 연결 후 시도해 주세요")
 
-    private fun checkData() = if (text.get() != null) hasFile() else null
 
-    private fun hasFile() = if (file == null) addPostWithoutFIle() else addPostWithFIle()
+    private fun hasFile() = if (file.isEmpty()) addPostWithoutFIle() else addPostWithFIle()
 
-    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo.value?.user_id!!, file!!), getMsgObserver())
+    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo.value?.user_id!!, file), getMsgObserver())
 
     private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(text.get()!!, UserObject.userInfo.value?.user_id!!), getMsgObserver())
 

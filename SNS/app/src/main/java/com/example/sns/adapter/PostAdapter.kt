@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.sns.databinding.PostItemBinding
 import com.example.sns.network.model.Post
@@ -25,7 +26,13 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     fun setPost(postList: ArrayList<Post>) {
         this.postList.clear()
         postList.forEach {
-            val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images)
+            val data = Post(
+                it.id,
+                it.text,
+                it.owner,
+                DateTimeConverter.jsonTimeToTime(it.created_at),
+                it.images
+            )
             this.postList.add(data)
         }
         notifyDataSetChanged()
@@ -86,14 +93,14 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     class PostHolder(private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val btnShow: TextView = binding.textViewShow
         val textView: TextView = binding.textViewText
+        val viewPager: ViewPager2 = binding.viewPager
 
         fun bind(item: Post) {
             binding.imgViewHolder.visibility = View.GONE
             if (item.images.isNotEmpty()) {
-                itemView.run {
-                    Glide.with(context).load(BASE_URL+ item.images[0].image).into(img_view)
-                    binding.imgViewHolder.visibility = View.VISIBLE
-                }
+                binding.imgViewHolder.visibility = View.VISIBLE
+                viewPager.adapter = PostImageAdapter(item.images)
+                viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
             }
             binding.item = item
         }

@@ -21,8 +21,9 @@ import kotlinx.android.synthetic.main.image_item.view.*
 class ImageAdapter(val application: Application) :
     RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
     var overSize: SingleLiveEvent<Any> = SingleLiveEvent()
+    var onChanged: SingleLiveEvent<Any> = SingleLiveEvent()
     var selectedItem = SparseBooleanArray(0)
-    var selectedImageList = MutableLiveData<ArrayList<Image>>(ArrayList<Image>())
+    var selectedImageList = MutableLiveData<ArrayList<Image>>(ArrayList())
     var isFull = false
 
     data class Image(val uri: String)
@@ -72,6 +73,7 @@ class ImageAdapter(val application: Application) :
                 }
             }
             loadValue()
+            onChanged.call()
         }
 
         if (selectedItem.get(position, false)) {
@@ -104,6 +106,16 @@ class ImageAdapter(val application: Application) :
         var position: Int
         for (index: Int in 0 until selectedItem.size()) {
             position = selectedItem.keyAt(index)
+            notifyItemChanged(position)
+        }
+    }
+
+    fun clearValue() {
+        selectedImageList.value?.clear()
+        var position: Int
+        for (index: Int in 0 until selectedItem.size()) {
+            position = selectedItem.keyAt(index)
+            selectedItem.put(position, false)
             notifyItemChanged(position)
         }
     }

@@ -2,7 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/clear_image"
+        android:title="선택 해제"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/save_post"
         android:title="Save"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

@@ -98,7 +98,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_POST) {
             var transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
+            transaction.replace(R.id.frame_layout, PostPage()).commitAllowingStateLoss()
         }
     }
 

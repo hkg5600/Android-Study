@@ -18,5 +18,5 @@ interface PostApi {
 
     @Multipart
     @POST("/api/post/add_post/")
-    fun addPostWithFile(@Part file: MultipartBody.Part, @Part("text") text: RequestBody, @Part("owner") owner: RequestBody): Single<retrofit2.Response<Response<Any>>>
+    fun addPostWithFile(@Part file: ArrayList<MultipartBody.Part>, @Part("text") text: RequestBody, @Part("owner") owner: RequestBody): Single<retrofit2.Response<Response<Any>>>
 }
