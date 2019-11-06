@@ -11,7 +11,7 @@ import retrofit2.http.*
 
 interface PostApi {
     @POST("/api/post/post/")
-    fun getPost(@Body follower: Follower): Single<retrofit2.Response<Response<PostList>>>
+    fun getPost(@Header("Authorization") token: String, @Body follower: Follower): Single<retrofit2.Response<Response<PostList>>>
 
     @POST("/api/post/add_post/")
     fun addPostWithoutFile(@Body post: PostRequest): Single<retrofit2.Response<Response<Any>>>

@@ -23,6 +23,10 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.app_bar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
+import kotlin.system.exitProcess
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() {
     val ADD_POST = 1
@@ -48,9 +52,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             when (it) {
                 "delete Token" -> {
                     startActivity(Intent(this, LoginActivity::class.java))
-                    makeToast("로그아웃 성공")
+                    makeToast("로그아웃 성공", false)
                 }
-                else -> makeToast("로그아웃에 실패했습니다")
+                else -> makeToast("로그아웃에 실패했습니다", false)
             }
         })
     }
@@ -97,7 +101,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_POST) {
-            var transaction = supportFragmentManager.beginTransaction()
+            val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, PostPage()).commitAllowingStateLoss()
             viewDataBinding.bottomNavigationView.selectedItemId = R.id.menu_post
         }
@@ -138,5 +142,22 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
             .check()
+    }
+    private var mBackFlag = false
+    override fun onBackPressed() {
+        if (!mBackFlag) {
+            makeToast("뒤로 버튼을 한번 더 누르면 종료됩니다", false)
+            mBackFlag = true
+
+            Timer("back", true).schedule(1500) {
+                mBackFlag = false
+                cancel()
+            }
+        } else {
+            super.onBackPressed()
+            onDestroy()
+            exitProcess(0)
+        }
+
     }
 }

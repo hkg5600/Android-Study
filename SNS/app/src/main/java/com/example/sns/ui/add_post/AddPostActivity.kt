@@ -58,7 +58,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
     override fun initObserver() {
         viewModel.message.observe(this, Observer {
-            makeToast(it)
+            makeToast(it, false)
             when (it) {
                 "게시물 저장 성공" -> {
                     setResult(Activity.RESULT_OK)
@@ -71,13 +71,13 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             when (it) {
                 "failed to connect" -> {
                     finish()
-                    makeToast(resources.getString(R.string.network_error))
+                    makeToast(resources.getString(R.string.network_error), false)
                 }
             }
         })
 
         imageAdapter.overSize.observe(this, Observer {
-            makeToast("최대 13개까지 선택 가능합니다")
+            makeToast("최대 13개까지 선택 가능합니다", false)
         })
 
         imageAdapter.onChanged.observe(this, Observer {
@@ -154,7 +154,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                makeToast("취소되었습니다")
+                makeToast("취소되었습니다", false)
                 finish()
             }
 
@@ -165,7 +165,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
             R.id.clear_image -> {
                 imageAdapter.clearValue()
-                makeToast("모두 선택 해제했습니다")
+                makeToast("모두 선택 해제했습니다", false)
             }
         }
 

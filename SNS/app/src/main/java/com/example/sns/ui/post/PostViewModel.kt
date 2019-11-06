@@ -14,7 +14,7 @@ class PostViewModel(
 ) :
     BaseViewModel(application) {
 
-    fun getPost(followers: Follower) = addDisposable(postService.getPost(followers), getDataObserver())
+    fun getPost(followers: Follower) = addDisposable(postService.getPost(TokenObject.token, followers), getDataObserver())
 
     fun getUser() = addDisposable(service.getUserInfo(TokenObject.token), getDataObserver())
 

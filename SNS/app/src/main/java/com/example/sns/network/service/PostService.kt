@@ -11,7 +11,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface PostService {
-    fun getPost(follower: Follower): Single<retrofit2.Response<Response<PostList>>>
+    fun getPost(token: String, follower: Follower): Single<retrofit2.Response<Response<PostList>>>
     fun addPostWithFile(text: String, userName: String, file: ArrayList<MultipartBody.Part>): Single<retrofit2.Response<Response<Any>>>
     fun addPostWithoutFile(text: String, userName: String): Single<retrofit2.Response<Response<Any>>>
     fun deletePost(id: Int) : Single<retrofit2.Response<Response<Any>>>
@@ -27,6 +27,6 @@ class PostServiceImpl(private val api: PostApi) : PostService {
     override fun addPostWithFile(text: String, userName: String, file: ArrayList<MultipartBody.Part>) =
         api.addPostWithFile(file, RequestBody.create(MediaType.parse("text/plain"), text), RequestBody.create(MediaType.parse("text/plain"), userName))
 
-    override fun getPost(follower: Follower) = api.getPost(follower)
+    override fun getPost(token : String, follower: Follower) = api.getPost(token, follower)
 
 }

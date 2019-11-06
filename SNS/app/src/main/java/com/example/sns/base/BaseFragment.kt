@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.example.sns.utils.CustomDialog
 
 abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment() {
 
@@ -47,5 +48,23 @@ abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment()
 
     fun makeToast(msg: String) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    fun showDialog(msg: String, ok: () -> Unit ,cancel: () -> Unit) {
+        CustomDialog(context!!).run {
+            Builder()
+                .setView(LayoutInflater.from(context).inflate(com.example.sns.R.layout.custom_dialog, null))
+                .setMessage(msg)
+                .show()
+            Listener()
+                .setOkayButton(View.OnClickListener {
+                    ok()
+                    this.dismiss()
+                })
+                .setCancelButton(View.OnClickListener {
+                    cancel()
+                    this.dismiss()
+                })
+        }
     }
 }

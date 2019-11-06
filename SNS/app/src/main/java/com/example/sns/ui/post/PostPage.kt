@@ -1,30 +1,23 @@
 package com.example.sns.ui.post
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Intent
-import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupMenu
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.sns.R
 import com.example.sns.adapter.PostAdapter
 import com.example.sns.base.BaseFragment
 import com.example.sns.databinding.FragmentPagePostBinding
 import com.example.sns.network.model.Follower
-import com.example.sns.network.model.Post
 import com.example.sns.network.model.UserInfo
 import com.example.sns.network.response.PostList
-import com.example.sns.ui.add_post.AddPostActivity
+import com.example.sns.utils.CustomDialog
 import com.example.sns.utils.UserObject
+import kotlinx.android.synthetic.main.custom_dialog.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.dsl.module.applicationContext
 
 open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     SwipeRefreshLayout.OnRefreshListener {
@@ -59,7 +52,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
         viewModel.message.observe(this, Observer {
             makeToast(it)
-            when(it) {
+            when (it) {
                 "게시물 삭제 성공" -> refreshPostList()
             }
         })
@@ -88,9 +81,9 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                         setOnMenuItemClickListener { item ->
                             when (item.itemId) {
                                 R.id.delete_post -> {
-                                    val builder = AlertDialog.Builder(context)
-                                    val dialogView =layoutInflater.inflate(R.layout.custom_dialog, null )
-                                    builder.setView(dialogView).show()
+                                    showDialog("삭제하시겠습니까?", {
+                                        viewModel.deletePost(postAdapter.postList[position].id)
+                                        makeToast("삭제되었습니다")}, {makeToast("취소")})
                                 }
                                 R.id.edit_post -> {
                                     makeToast("수정하기")

@@ -29,7 +29,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>
         viewModel.data.observe(this, Observer {
             when (it) {
                 is LoginData -> {
-                    TokenObject.token = it.token
+                    TokenObject.token = "Token ${it.token}"
                     viewModel.insertToken(TokenObject.token)
                 }
             }
@@ -43,8 +43,8 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>
 
         viewModel.error.observe(this, Observer {
             when (it) {
-                "failed to connect" -> makeToast(resources.getString(R.string.network_error))
-                "error" -> makeToast("아이디 또는 비밀번호가 일치하지 않습니다")
+                "failed to connect" -> makeToast(resources.getString(R.string.network_error), false)
+                "error" -> makeToast("아이디 또는 비밀번호가 일치하지 않습니다", false)
             }
         })
 
