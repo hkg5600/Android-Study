@@ -4,16 +4,38 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import authentication, permissions, status, generics
 from users.backends import JWTUserAuthentication
 from .serializers import (
-    PostSerializer, FileSerializer,
+    PostSerializer, FileSerializer, CommentSerializer,
 )
 
 from django.http import JsonResponse
-from .models import  Post, Image
+from .models import  Post, Image, Comment
 from django.forms.models import model_to_dict
 import json
 from django.conf import settings
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
+class LikeToPost(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, *args, **kwargs):
+        post = Post.objects.get(id=self.request.data.get('post'))
+        user = User.objects.get(user_id=self.request.data.get('user_id'))
+        post.like.add(user)
+        post.save()
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요"})
+
+class UnlikeToPost(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, *args, **kwargs):
+        post = Post.objects.get(id=self.request.data.get('post'))
+        user = User.objects.get(user_id=self.request.data.get('user_id'))
+        post.like.remove(user)
+        post.save()
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요 취소"})
 
 class PostView(APIView):
     authentication_classes = [JWTUserAuthentication, ]
@@ -51,9 +73,32 @@ class AddPost(APIView):
     def post(self, request, format=None):
         print(request.data)
         serializer = PostSerializer(data=request.data, context={'request':request})
-        #serializer = PostSerializer(context={'request':request})
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return JsonResponse({'status':status.HTTP_200_OK, 'message':"게시물 저장 성공", 'data':""})
+
+class AddComment(APIView):
+    permission_classes = [IsAuthenticated, ]
+    def post(self, request, format=None):
+        print(request.data)
+        serializer = CommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return JsonResponse({'status':status.HTTP_200_OK, 'message':"댓글 작성 성공", 'data':""})
+
+class CommentDetail(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+    def get_object(self, pk):
+        try:
+            return Comment.objects.get(pk=pk)
+        except Comment.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, pk, format=None):
+        comment = self.get_object(pk)
+        comment.delete()
+        return JsonResponse({'status':status.HTTP_200_OK, "message":"댓글 삭제 성공",'data':""})
