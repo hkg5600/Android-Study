@@ -19,9 +19,13 @@ class LikeToPost(APIView):
     authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
 
+    def get_object(self):
+        return self.request.user
+
     def post(self, *args, **kwargs):
+        print(self.request.data.get('post'))
         post = Post.objects.get(id=self.request.data.get('post'))
-        user = User.objects.get(user_id=self.request.data.get('user_id'))
+        user = self.get_object()
         post.like.add(user)
         post.save()
         return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요"})

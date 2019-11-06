@@ -2,6 +2,9 @@ package com.example.sns.ui.post
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupMenu
@@ -86,6 +89,22 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initListener() {
+        postAdapter.onLikeClickListener = object : PostAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
+                postAdapter.postList[position].run {
+                    if (like.contains(UserObject.userInfo?.user_id)) {
+                        viewModel.unlikePost(id)
+                        holder.btnLike.colorFilter = PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+                    } else {
+                        viewModel.likePost(id)
+                        holder.btnLike.colorFilter = PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP)
+                        refreshPostList()
+                    }
+                }
+            }
+
+        }
+
         postAdapter.onItemClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
                 val p = PopupMenu(context, view)
@@ -140,6 +159,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     fun refreshPostList() {
+        viewDataBinding.swipeRefreshLayout.isRefreshing = true
         UserObject.userInfo?.let {
             viewModel.getPost(Follower(it.followers))
         }

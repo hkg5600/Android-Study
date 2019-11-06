@@ -93,24 +93,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         viewDataBinding.bottomNavigationView.setOnNavigationItemSelectedListener {
             transaction = supportFragmentManager.beginTransaction()
             when (it.itemId) {
-                R.id.menu_post -> transaction.replace(
-                    R.id.frame_layout,
-                    postPage
-                ).commitAllowingStateLoss()
-                R.id.menu_my_info -> transaction.replace(
-                    R.id.frame_layout,
-                    userInfoPage
-                ).commitAllowingStateLoss()
-                R.id.menu_add_post -> startActivityForResult(
-                    Intent(
-                        this,
-                        AddPostActivity::class.java
-                    ), ADD_POST
-                )
-                R.id.menu_follower -> transaction.replace(
-                    R.id.frame_layout,
-                    followerPage
-                ).commitAllowingStateLoss()
+                R.id.menu_post -> {
+                    transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
+                    postPage.refreshPostList()
+                }
+                R.id.menu_my_info -> transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
+                R.id.menu_add_post -> startActivityForResult(Intent(this, AddPostActivity::class.java), ADD_POST)
+                R.id.menu_follower -> transaction.replace(R.id.frame_layout, followerPage).commitAllowingStateLoss()
             }
             true
         }

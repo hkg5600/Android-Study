@@ -24,4 +24,8 @@ class PostViewModel(
 
     private fun deleteToken() = addRoomDisposable(tokenRepository.deleteToken(), "delete Token")
 
+    fun likePost(id: Int) = addDisposable(postService.likePost(TokenObject.token, id), getMsgObserver())
+
+    fun unlikePost(id: Int) = addDisposable(postService.likePost(TokenObject.token, id), getMsgObserver())
+
 }

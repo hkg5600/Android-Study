@@ -54,6 +54,12 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             }
         }
 
+        if (onLikeClickListener != null) {
+            holder.btnLike.setOnClickListener {v ->
+                onLikeClickListener?.onClick(v, position, holder)
+            }
+        }
+
         holder.btnShow.setOnClickListener {
             clearSelectedItem()
             selectedItem.put(position, true)
@@ -97,7 +103,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         val textView: TextView = binding.textViewText
         private val viewPager: ViewPager2 = binding.viewPager
         val btnOption: ImageButton = binding.buttonOptions
-
+        val btnLike: ImageButton = binding.ImageLike
         fun bind(item: Post) {
             binding.imgViewHolder.visibility = View.GONE
             if (item.images.isNotEmpty()) {
@@ -124,6 +130,8 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
 
     var onItemClickListener: OnItemClickListener? = null
 
+    var onLikeClickListener: OnItemClickListener? = null
+
     interface OnItemClickListener {
         fun onClick(
             view: View,
@@ -131,5 +139,6 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             holder: PostHolder
         )
     }
+
 
 }

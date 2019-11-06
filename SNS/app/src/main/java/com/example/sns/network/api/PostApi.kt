@@ -3,6 +3,7 @@ package com.example.sns.network.api
 import com.example.sns.network.Response
 import com.example.sns.network.model.Follower
 import com.example.sns.network.request.CommentRequest
+import com.example.sns.network.request.PostId
 import com.example.sns.network.request.PostRequest
 import com.example.sns.network.response.CommentList
 import com.example.sns.network.response.PostList
@@ -23,8 +24,14 @@ interface PostApi {
     fun deletePost(@Header("Authorization") token: String, @Url url: String) : Single<retrofit2.Response<Response<Any>>>
 
     @GET("/api/post/comment/")
-    fun getComment(@Header("Authorization") token: String, @Body post:Int): Single<retrofit2.Response<Response<CommentList>>>
+    fun getComment(@Header("Authorization") token: String, @Body post:PostId): Single<retrofit2.Response<Response<CommentList>>>
 
     @POST("/api/post/comment/")
     fun addComment(@Header("Authorization") token: String, @Body comment:CommentRequest): Single<retrofit2.Response<Response<Any>>>
+
+    @POST("/api/post/like_post/")
+    fun likePost(@Header("Authorization") token: String, @Body post:PostId): Single<retrofit2.Response<Response<Any>>>
+
+    @POST("/api/post/unlike_post/")
+    fun unlikePost(@Header("Authorization") token: String, @Body post:PostId): Single<retrofit2.Response<Response<Any>>>
 }

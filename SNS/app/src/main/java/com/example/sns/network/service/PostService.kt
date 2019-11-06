@@ -4,6 +4,7 @@ import com.example.sns.network.Response
 import com.example.sns.network.api.PostApi
 import com.example.sns.network.model.Follower
 import com.example.sns.network.request.CommentRequest
+import com.example.sns.network.request.PostId
 import com.example.sns.network.response.CommentList
 import com.example.sns.network.response.PostList
 import io.reactivex.Single
@@ -17,12 +18,18 @@ interface PostService {
     fun deletePost(token: String,id: Int) : Single<retrofit2.Response<Response<Any>>>
     fun getComment(token: String, post: Int) : Single<retrofit2.Response<Response<CommentList>>>
     fun addComment(token: String, comment: CommentRequest) : Single<retrofit2.Response<Response<Any>>>
+    fun likePost(token: String, post: Int) : Single<retrofit2.Response<Response<Any>>>
+    fun unlikePost(token: String, post: Int) : Single<retrofit2.Response<Response<Any>>>
 }
 
 class PostServiceImpl(private val api: PostApi) : PostService {
+    override fun unlikePost(token: String, post: Int) = api.unlikePost(token, PostId(post))
+
+    override fun likePost(token: String, post: Int) = api.likePost(token, PostId(post))
+
     override fun addComment(token: String, comment: CommentRequest) = api.addComment(token, comment)
 
-    override fun getComment(token: String, post: Int) = api.getComment(token, post)
+    override fun getComment(token: String, post: Int) = api.getComment(token, PostId(post))
 
     override fun deletePost(token : String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.deletePost(token,"/api/post/post/$id/")
 
