@@ -1,6 +1,7 @@
 package com.example.sns.ui.post
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupMenu
@@ -13,6 +14,7 @@ import com.example.sns.databinding.FragmentPagePostBinding
 import com.example.sns.network.model.Follower
 import com.example.sns.network.model.UserInfo
 import com.example.sns.network.response.PostList
+import com.example.sns.ui.login.LoginActivity
 import com.example.sns.utils.CustomDialog
 import com.example.sns.utils.UserObject
 import kotlinx.android.synthetic.main.custom_dialog.view.*
@@ -36,7 +38,15 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initObserver() {
-
+        viewModel.roomSuccess.observe(this, Observer {
+            when (it) {
+                "delete Token" -> {
+                    startActivity(Intent(context, LoginActivity::class.java))
+                    makeToast("로그아웃 성공", false)
+                }
+                else -> makeToast("로그아웃에 실패했습니다", false)
+            }
+        })
         viewModel.data.observe(this, Observer {
             viewDataBinding.swipeRefreshLayout.isRefreshing = false
             when (it) {
@@ -51,7 +61,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         })
 
         viewModel.message.observe(this, Observer {
-            makeToast(it)
+            makeToast(it , false)
             when (it) {
                 "게시물 삭제 성공" -> refreshPostList()
             }
@@ -62,9 +72,15 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         })
 
         viewModel.error.observe(this, Observer {
-            if (it == "failed to connect") {
-                makeToast(resources.getString(R.string.network_error))
-                viewModel.getUser()
+            when (it) {
+                "failed to connect" -> {
+                    makeToast(resources.getString(R.string.network_error), false)
+                    viewModel.getUser()
+                }
+                "Forbidden" -> {
+                    makeToast("세션이 만료되었습니다", false)
+                    viewModel.logout()
+                }
             }
         })
 
@@ -83,13 +99,14 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                                 R.id.delete_post -> {
                                     showDialog("삭제하시겠습니까?", {
                                         viewModel.deletePost(postAdapter.postList[position].id)
-                                        makeToast("삭제되었습니다")}, {makeToast("취소")})
+                                        makeToast("삭제되었습니다", false)
+                                    }, { makeToast("취소", false) })
                                 }
                                 R.id.edit_post -> {
-                                    makeToast("수정하기")
+                                    makeToast("수정하기", false)
                                 }
                                 R.id.turn_off -> {
-                                    makeToast("알림 해제")
+                                    makeToast("알림 해제", false)
                                 }
                             }
                             false
@@ -102,13 +119,13 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                         setOnMenuItemClickListener { item ->
                             when (item.itemId) {
                                 R.id.un_follow -> {
-                                    makeToast("팔로우 취소")
+                                    makeToast("팔로우 취소", false)
                                 }
                                 R.id.share_post -> {
-                                    makeToast("공유하기")
+                                    makeToast("공유하기", false)
                                 }
                                 R.id.hide_post -> {
-                                    makeToast("숨기기")
+                                    makeToast("숨기기", false)
                                 }
                             }
                             false

@@ -95,10 +95,13 @@ abstract class BaseViewModel(val application: Application) : ViewModel() {
         if (t.isSuccessful) {
             if (t.body()?.status == 200)
                 message.value = t.body()?.message!!
-            else error.value = t.body()?.message!!
+            else {
+                Log.d("Status", t.body()?.status.toString())
+                error.value = t.body()?.message
+            }
         } else {
             Log.d("Error Body", t.errorBody().toString())
-            error.value = "error"
+            error.value = t.message()
         }
     }
 
@@ -107,11 +110,13 @@ abstract class BaseViewModel(val application: Application) : ViewModel() {
         if (t.isSuccessful) {
             if (t.body()?.status == 200) {
                 data.value = t.body()?.data!!
-            } else
-                error.value = t.body()?.message!!
+            } else {
+                Log.d("Status", t.body()?.status.toString())
+                error.value = t.body()?.message
+            }
         } else {
             Log.d("Error Body", t.errorBody().toString())
-            error.value = "error"
+            error.value = t.message()
         }
     }
 
@@ -119,6 +124,7 @@ abstract class BaseViewModel(val application: Application) : ViewModel() {
         compositeDisposable.clear()
         super.onCleared()
     }
+
     fun makeToast(msg: String) {
         Toast.makeText(application.applicationContext, msg, Toast.LENGTH_SHORT).show()
     }

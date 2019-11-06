@@ -14,12 +14,12 @@ interface PostApi {
     fun getPost(@Header("Authorization") token: String, @Body follower: Follower): Single<retrofit2.Response<Response<PostList>>>
 
     @POST("/api/post/add_post/")
-    fun addPostWithoutFile(@Body post: PostRequest): Single<retrofit2.Response<Response<Any>>>
+    fun addPostWithoutFile(@Header("Authorization") token: String, @Body post: PostRequest): Single<retrofit2.Response<Response<Any>>>
 
     @Multipart
     @POST("/api/post/add_post/")
-    fun addPostWithFile(@Part file: ArrayList<MultipartBody.Part>, @Part("text") text: RequestBody, @Part("owner") owner: RequestBody): Single<retrofit2.Response<Response<Any>>>
+    fun addPostWithFile(@Header("Authorization") token: String, @Part file: ArrayList<MultipartBody.Part>, @Part("text") text: RequestBody, @Part("owner") owner: RequestBody): Single<retrofit2.Response<Response<Any>>>
 
     @DELETE
-    fun deletePost(@Url url: String) : Single<retrofit2.Response<Response<Any>>>
+    fun deletePost(@Header("Authorization") token: String, @Url url: String) : Single<retrofit2.Response<Response<Any>>>
 }

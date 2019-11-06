@@ -33,7 +33,7 @@ class PostView(APIView):
 
 class PostDetail(APIView):
     authentication_classes = [JWTUserAuthentication, ]
-
+    permission_classes = [IsAuthenticated, ]
     def get_object(self, pk):
         try:
             return Post.objects.get(pk=pk)
@@ -47,7 +47,7 @@ class PostDetail(APIView):
 
 class AddPost(APIView):
     serializer_class = PostSerializer
-    #permission_classes = [IsAuthenticated, ]
+    permission_classes = [IsAuthenticated, ]
     def post(self, request, format=None):
         print(request.data)
         serializer = PostSerializer(data=request.data, context={'request':request})

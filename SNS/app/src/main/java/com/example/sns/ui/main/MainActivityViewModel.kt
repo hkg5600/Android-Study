@@ -10,13 +10,8 @@ import com.example.sns.utils.UserObject
 class MainActivityViewModel(private val service: UserInfoService, application: Application) :
     BaseViewModel(application) {
 
-    fun logout() {
-        deleteToken()
-    }
+    fun logout() = deleteToken()
 
-    private fun deleteToken() {
-        addRoomDisposable(
-            tokenRepository.deleteToken(), "delete Token")
-    }
+    private fun deleteToken() = addRoomDisposable(tokenRepository.deleteToken(), "delete Token")
 
 }

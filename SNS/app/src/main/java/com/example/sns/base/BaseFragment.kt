@@ -46,8 +46,11 @@ abstract class BaseFragment<T : ViewDataBinding, V : BaseViewModel> : Fragment()
         return viewDataBinding.root
     }
 
-    fun makeToast(msg: String) {
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+    fun makeToast(msg: String, isLong : Boolean) {
+        if (isLong)
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+        else
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
     fun showDialog(msg: String, ok: () -> Unit ,cancel: () -> Unit) {

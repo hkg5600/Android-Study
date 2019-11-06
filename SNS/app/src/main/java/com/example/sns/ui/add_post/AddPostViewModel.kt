@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import okhttp3.MultipartBody
 import android.app.Activity
 import android.util.Log
+import com.example.sns.utils.TokenObject
 
 
 class AddPostViewModel(private val postService: PostService, application: Application) : BaseViewModel(application) {
@@ -22,9 +23,9 @@ class AddPostViewModel(private val postService: PostService, application: Applic
 
     private fun hasFile() = if (file.isEmpty()) addPostWithoutFIle() else addPostWithFIle()
 
-    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(text.get()!!, UserObject.userInfo.value?.user_id!!, file), getMsgObserver())
+    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(TokenObject.token, text.get()!!, UserObject.userInfo.value?.user_id!!, file), getMsgObserver())
 
-    private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(text.get()!!, UserObject.userInfo.value?.user_id!!), getMsgObserver())
+    private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(TokenObject.token, text.get()!!, UserObject.userInfo.value?.user_id!!), getMsgObserver())
 
     fun getImageFromGallery(context: Activity): ArrayList<String> {
         val galleryImageUrls: ArrayList<String> = ArrayList()

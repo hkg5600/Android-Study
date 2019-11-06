@@ -18,5 +18,10 @@ class PostViewModel(
 
     fun getUser() = addDisposable(service.getUserInfo(TokenObject.token), getDataObserver())
 
-    fun deletePost(id: Int) = addDisposable(postService.deletePost(id), getMsgObserver())
+    fun deletePost(id: Int) = addDisposable(postService.deletePost(TokenObject.token,id), getMsgObserver())
+
+    fun logout() = deleteToken()
+
+    private fun deleteToken() = addRoomDisposable(tokenRepository.deleteToken(), "delete Token")
+
 }

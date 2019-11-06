@@ -57,6 +57,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
                 else -> makeToast("로그아웃에 실패했습니다", false)
             }
         })
+
+        viewModel.error.observe(this, Observer {
+            when (it) {
+
+            }
+        })
     }
 
     override fun initListener() {
@@ -86,13 +92,27 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         var transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
 
-        viewDataBinding.bottomNavigationView.setOnNavigationItemSelectedListener{
+        viewDataBinding.bottomNavigationView.setOnNavigationItemSelectedListener {
             transaction = supportFragmentManager.beginTransaction()
-            when(it.itemId) {
-                R.id.menu_post -> transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
-                R.id.menu_my_info -> transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
-                R.id.menu_add_post -> startActivityForResult(Intent(this, AddPostActivity::class.java), ADD_POST)
-                R.id.menu_follower -> transaction.replace(R.id.frame_layout, followerPage).commitAllowingStateLoss()
+            when (it.itemId) {
+                R.id.menu_post -> transaction.replace(
+                    R.id.frame_layout,
+                    postPage
+                ).commitAllowingStateLoss()
+                R.id.menu_my_info -> transaction.replace(
+                    R.id.frame_layout,
+                    userInfoPage
+                ).commitAllowingStateLoss()
+                R.id.menu_add_post -> startActivityForResult(
+                    Intent(
+                        this,
+                        AddPostActivity::class.java
+                    ), ADD_POST
+                )
+                R.id.menu_follower -> transaction.replace(
+                    R.id.frame_layout,
+                    followerPage
+                ).commitAllowingStateLoss()
             }
             true
         }
@@ -143,6 +163,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             )
             .check()
     }
+
     private var mBackFlag = false
     override fun onBackPressed() {
         if (!mBackFlag) {

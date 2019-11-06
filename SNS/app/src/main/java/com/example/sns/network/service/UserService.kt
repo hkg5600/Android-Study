@@ -11,5 +11,5 @@ interface UserInfoService {
 }
 
 class UserInfoServiceImpl(private val api: UserApi) : UserInfoService {
-    override fun getUserInfo(token: String) = api.getUserInfo("Token $token")
+    override fun getUserInfo(token: String) = api.getUserInfo(token)
 }

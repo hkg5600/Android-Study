@@ -12,20 +12,20 @@ import okhttp3.RequestBody
 
 interface PostService {
     fun getPost(token: String, follower: Follower): Single<retrofit2.Response<Response<PostList>>>
-    fun addPostWithFile(text: String, userName: String, file: ArrayList<MultipartBody.Part>): Single<retrofit2.Response<Response<Any>>>
-    fun addPostWithoutFile(text: String, userName: String): Single<retrofit2.Response<Response<Any>>>
-    fun deletePost(id: Int) : Single<retrofit2.Response<Response<Any>>>
+    fun addPostWithFile(token: String, text: String, userName: String, file: ArrayList<MultipartBody.Part>): Single<retrofit2.Response<Response<Any>>>
+    fun addPostWithoutFile(token: String, text: String, userName: String): Single<retrofit2.Response<Response<Any>>>
+    fun deletePost(token: String,id: Int) : Single<retrofit2.Response<Response<Any>>>
 }
 
 class PostServiceImpl(private val api: PostApi) : PostService {
 
-    override fun deletePost(id: Int): Single<retrofit2.Response<Response<Any>>> = api.deletePost("/api/post/post/$id/")
+    override fun deletePost(token : String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.deletePost(token,"/api/post/post/$id/")
 
-    override fun addPostWithoutFile(text: String, userName: String) =
-        api.addPostWithoutFile(PostRequest(text, userName))
+    override fun addPostWithoutFile(token: String,  text: String, userName: String) =
+        api.addPostWithoutFile(token, PostRequest(text, userName))
 
-    override fun addPostWithFile(text: String, userName: String, file: ArrayList<MultipartBody.Part>) =
-        api.addPostWithFile(file, RequestBody.create(MediaType.parse("text/plain"), text), RequestBody.create(MediaType.parse("text/plain"), userName))
+    override fun addPostWithFile(token: String,  text: String, userName: String, file: ArrayList<MultipartBody.Part>) =
+        api.addPostWithFile(token, file, RequestBody.create(MediaType.parse("text/plain"), text), RequestBody.create(MediaType.parse("text/plain"), userName))
 
     override fun getPost(token : String, follower: Follower) = api.getPost(token, follower)
 
