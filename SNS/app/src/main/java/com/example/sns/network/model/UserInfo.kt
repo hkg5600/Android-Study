@@ -4,5 +4,6 @@ data class UserInfo(
     val user_id: String,
     val name: String,
     val followers: List<String>,
-    val following: List<String>
+    val following: List<String>,
+    val profile_image:String
 )

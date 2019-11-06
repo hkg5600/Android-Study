@@ -159,8 +159,13 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
             }
 
             R.id.save_post -> {
-                loadFile()
-                viewModel.checkNetwork()
+                if (imageAdapter.selectedImageList.value?.isNotEmpty()!!) {
+                    loadFile()
+                    viewModel.checkNetwork()
+                } else {
+                    makeToast("최소 한장의 사진을 선택해주세요", false)
+                    viewDataBinding.slidingPanel.closePane()
+                }
             }
 
             R.id.clear_image -> {
@@ -203,7 +208,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.getItem(0)?.isEnabled = imageAdapter.selectedImageList.value?.isNotEmpty()!!
-        menu?.getItem(1)?.isEnabled = viewDataBinding.text.text.toString().isNotEmpty()
+        menu?.getItem(1)?.isEnabled = viewDataBinding.text.text.isNotEmpty()
         return super.onPrepareOptionsMenu(menu)
     }
 

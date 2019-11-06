@@ -59,9 +59,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         })
 
         viewModel.error.observe(this, Observer {
-            when (it) {
 
-            }
         })
     }
 
@@ -122,8 +120,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_POST) {
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_layout, PostPage()).commitAllowingStateLoss()
+            transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
             viewDataBinding.bottomNavigationView.selectedItemId = R.id.menu_post
+            postPage.refreshPostList()
         }
     }
 

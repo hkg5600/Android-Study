@@ -25,9 +25,12 @@ class UserProfile(APIView):
 
     def post(self, request, format=None):
         user = User.objects.get(user_id=self.get_object())
-        user.profile_image = self.request.data.get('image')
-        user.save()
-        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", "message":"프로필 저장 성공"})
+        if(self.request.data.get('image') is not None):
+            user.profile_image = self.request.data.get('image')
+            user.save()
+            return JsonResponse({'status':status.HTTP_200_OK, 'data':"", "message":"프로필 저장 성공"})
+        else:
+            return JsonResponse({'status':status.HTTP_204_NO_CONTENT, 'data':"", "message":"error"})
 
 class UserAPI(generics.RetrieveAPIView):
     authentication_classes = [JWTUserAuthentication, ]

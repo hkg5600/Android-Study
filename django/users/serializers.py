@@ -9,7 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('user_id', 'name', 'followers', 'following', 'profile_image')
 
-
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)

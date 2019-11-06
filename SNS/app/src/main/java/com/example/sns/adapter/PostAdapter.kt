@@ -12,6 +12,7 @@ import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.sns.databinding.PostItemBinding
 import com.example.sns.network.model.Post
 import com.example.sns.utils.BASE_URL
@@ -28,13 +29,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     fun setPost(postList: ArrayList<Post>) {
         this.postList.clear()
         postList.forEach {
-            val data = Post(
-                it.id,
-                it.text,
-                it.owner,
-                DateTimeConverter.jsonTimeToTime(it.created_at),
-                it.images
-            )
+            val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image)
             this.postList.add(data)
         }
         notifyDataSetChanged()
@@ -109,6 +104,11 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
                 binding.imgViewHolder.visibility = View.VISIBLE
                 viewPager.adapter = PostImageAdapter(item.images)
                 viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            }
+            if (item.profile_image.profile_image != null) {
+                itemView.run {
+                    Glide.with(context).load(BASE_URL + item.profile_image.profile_image).apply(RequestOptions.circleCropTransform()).into(img_profile)
+                }
             }
             binding.item = item
         }

@@ -16,13 +16,12 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/holder_user"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
@@ -54,26 +53,52 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:layout_marginEnd="3dp"
                     android:background="@drawable/option_btn_background"
                     android:src="@drawable/ic_more"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/user_act"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/img_view_holder"
+                app:layout_constraintStart_toStartOf="parent">
+                <ImageButton
+                    android:id="@+id/Image_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_like"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:backgroundTint="@android:color/white"/>
+                <ImageButton
+                    android:id="@+id/show_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_comment"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/Image_like"
+                    android:backgroundTint="@android:color/white"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/user_act">
             <TextView
                 android:id="@+id/text_view_text"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="23dp"
                 android:text="@{item.text}"
                 android:textSize="15sp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/text_view_show"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_view_holder" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/text_view_show"
@@ -100,14 +125,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tool:text="0000년 00월 00일 00:00" />
-
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/img_view_holder"
                 android:layout_width="match_parent"
                 android:layout_height="380dp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/image_holder"
-                app:layout_constraintBottom_toTopOf="@+id/text_view_text"
+                app:layout_constraintBottom_toTopOf="@+id/user_act"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/holder_user">

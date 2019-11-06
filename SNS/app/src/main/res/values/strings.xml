@@ -6,7 +6,7 @@
     <string name="permissionMsg">접근 권한이 필요합니다</string>
     <string name="permissionDenied">[설정] > [권한] 에서 권한을 허용할 수 있습니다.</string>
     <string name="show_more">더보기</string>
-    <string name="text">Text</string>
+    <string name="text">글 작성은 필수입니다</string>
     <string name="network_error">네트워크 신호가 약합니다</string>
     <string name="clear_select">선택 해제</string>
     <string name="save_post">작성</string>
@@ -20,4 +20,5 @@
     <string name="ok">확인</string>
     <string name="cancel">취소</string>
     <string name="test">테스트</string>
+    <string name="login">로그인</string>
 </resources>

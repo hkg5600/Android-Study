@@ -47,6 +47,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                 else -> makeToast("로그아웃에 실패했습니다", false)
             }
         })
+
         viewModel.data.observe(this, Observer {
             viewDataBinding.swipeRefreshLayout.isRefreshing = false
             when (it) {
@@ -55,7 +56,8 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                     viewDataBinding.recyclerView.scrollToPosition(0)
                 }
                 is UserInfo -> {
-                    UserObject.userInfo.value = it
+                    UserObject.userInfo = it
+                    refreshPostList()
                 }
             }
         })
@@ -65,10 +67,6 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
             when (it) {
                 "게시물 삭제 성공" -> refreshPostList()
             }
-        })
-
-        UserObject.userInfo.observe(this, Observer {
-            refreshPostList()
         })
 
         viewModel.error.observe(this, Observer {
@@ -91,57 +89,47 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         postAdapter.onItemClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
                 val p = PopupMenu(context, view)
-                if (UserObject.userInfo.value?.user_id == postAdapter.postList[position].owner) {
+                if (UserObject.userInfo?.user_id == postAdapter.postList[position].owner)
                     activity?.menuInflater?.inflate(R.menu.menu_my_post_option, p.menu)
-                    p.apply {
-                        setOnMenuItemClickListener { item ->
-                            when (item.itemId) {
-                                R.id.delete_post -> {
-                                    showDialog("삭제하시겠습니까?", {
-                                        viewModel.deletePost(postAdapter.postList[position].id)
-                                        makeToast("삭제되었습니다", false)
-                                    }, { makeToast("취소", false) })
-                                }
-                                R.id.edit_post -> {
-                                    makeToast("수정하기", false)
-                                }
-                                R.id.turn_off -> {
-                                    makeToast("알림 해제", false)
-                                }
-                            }
-                            false
-                        }
-                        show()
-                    }
-                } else {
+                else
                     activity?.menuInflater?.inflate(R.menu.menu_others_post_option, p.menu)
-                    p.apply {
-                        setOnMenuItemClickListener { item ->
-                            when (item.itemId) {
-                                R.id.un_follow -> {
-                                    makeToast("팔로우 취소", false)
-                                }
-                                R.id.share_post -> {
-                                    makeToast("공유하기", false)
-                                }
-                                R.id.hide_post -> {
-                                    makeToast("숨기기", false)
-                                }
+                p.apply {
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.delete_post ->
+                                showDialog("삭제하시겠습니까?", { viewModel.deletePost(postAdapter.postList[position].id) }, { makeToast("취소", false) })
+                            R.id.edit_post -> {
+                                makeToast("수정하기", false)
                             }
-                            false
+                            R.id.turn_off -> {
+                                makeToast("알림 해제", false)
+                            }
+                            R.id.un_follow -> {
+                                makeToast("팔로우 취소", false)
+                            }
+                            R.id.share_post -> {
+                                makeToast("공유하기", false)
+                            }
+                            R.id.hide_post -> {
+                                makeToast("숨기기", false)
+                            }
                         }
-                        show()
+                        false
                     }
+                    show()
                 }
             }
         }
-
-
     }
 
     override fun initViewModel() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
-        viewModel.getUser()
+        UserObject.userInfo?.let {
+            refreshPostList()
+        } ?: let {
+            viewModel.getUser()
+        }
+
     }
 
     var swipeLayout: SwipeRefreshLayout? = null
@@ -151,7 +139,9 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         refreshPostList()
     }
 
-    private fun refreshPostList() {
-        viewModel.getPost(Follower(UserObject.userInfo.value?.followers!!))
+    fun refreshPostList() {
+        UserObject.userInfo?.let {
+            viewModel.getPost(Follower(it.followers))
+        }
     }
 }

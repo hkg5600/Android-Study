@@ -1,5 +1,12 @@
 from .models import Post, Image, Comment
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+class UserInfo(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('profile_image',)
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,10 +20,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     images = FileSerializer(source='image_set', many=True, read_only=True)
-    comments = CommentSerializer(source='comment_set', many=True, read_only=True)
+    profile_image = UserInfo(source='owner', many=False, read_only=True)
+
     class Meta:
         model = Post
-        fields = ('id', 'text', 'like', 'owner', 'comments','created_at', 'images')
+        fields = ('id', 'text', 'like', 'owner','created_at', 'images', 'profile_image')
 
     def create(self, validated_data):
         print(self)

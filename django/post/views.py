@@ -79,7 +79,7 @@ class AddPost(APIView):
 
         return JsonResponse({'status':status.HTTP_200_OK, 'message':"게시물 저장 성공", 'data':""})
 
-class AddComment(APIView):
+class CommentView(APIView):
     permission_classes = [IsAuthenticated, ]
     def post(self, request, format=None):
         print(request.data)
@@ -88,6 +88,12 @@ class AddComment(APIView):
         serializer.save()
 
         return JsonResponse({'status':status.HTTP_200_OK, 'message':"댓글 작성 성공", 'data':""})
+
+    def get(self, request, format=None):
+        comments = Comment.objects.filter(post=self.request.data.get('post'))
+        print(comments)
+        serializer = CommentSerializer(comments, many=True)
+        return JsonResponse({'status':status.HTTP_200_OK, "message":"댓글 불러오기 성공",'data':{'comment':serializer.data}})
 
 class CommentDetail(APIView):
     authentication_classes = [JWTUserAuthentication, ]

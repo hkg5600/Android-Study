@@ -6,10 +6,8 @@ import androidx.databinding.ObservableField
 import com.example.sns.base.BaseViewModel
 import com.example.sns.network.service.PostService
 import com.example.sns.utils.UserObject
-import kotlinx.coroutines.CoroutineScope
 import okhttp3.MultipartBody
 import android.app.Activity
-import android.util.Log
 import com.example.sns.utils.TokenObject
 
 
@@ -18,14 +16,9 @@ class AddPostViewModel(private val postService: PostService, application: Applic
     var file: ArrayList<MultipartBody.Part> = ArrayList()
 
     val text = ObservableField<String>()
-    fun checkNetwork() = if (UserObject.userInfo.value != null) hasFile()  else makeToast("네트워크 연결 후 시도해 주세요")
+    fun checkNetwork() = if (UserObject.userInfo != null) addPost()  else makeToast("네트워크 연결 후 시도해 주세요")
 
-
-    private fun hasFile() = if (file.isEmpty()) addPostWithoutFIle() else addPostWithFIle()
-
-    private fun addPostWithFIle() = addDisposable(postService.addPostWithFile(TokenObject.token, text.get()!!, UserObject.userInfo.value?.user_id!!, file), getMsgObserver())
-
-    private fun addPostWithoutFIle() = addDisposable(postService.addPostWithoutFile(TokenObject.token, text.get()!!, UserObject.userInfo.value?.user_id!!), getMsgObserver())
+    private fun addPost() = addDisposable(postService.addPost(TokenObject.token, text.get()!!, UserObject.userInfo?.user_id!!, file), getMsgObserver())
 
     fun getImageFromGallery(context: Activity): ArrayList<String> {
         val galleryImageUrls: ArrayList<String> = ArrayList()
