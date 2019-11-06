@@ -40,13 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'test1',
-    'userlist',
     'users',
-    'imagetest',
-    'restsharpTest',
-    'SongProject',
-    '_smartmirror',
     'post',
 ]
 

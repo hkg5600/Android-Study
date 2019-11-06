@@ -22,9 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('users.urls')),
     path('api/post/', include('post.urls')),
-    path('image/', include('imagetest.urls')),
-    path('rest/', include('restsharpTest.urls')),
-    path('song/', include('SongProject.urls')),
-    path('smart/', include('_smartmirror.urls')),
     path("api-auth/", include('rest_framework.urls', namespace='rest_framework')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
