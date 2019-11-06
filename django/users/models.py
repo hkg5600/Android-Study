@@ -45,7 +45,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     followers = models.ManyToManyField('self', blank=True)
     following = models.ManyToManyField('self', blank=True)
-
+    profile_image = models.ImageField(blank=True)
+    
     USERNAME_FIELD = 'user_id'
     REQUIRED_FIELDS = ['name']
 

@@ -16,6 +16,18 @@ from .models import User
 from django.forms.models import model_to_dict
 import json
 
+class UserProfile(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def get_object(self):
+        return self.request.user
+
+    def post(self, request, format=None):
+        user = User.objects.get(user_id=self.get_object())
+        user.profile_image = self.request.data.get('image')
+        user.save()
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", "message":"프로필 저장 성공"})
 
 class UserAPI(generics.RetrieveAPIView):
     authentication_classes = [JWTUserAuthentication, ]

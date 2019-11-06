@@ -6,6 +6,7 @@ from .views import (
     CheckUserID,
     AddFollower,
     UnFollow,
+    UserProfile,
 )
 urlpatterns = [
     path("join/", Registration.as_view()),
@@ -14,4 +15,5 @@ urlpatterns = [
     path("follow/", AddFollower.as_view()),
     path("unfollow/", UnFollow.as_view()),
     path("user_id/check/", CheckUserID.as_view()),
+    path("profile/", UserProfile.as_view()),
 ]
