@@ -2,22 +2,25 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import authentication, permissions, status, generics
-from .backends import JWTUserAuthentication
+#from .backends import JWTUserAuthentication
 from .serializers import (
     RegistrationSerializer,
     UserLoginSerializer,
     UserSerializer,
     CheckUserIDSerializer,
 )
-#from .models import User
+from django.contrib.auth import login, logout, authenticate
 from django.http import JsonResponse
 from post.models import Post, Image
 from .models import User
 from django.forms.models import model_to_dict
 import json
+import time
+import jwt
+from django.conf import settings
 
 class UserProfile(APIView):
-    authentication_classes = [JWTUserAuthentication, ]
+    #authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
 
     def get_object(self):
@@ -33,7 +36,7 @@ class UserProfile(APIView):
             return JsonResponse({'status':status.HTTP_204_NO_CONTENT, 'data':"", "message":"error"})
 
 class UserAPI(generics.RetrieveAPIView):
-    authentication_classes = [JWTUserAuthentication, ]
+    #authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
     serializer_class = UserSerializer
 
@@ -59,14 +62,32 @@ class Registration(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class UserLogin(APIView):
-    permission_classes = (AllowAny,)
-    #renderer_classes = (UserJSONRenderer,)
-    serializer_class = UserLoginSerializer
+    authentication_classes = ()
+    permission_classes = (AllowAny, )
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return JsonResponse({'status':status.HTTP_200_OK, 'data':serializer.data, 'message':"로그인 성공"})
+        username = request.data.get('user_id')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is None:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        expire_ts = int(time.time()) + 3600
+        payload = {'username': username, 'expire':expire_ts}
+        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+        if getattr(settings, 'REST_SESSION_LOGIN', True):
+            login(self.request, user)
+        return Response(token)
+        # serializer = UserLoginSerializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        # user = serializer.validated_data['user']
+        # login(request, user)
+        # return JsonResponse({'status':status.HTTP_200_OK, 'data':UserLoginSerializer(user).data, 'message':"로그인 성공"})
+
+class Logout(APIView):
+    def get(self, request):
+        #user = User.objects.get(user_id=self.request.data.get('user_id'))
+        logout(request)
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':'', 'message':"로그아웃 성공"})
 
 class CheckUserID(APIView):
     permission_classes = (AllowAny,)

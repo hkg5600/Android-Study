@@ -4,6 +4,7 @@ import com.example.sns.network.Response
 import com.example.sns.network.api.PostApi
 import com.example.sns.network.model.Follower
 import com.example.sns.network.request.CommentRequest
+import com.example.sns.network.request.GetPostRequest
 import com.example.sns.network.request.PostId
 import com.example.sns.network.response.CommentList
 import com.example.sns.network.response.PostList
@@ -13,7 +14,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface PostService {
-    fun getPost(token: String, follower: Follower): Single<retrofit2.Response<Response<PostList>>>
+    fun getPost(token: String, follower: Follower, page : Int): Single<retrofit2.Response<Response<PostList>>>
     fun addPost(token: String, text: String, userName: String, file: ArrayList<MultipartBody.Part>): Single<retrofit2.Response<Response<Any>>>
     fun deletePost(token: String,id: Int) : Single<retrofit2.Response<Response<Any>>>
     fun getComment(token: String, post: Int) : Single<retrofit2.Response<Response<CommentList>>>
@@ -36,6 +37,6 @@ class PostServiceImpl(private val api: PostApi) : PostService {
     override fun addPost(token: String, text: String, userName: String, file: ArrayList<MultipartBody.Part>) =
         api.addPost(token, file, RequestBody.create(MediaType.parse("text/plain"), text), RequestBody.create(MediaType.parse("text/plain"), userName))
 
-    override fun getPost(token : String, follower: Follower) = api.getPost(token, follower)
+    override fun getPost(token : String, follower: Follower, page : Int) = api.getPost(token, GetPostRequest(page, follower.user_id))
 
 }

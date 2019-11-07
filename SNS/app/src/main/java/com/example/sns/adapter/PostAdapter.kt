@@ -13,21 +13,25 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.sns.R
 import com.example.sns.databinding.PostItemBinding
 import com.example.sns.network.model.Post
 import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
+import com.example.sns.utils.SingleLiveEvent
 import kotlinx.android.synthetic.main.post_item.view.*
 
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
 
     var postList = ObservableArrayList<Post>()
-
+    var userName = ""
     var selectedItem = SparseBooleanArray(0)
+    var nextPage = 0
+    var lastPage = false
+    var loadMore : SingleLiveEvent<Int> = SingleLiveEvent()
 
     fun setPost(postList: ArrayList<Post>) {
-        this.postList.clear()
         postList.forEach {
             val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image)
             this.postList.add(data)
@@ -39,7 +43,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         PostHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                com.example.sns.R.layout.post_item,
+                R.layout.post_item,
                 parent,
                 false
             )
@@ -48,6 +52,11 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     override fun getItemCount() = postList.size
 
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
+
+        if (position > postList.size - 2 && !lastPage) {
+            loadMore.call()
+        }
+
         if (onItemClickListener != null) {
             holder.btnOption.setOnClickListener {v ->
                 onItemClickListener?.onClick(v, position, holder)
@@ -58,6 +67,12 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             holder.btnLike.setOnClickListener {v ->
                 onLikeClickListener?.onClick(v, position, holder)
             }
+        }
+
+        if (postList[position].like.contains(userName)) {
+            holder.btnLike.setImageResource(R.drawable.ic_like)
+        } else {
+            holder.btnLike.setImageResource(R.drawable.ic_unlike)
         }
 
         holder.btnShow.setOnClickListener {

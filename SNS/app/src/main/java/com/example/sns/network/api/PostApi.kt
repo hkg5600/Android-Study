@@ -3,6 +3,7 @@ package com.example.sns.network.api
 import com.example.sns.network.Response
 import com.example.sns.network.model.Follower
 import com.example.sns.network.request.CommentRequest
+import com.example.sns.network.request.GetPostRequest
 import com.example.sns.network.request.PostId
 import com.example.sns.network.request.PostRequest
 import com.example.sns.network.response.CommentList
@@ -14,7 +15,7 @@ import retrofit2.http.*
 
 interface PostApi {
     @POST("/api/post/post/")
-    fun getPost(@Header("Authorization") token: String, @Body follower: Follower): Single<retrofit2.Response<Response<PostList>>>
+    fun getPost(@Header("Authorization") token: String, @Body post: GetPostRequest): Single<retrofit2.Response<Response<PostList>>>
 
     @Multipart
     @POST("/api/post/add_post/")

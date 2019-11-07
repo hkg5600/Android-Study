@@ -1,24 +1,20 @@
 package com.example.sns.ui.main
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.sns.R
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityMainBinding
-import com.example.sns.network.model.UserInfo
 import com.example.sns.ui.add_post.AddPostActivity
 import com.example.sns.ui.follower.FollowerPage
 import com.example.sns.ui.login.LoginActivity
 import com.example.sns.ui.post.PostPage
 import com.example.sns.ui.userInfo.UserInfoPage
-import com.example.sns.utils.UserObject
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.app_bar.*
@@ -95,7 +91,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             when (it.itemId) {
                 R.id.menu_post -> {
                     transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
-                    postPage.refreshPostList()
+                    postPage.loadPost()
                 }
                 R.id.menu_my_info -> transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
                 R.id.menu_add_post -> startActivityForResult(Intent(this, AddPostActivity::class.java), ADD_POST)
@@ -111,7 +107,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
             viewDataBinding.bottomNavigationView.selectedItemId = R.id.menu_post
-            postPage.refreshPostList()
+            postPage.loadPost()
         }
     }
 

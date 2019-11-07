@@ -1,11 +1,6 @@
 package com.example.sns.ui.post
 
-import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupMenu
 import androidx.lifecycle.Observer
@@ -18,9 +13,7 @@ import com.example.sns.network.model.Follower
 import com.example.sns.network.model.UserInfo
 import com.example.sns.network.response.PostList
 import com.example.sns.ui.login.LoginActivity
-import com.example.sns.utils.CustomDialog
 import com.example.sns.utils.UserObject
-import kotlinx.android.synthetic.main.custom_dialog.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -56,19 +49,21 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
             when (it) {
                 is PostList -> {
                     postAdapter.setPost(it.post)
-                    viewDataBinding.recyclerView.scrollToPosition(0)
+                    postAdapter.nextPage = it.page
+                    postAdapter.lastPage = it.last_page
                 }
                 is UserInfo -> {
+                    postAdapter.userName = it.user_id
                     UserObject.userInfo = it
-                    refreshPostList()
+                    refreshPost()
                 }
             }
         })
 
         viewModel.message.observe(this, Observer {
-            makeToast(it , false)
+            makeToast(it, false)
             when (it) {
-                "게시물 삭제 성공" -> refreshPostList()
+                "게시물 삭제 성공" -> loadPost()
             }
         })
 
@@ -85,7 +80,9 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
             }
         })
 
-
+        postAdapter.loadMore.observe(this, Observer {
+            loadPost()
+        })
     }
 
     override fun initListener() {
@@ -94,13 +91,15 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                 postAdapter.postList[position].run {
                     if (like.contains(UserObject.userInfo?.user_id)) {
                         viewModel.unlikePost(id)
-                        holder.btnLike.colorFilter = PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+                        like.remove(UserObject.userInfo?.user_id)
+                        holder.btnLike.setImageResource(R.drawable.ic_unlike)
                     } else {
                         viewModel.likePost(id)
-                        holder.btnLike.colorFilter = PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP)
-                        refreshPostList()
+                        like.add(UserObject.userInfo?.user_id!!)
+                        holder.btnLike.setImageResource(R.drawable.ic_like)
                     }
                 }
+
             }
 
         }
@@ -116,7 +115,10 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.delete_post ->
-                                showDialog("삭제하시겠습니까?", { viewModel.deletePost(postAdapter.postList[position].id) }, { makeToast("취소", false) })
+                                showDialog(
+                                    "삭제하시겠습니까?",
+                                    { viewModel.deletePost(postAdapter.postList[position].id) },
+                                    { makeToast("취소", false) })
                             R.id.edit_post -> {
                                 makeToast("수정하기", false)
                             }
@@ -144,7 +146,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     override fun initViewModel() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         UserObject.userInfo?.let {
-            refreshPostList()
+            loadPost()
         } ?: let {
             viewModel.getUser()
         }
@@ -155,13 +157,21 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
     override fun onRefresh() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
-        refreshPostList()
+        refreshPost()
     }
 
-    fun refreshPostList() {
+    fun loadPost() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         UserObject.userInfo?.let {
-            viewModel.getPost(Follower(it.followers))
+            viewModel.getPost(Follower(it.followers), postAdapter.nextPage)
+        }
+    }
+
+    private fun refreshPost() {
+        postAdapter.postList.clear()
+        viewDataBinding.swipeRefreshLayout.isRefreshing = true
+        UserObject.userInfo?.let {
+            viewModel.getPost(Follower(it.followers), 0)
         }
     }
 }

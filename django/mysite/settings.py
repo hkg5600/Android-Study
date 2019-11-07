@@ -39,21 +39,29 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_auth',
     'corsheaders',
     'users',
     'post',
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'users.backends.JWTUserAuthentication',
-        'django.contrib.auth.backends.ModelBackend',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (   # Session 인증 실패하면 Token 인증
+        'users.authentication.MyTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
+AUTHENTICATION_BACKENDS = (
+    'users.backends.MyBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

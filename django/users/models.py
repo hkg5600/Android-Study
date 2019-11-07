@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, user_id, password, name, school_name):
+    def create_superuser(self, user_id, password, name):
 
         superuser = self.create_user(
             name=name,user_id=user_id, password=password
@@ -46,7 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     followers = models.ManyToManyField('self', blank=True)
     following = models.ManyToManyField('self', blank=True)
     profile_image = models.ImageField(blank=True)
-    
+
     USERNAME_FIELD = 'user_id'
     REQUIRED_FIELDS = ['name']
 
@@ -59,6 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             'user_id' : self.user_id,
             'expire' : int(time.mktime(dt.timetuple()))
         }, settings.SECRET_KEY, algorithm='HS256')
+        print(self.user_id)
         return token.decode('utf-8')
 
     def __str__(self):

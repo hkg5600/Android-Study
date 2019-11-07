@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import authentication, permissions, status, generics
-from users.backends import JWTUserAuthentication
+#from users.backends import JWTUserAuthentication
 from .serializers import (
     PostSerializer, FileSerializer, CommentSerializer,
 )
@@ -16,7 +16,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class LikeToPost(APIView):
-    authentication_classes = [JWTUserAuthentication, ]
+    #authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
 
     def get_object(self):
@@ -31,34 +31,44 @@ class LikeToPost(APIView):
         return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요"})
 
 class UnlikeToPost(APIView):
-    authentication_classes = [JWTUserAuthentication, ]
+    #authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
+
+    def get_object(self):
+        return self.request.user
 
     def post(self, *args, **kwargs):
         post = Post.objects.get(id=self.request.data.get('post'))
-        user = User.objects.get(user_id=self.request.data.get('user_id'))
+        user = self.get_object()
         post.like.remove(user)
         post.save()
         return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요 취소"})
 
 class PostView(APIView):
-    authentication_classes = [JWTUserAuthentication, ]
+    #authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
 
     def get_object(self):
         return self.request.user
 
     def post(self, request, format=None):
+        last_page = False
+        page = self.request.data.get('page')
+        print(page)
         user_list = self.request.data.get('user_id')
         user_list.append(self.get_object())
-        print(user_list)
         users = User.objects.filter(user_id__in=user_list).values_list('user_id').distinct()
-        queryset = Post.objects.filter(owner__in=users).order_by('-created_at')
+        queryset = Post.objects.filter(owner__in=users).order_by('-created_at')[3*page:(page+1)*3] #35
         serializer = PostSerializer(queryset, many=True)
-        return JsonResponse({'status':status.HTTP_200_OK, "message":"게시물 불러오기 성공",'data':{'post':serializer.data}})
+        print(Post.objects.filter(owner__in=users).order_by('-created_at').count())
+        if (Post.objects.filter(owner__in=users).order_by('-created_at').count() <= (page+1)*3):
+            last_page = True
+
+        page += 1
+        return JsonResponse({'status':status.HTTP_200_OK, "message":"게시물 불러오기 성공",'data':{'last_page':last_page,'page':page,'post':serializer.data}})
 
 class PostDetail(APIView):
-    authentication_classes = [JWTUserAuthentication, ]
+    #authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
     def get_object(self, pk):
         try:
@@ -100,7 +110,7 @@ class CommentView(APIView):
         return JsonResponse({'status':status.HTTP_200_OK, "message":"댓글 불러오기 성공",'data':{'comment':serializer.data}})
 
 class CommentDetail(APIView):
-    authentication_classes = [JWTUserAuthentication, ]
+    #authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
     def get_object(self, pk):
         try:

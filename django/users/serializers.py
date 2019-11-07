@@ -26,13 +26,11 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
 
-
     def validate(self, data):
         user_id = data.get('user_id', None)
         password = data.get('password', None)
 
         user = authenticate(username=user_id, password=password)
-
         if user is None:
             raise serializers.ValidationError(
                 'user with this user_id and password is not found.'
@@ -50,11 +48,12 @@ class UserLoginSerializer(serializers.Serializer):
                 'This user has been deactivated.'
             )
 
-        return {
-            'user_id' : user.user_id,
-            'name' : user.name,
-            'token' : user.token
-        }
+        # return {
+        #     'user_id' : user.user_id,
+        #     'name' : user.name,
+        #     'token' : user.token
+        # }
+        return {'user':user}
 
 class CheckUserIDSerializer(serializers.Serializer):
     class Meta:
