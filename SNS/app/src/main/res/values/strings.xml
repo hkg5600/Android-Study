@@ -21,4 +21,6 @@
     <string name="cancel">취소</string>
     <string name="test">테스트</string>
     <string name="login">로그인</string>
+    <string name="comment_edit">작성</string>
+    <string name="menu_report">신고하기</string>
 </resources>

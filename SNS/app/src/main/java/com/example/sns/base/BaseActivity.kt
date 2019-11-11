@@ -81,9 +81,9 @@ abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatA
     }
 
     fun showDialog(msg: String, ok: () -> Unit ,cancel: () -> Unit) {
-        CustomDialog(applicationContext).run {
+        CustomDialog(this).run {
             Builder()
-                .setView(LayoutInflater.from(applicationContext).inflate(com.example.sns.R.layout.custom_dialog, null))
+                .setView(LayoutInflater.from(context).inflate(com.example.sns.R.layout.custom_dialog, null))
                 .setMessage(msg)
                 .show()
             Listener()

@@ -6,7 +6,7 @@ from datetime import timedelta
 import time
 import jwt
 from post.models import Post
-
+from rest_framework import serializers
 class UserManager(BaseUserManager):
 
     def get_by_natural_key(self, user_id):
@@ -38,13 +38,26 @@ class UserManager(BaseUserManager):
         superuser.save()
         return superuser
 
+class UserFollowing(models.Model):
+    user_id = models.ForeignKey("User", related_name="following", null=False, blank=False, on_delete=models.CASCADE)
+    following_user_id = models.ForeignKey("User", related_name="followers", null=False,blank=False, on_delete=models.CASCADE)
+
+    def validate_unique(self, exclude=None):
+        qs = UserFollowing.objects.filter(user_id=self.user_id, following_user_id=self.following_user_id)
+        if qs.filter(user_id=self.user_id).exists():
+            raise serializers.ValidationError('Name must be unique per site')
+
+    def save(self, *args, **kwargs):
+        self.validate_unique()
+        super(UserFollowing, self).save(*args, **kwargs)
+
 class User(AbstractBaseUser, PermissionsMixin):
     user_id = models.CharField(max_length=100, unique=True, primary_key=True)
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     is_staff = models.BooleanField(default=False)
-    followers = models.ManyToManyField('self', related_name='follower',blank=True)
-    following = models.ManyToManyField('self', related_name='following',blank=True)
+    #followers = models.ManyToManyField('self', related_name='follower',blank=True)
+    #following = models.ManyToManyField('self', related_name='following',blank=True)
     profile_image = models.ImageField(blank=True)
 
     USERNAME_FIELD = 'user_id'

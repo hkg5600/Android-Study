@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
@@ -29,11 +29,19 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     var selectedItem = SparseBooleanArray(0)
     var nextPage = 0
     var lastPage = false
-    var loadMore : SingleLiveEvent<Int> = SingleLiveEvent()
+    var loadMore: SingleLiveEvent<Int> = SingleLiveEvent()
 
     fun setPost(postList: ArrayList<Post>) {
         postList.forEach {
-            val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image)
+            val data = Post(
+                it.id,
+                it.text,
+                it.owner,
+                DateTimeConverter.jsonTimeToTime(it.created_at),
+                it.images,
+                it.like,
+                it.profile_image
+            )
             this.postList.add(data)
         }
         notifyDataSetChanged()
@@ -57,15 +65,27 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             loadMore.call()
         }
 
+        if (onCommentBtnClickListener != null) {
+            holder.toDetailWithComment.setOnClickListener { v ->
+                onCommentBtnClickListener?.onClick(v, position, holder)
+            }
+        }
+
         if (onItemClickListener != null) {
-            holder.btnOption.setOnClickListener {v ->
+            holder.btnOption.setOnClickListener { v ->
                 onItemClickListener?.onClick(v, position, holder)
             }
         }
 
         if (onLikeClickListener != null) {
-            holder.btnLike.setOnClickListener {v ->
+            holder.btnLike.setOnClickListener { v ->
                 onLikeClickListener?.onClick(v, position, holder)
+            }
+        }
+
+        if (onShowDetailClickListener != null) {
+            holder.toDetail.setOnClickListener { v ->
+                onShowDetailClickListener?.onClick(v, position, holder)
             }
         }
 
@@ -74,19 +94,6 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         } else {
             holder.btnLike.setImageResource(R.drawable.ic_unlike)
         }
-
-        holder.btnShow.setOnClickListener {
-            clearSelectedItem()
-            selectedItem.put(position, true)
-            val params = holder.textView.layoutParams.apply {
-                height = ViewGroup.LayoutParams.WRAP_CONTENT
-                width = 0
-            }
-            holder.textView.layoutParams = params
-            holder.btnShow.visibility = View.GONE
-            notifyDataSetChanged()
-        }
-
 
         if (selectedItem.get(position, false)) {
             val params = holder.textView.layoutParams.apply {
@@ -104,6 +111,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         }
 
         if (postList[position].text.length < 20 || selectedItem.get(position, false)) {
+            holder.showDetail = true
             holder.btnShow.visibility = View.GONE
         } else {
             holder.btnShow.visibility = View.VISIBLE
@@ -119,6 +127,11 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         private val viewPager: ViewPager2 = binding.viewPager
         val btnOption: ImageButton = binding.buttonOptions
         val btnLike: ImageButton = binding.ImageLike
+        val toDetail: ConstraintLayout = binding.toDetail
+        val toDetailWithComment: ImageButton = binding.showComment
+
+        var showDetail = false
+
         fun bind(item: Post) {
             binding.imgViewHolder.visibility = View.GONE
             if (item.images.isNotEmpty()) {
@@ -128,14 +141,15 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             }
             if (item.profile_image.profile_image != null) {
                 itemView.run {
-                    Glide.with(context).load(BASE_URL + item.profile_image.profile_image).apply(RequestOptions.circleCropTransform()).into(img_profile)
+                    Glide.with(context).load(BASE_URL + item.profile_image.profile_image)
+                        .apply(RequestOptions.circleCropTransform()).into(img_profile)
                 }
             }
             binding.item = item
         }
     }
 
-    private fun clearSelectedItem() {
+    fun clearSelectedItem() {
         var position: Int
         for (index: Int in 0 until selectedItem.size()) {
             position = selectedItem.keyAt(index)
@@ -143,8 +157,9 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         }
     }
 
+    var onCommentBtnClickListener: OnItemClickListener? = null
     var onItemClickListener: OnItemClickListener? = null
-
+    var onShowDetailClickListener: OnItemClickListener? = null
     var onLikeClickListener: OnItemClickListener? = null
 
     interface OnItemClickListener {

@@ -1,5 +1,6 @@
 package com.example.sns.di
 
+import com.example.sns.adapter.CommentAdapter
 import com.example.sns.adapter.ImageAdapter
 import com.example.sns.adapter.PostAdapter
 import com.example.sns.network.api.LoginApi
@@ -11,6 +12,7 @@ import com.example.sns.ui.add_post.AddPostViewModel
 import com.example.sns.ui.login.LoginActivityViewModel
 import com.example.sns.ui.main.MainActivityViewModel
 import com.example.sns.ui.post.PostViewModel
+import com.example.sns.ui.post_detail.PostDetailActivityViewModel
 import com.example.sns.ui.splash.SplashActivityViewModel
 import com.example.sns.ui.userInfo.UserInfoViewModel
 import com.example.sns.utils.BASE_URL
@@ -67,6 +69,7 @@ var viewModelPart = module {
     viewModel { LoginActivityViewModel(get(), get(), get()) }
     viewModel { AddPostViewModel(get(), get()) }
     viewModel { UserInfoViewModel(get()) }
+    viewModel { PostDetailActivityViewModel(get() ,get()) }
 }
 
 var adapterPart = module {
@@ -75,6 +78,9 @@ var adapterPart = module {
     }
     factory {
         ImageAdapter(get())
+    }
+    factory {
+        CommentAdapter()
     }
 }
 

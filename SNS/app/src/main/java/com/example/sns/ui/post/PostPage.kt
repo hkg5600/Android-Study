@@ -2,6 +2,7 @@ package com.example.sns.ui.post
 
 import android.content.Intent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -13,6 +14,8 @@ import com.example.sns.network.model.Follower
 import com.example.sns.network.model.UserInfo
 import com.example.sns.network.response.PostList
 import com.example.sns.ui.login.LoginActivity
+import com.example.sns.ui.post_detail.PostDetailActivity
+import com.example.sns.ui.post_detail.PostDetailActivityViewModel
 import com.example.sns.utils.UserObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -86,6 +89,34 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initListener() {
+
+        postAdapter.onCommentBtnClickListener = object : PostAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
+                startActivity(Intent(context, PostDetailActivity::class.java).putExtra("id", postAdapter.postList[position].id).putExtra("edit", true))
+            }
+
+        }
+
+        postAdapter.onShowDetailClickListener = object : PostAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
+                if (holder.showDetail) {
+                    startActivity(Intent(context, PostDetailActivity::class.java).putExtra("id", postAdapter.postList[position].id).putExtra("edit", false))
+                } else {
+                    postAdapter.clearSelectedItem()
+                    postAdapter.selectedItem.put(position, true)
+                    val params = holder.textView.layoutParams.apply {
+                        height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        width = 0
+                    }
+                    holder.textView.layoutParams = params
+                    holder.btnShow.visibility = View.GONE
+                    holder.showDetail = true
+                    postAdapter.notifyDataSetChanged()
+                }
+            }
+
+        }
+
         postAdapter.onLikeClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
                 postAdapter.postList[position].run {

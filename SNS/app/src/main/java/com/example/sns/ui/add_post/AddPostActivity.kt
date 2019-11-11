@@ -32,8 +32,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
 class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>() {
 
-    val panelChanged: SingleLiveEvent<Any> = SingleLiveEvent()
-
     override val layoutResourceId = R.layout.activity_add_post
 
     override val viewModel: AddPostViewModel by viewModel()

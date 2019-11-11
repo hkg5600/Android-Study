@@ -82,17 +82,19 @@
                     android:backgroundTint="@android:color/white"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/to_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/user_act">
+                app:layout_constraintTop_toBottomOf="@+id/user_act"
+                android:clickable="true"
+                android:focusable="true">
             <TextView
                 android:id="@+id/text_view_text"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="60dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="23dp"
+                android:layout_marginBottom="20dp"
                 android:text="@{item.text}"
                 android:textSize="15sp"
                 app:layout_constraintTop_toTopOf="parent"

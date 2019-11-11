@@ -12,7 +12,7 @@ from .serializers import (
 #from .models import User
 from django.http import JsonResponse
 from post.models import Post, Image
-from .models import User
+from .models import User, UserFollowing
 from django.forms.models import model_to_dict
 import json
 import requests
@@ -44,7 +44,8 @@ class UserAPI(generics.RetrieveAPIView):
         item = model_to_dict(self.get_object())
         qs = User.objects.get(user_id=list(item.values())[3])
         serializer = UserSerializer(qs, many=False)
-
+        print(qs.following.all())
+        print(qs.followers.all())
         return JsonResponse({'status':status.HTTP_200_OK, 'data':serializer.data, "message":"조회 성공"})
 
 
@@ -85,11 +86,12 @@ class AddFollower(APIView):
     def post(self, requset, format=None):
         user = User.objects.get(user_id=self.request.data.get('user_id'))
         follow = User.objects.get(user_id=self.request.data.get('follow'))
-        user.following.add(follow)
-        user.save()
-        follow.followers.add(user)
-        follow.save()
-        print(str(user) + ", " + str(follow))
+        # user.following.add(follow)
+        # user.save()
+        # follow.followers.add(user)
+        # follow.save()
+        # print(str(user) + ", " + str(follow))
+        UserFollowing.objects.create(user_id=user, following_user_id=follow)
         return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"팔로우 "+str(follow.user_id)})
 
 class UnFollow(APIView):

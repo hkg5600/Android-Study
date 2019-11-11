@@ -87,7 +87,6 @@ class PostDetail(APIView):
         serializer = PostDetailSerializer(post, many=False)
         if (type(post) is JsonResponse):
             return post
-        print(serializer.data)
         return JsonResponse({'status':status.HTTP_200_OK, "message":"게시물 조회 성공",'data':serializer.data})
 
     def delete(self, request, pk, format=None):
@@ -112,8 +111,8 @@ class AddPost(APIView):
 class CommentView(APIView):
     authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
+
     def post(self, request, format=None):
-        print(request.data)
         serializer = CommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

@@ -15,7 +15,7 @@ class FileSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     profile_image = UserInfo(source='owner', many=False, read_only=True)
-    
+
     class Meta:
         model = Comment
         fields = '__all__'
@@ -37,9 +37,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostDetailSerializer(serializers.ModelSerializer):
     profile_image = UserInfo(source='owner', many=False, read_only=True)
-    images = FileSerializer(source='image_set', many=True, read_only=True)
+    #images = FileSerializer(source='image_set', many=True, read_only=True)
     comments = CommentSerializer(source='comment_set' ,many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ('id', 'text', 'like', 'owner','created_at', 'images', 'comments' ,'profile_image')
+        fields = ('id', 'text', 'like', 'owner','created_at','profile_image', 'comments')
