@@ -14,6 +14,8 @@ class FileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CommentSerializer(serializers.ModelSerializer):
+    profile_image = UserInfo(source='owner', many=False, read_only=True)
+    
     class Meta:
         model = Comment
         fields = '__all__'
@@ -27,9 +29,17 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'like', 'owner','created_at', 'images', 'profile_image')
 
     def create(self, validated_data):
-        print(self)
         images_data = self.context.get('request').FILES
         post = Post.objects.create(text=validated_data.get('text'),owner=validated_data.get('owner'))
         for image_data in images_data.values():
             Image.objects.create(post=post, image=image_data)
         return post
+
+class PostDetailSerializer(serializers.ModelSerializer):
+    profile_image = UserInfo(source='owner', many=False, read_only=True)
+    images = FileSerializer(source='image_set', many=True, read_only=True)
+    comments = CommentSerializer(source='comment_set' ,many=True, read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ('id', 'text', 'like', 'owner','created_at', 'images', 'comments' ,'profile_image')

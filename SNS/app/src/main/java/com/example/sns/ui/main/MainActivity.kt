@@ -33,7 +33,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
     private val postPage = PostPage()
     private val userInfoPage = UserInfoPage()
     private val followerPage = FollowerPage()
-
+    private var isRefresh = false
     private var permission: Boolean = false
 
     override fun initView() {
@@ -91,11 +91,16 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             when (it.itemId) {
                 R.id.menu_post -> {
                     transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
-                    postPage.loadPost()
+                    isRefresh = if (isRefresh){ postPage.refreshPost()
+                        false
+                    } else true
                 }
-                R.id.menu_my_info -> transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
-                R.id.menu_add_post -> startActivityForResult(Intent(this, AddPostActivity::class.java), ADD_POST)
-                R.id.menu_follower -> transaction.replace(R.id.frame_layout, followerPage).commitAllowingStateLoss()
+                R.id.menu_my_info -> {transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
+                    isRefresh = false}
+                R.id.menu_add_post -> {startActivityForResult(Intent(this, AddPostActivity::class.java), ADD_POST)
+                    isRefresh = false}
+                R.id.menu_follower -> {transaction.replace(R.id.frame_layout, followerPage).commitAllowingStateLoss()
+                    isRefresh = false}
             }
             true
         }
@@ -106,8 +111,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
         if (requestCode == ADD_POST) {
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
+            postPage.refreshPost()
             viewDataBinding.bottomNavigationView.selectedItemId = R.id.menu_post
-            postPage.loadPost()
         }
     }
 

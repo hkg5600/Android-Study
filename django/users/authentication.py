@@ -7,7 +7,7 @@ User = get_user_model()
 JWT_SECRET = 'mysecretkey'
 
 def get_authorization_header(request):
-    auth = request.META.get('HTTP_AUTHORIZATION', b'')
+    auth = request.META.get('Authorization', b'')
     if isinstance(auth, type('')):
         auth = auth.encode(HTTP_HEADER_ENCODING)
     return auth
@@ -15,6 +15,7 @@ def get_authorization_header(request):
 class MyTokenAuthentication():
     def authenticate(self, request):
         token = get_authorization_header(request)
+        print(token)
         if not token:
             return None
         # token 디코딩

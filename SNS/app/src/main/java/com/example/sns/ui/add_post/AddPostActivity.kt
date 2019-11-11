@@ -23,6 +23,7 @@ import java.io.File
 import android.text.Editable
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.example.sns.utils.SingleLiveEvent
 import com.gc.materialdesign.widgets.ProgressDialog
@@ -45,10 +46,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         viewDataBinding.recyclerView.run {
-            layoutManager = StaggeredGridLayoutManager(3, 1).apply {
-                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-                orientation = StaggeredGridLayoutManager.VERTICAL
-            }
+            layoutManager = GridLayoutManager(context, 3)
             setHasFixedSize(true)
             adapter = imageAdapter
         }

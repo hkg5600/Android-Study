@@ -43,8 +43,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     is_staff = models.BooleanField(default=False)
-    followers = models.ManyToManyField('self', blank=True)
-    following = models.ManyToManyField('self', blank=True)
+    followers = models.ManyToManyField('self', related_name='follower',blank=True)
+    following = models.ManyToManyField('self', related_name='following',blank=True)
     profile_image = models.ImageField(blank=True)
 
     USERNAME_FIELD = 'user_id'
@@ -59,7 +59,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             'user_id' : self.user_id,
             'expire' : int(time.mktime(dt.timetuple()))
         }, settings.SECRET_KEY, algorithm='HS256')
-        print(self.user_id)
         return token.decode('utf-8')
 
     def __str__(self):

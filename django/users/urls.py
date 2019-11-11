@@ -7,12 +7,10 @@ from .views import (
     AddFollower,
     UnFollow,
     UserProfile,
-    Logout,
 )
 urlpatterns = [
     path("join/", Registration.as_view()),
     path("login/", UserLogin.as_view()),
-    path("logout/", Logout.as_view()),
     path("user/", UserAPI.as_view()),
     path("follow/", AddFollower.as_view()),
     path("unfollow/", UnFollow.as_view()),

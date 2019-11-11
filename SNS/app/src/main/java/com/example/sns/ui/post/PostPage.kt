@@ -49,7 +49,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
             when (it) {
                 is PostList -> {
                     postAdapter.setPost(it.post)
-                    postAdapter.nextPage = it.page
+                    postAdapter.nextPage = it.nextPage
                     postAdapter.lastPage = it.last_page
                 }
                 is UserInfo -> {
@@ -114,11 +114,14 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                 p.apply {
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
-                            R.id.delete_post ->
+                            R.id.delete_post -> {
                                 showDialog(
                                     "삭제하시겠습니까?",
-                                    { viewModel.deletePost(postAdapter.postList[position].id) },
+                                    { viewModel.deletePost(postAdapter.postList[position].id)
+                                    postAdapter.postList.remove(postAdapter.postList[position])
+                                    postAdapter.notifyDataSetChanged()},
                                     { makeToast("취소", false) })
+                            }
                             R.id.edit_post -> {
                                 makeToast("수정하기", false)
                             }
@@ -145,12 +148,8 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
     override fun initViewModel() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
-        UserObject.userInfo?.let {
-            loadPost()
-        } ?: let {
+        if (UserObject.userInfo == null)
             viewModel.getUser()
-        }
-
     }
 
     var swipeLayout: SwipeRefreshLayout? = null
@@ -163,15 +162,15 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     fun loadPost() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         UserObject.userInfo?.let {
-            viewModel.getPost(Follower(it.followers), postAdapter.nextPage)
+            viewModel.getPost(Follower(it.following), postAdapter.nextPage)
         }
     }
 
-    private fun refreshPost() {
+    fun refreshPost() {
         postAdapter.postList.clear()
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         UserObject.userInfo?.let {
-            viewModel.getPost(Follower(it.followers), 0)
+            viewModel.getPost(Follower(it.following), 0)
         }
     }
 }
