@@ -4,9 +4,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import authentication, permissions, status, generics
 from users.backends import JWTUserAuthentication
 from .serializers import (
-    PostSerializer, FileSerializer, CommentSerializer,PostDetailSerializer
+    PostSerializer, FileSerializer, CommentSerializer,PostDetailSerializer, UserProfile
 )
-
+from users.serializers import UserFollowingSerializer
 from django.http import JsonResponse
 from .models import  Post, Image, Comment
 from django.forms.models import model_to_dict
@@ -14,6 +14,26 @@ import json
 from django.conf import settings
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
+class UserProfileList(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+    def post(self, *args, **kwargs):
+        if (self.request.data.get('post') is not None):
+            try:
+                post = Post.objects.filter(id=self.request.data.get('post')).values_list('like').distinct()
+            except:
+                return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 게시물이 존재하지 않습니다"})
+            user = User.objects.filter(user_id__in=post)
+            serializer = UserProfile(user, many=True)
+        elif (self.request.data.get('user_id')):
+            try:
+                user = User.objects.get(user_id=self.request.data.get('user_id'))
+            except:
+                return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"존재하지 않는 사용자입니다"})
+            serializer = UserFollowingSerializer(user.following.all(), many=True)
+
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':{'user_list':serializer.data}, 'message':"조회 성공"})
 
 class LikeToPost(APIView):
     authentication_classes = [JWTUserAuthentication, ]
@@ -27,7 +47,7 @@ class LikeToPost(APIView):
         try:
             post = Post.objects.get(id=self.request.data.get('post'))
         except:
-            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"게시물이 없습니다"})
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 게시물이 존재하지 않습니다"})
         user = self.get_object()
         post.like.add(user)
         post.save()
@@ -44,7 +64,7 @@ class UnlikeToPost(APIView):
         try:
             post = Post.objects.get(id=self.request.data.get('post'))
         except:
-            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"게시물이 없습니다"})
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 게시물이 존재하지 않습니다"})
         user = self.get_object()
         post.like.remove(user)
         post.save()
@@ -66,7 +86,6 @@ class PostView(APIView):
         users = User.objects.filter(user_id__in=user_list).values_list('user_id').distinct()
         queryset = Post.objects.filter(owner__in=users).order_by('-created_at')[3*page:(page+1)*3] #35
         serializer = PostSerializer(queryset, many=True)
-        #print(Post.objects.filter(owner__in=users).order_by('-created_at').count())
         if (Post.objects.filter(owner__in=users).order_by('-created_at').count() <= (page+1)*3):
             last_page = True
 
@@ -80,7 +99,7 @@ class PostDetail(APIView):
         try:
             return Post.objects.get(pk=pk)
         except:
-            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"게시물이 없습니다"})
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 게시물이 존재하지 않습니다"})
 
     def get(self, request, pk, format=None):
         post = self.get_object(pk)

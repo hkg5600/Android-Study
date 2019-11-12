@@ -33,18 +33,12 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     var loadMore: SingleLiveEvent<Int> = SingleLiveEvent()
 
     fun setPost(postList: ArrayList<Post>) {
-        postList.forEach {
-            val data = Post(
-                it.id,
-                it.text,
-                it.owner,
-                DateTimeConverter.jsonTimeToTime(it.created_at),
-                it.images,
-                it.like,
-                it.profile_image
-            )
-            this.postList.add(data)
-        }
+        this.postList.addAll(with(postList) {
+            this.map { Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image) }
+        })
+//        postList.forEach { val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image)
+//            this.postList.add(data)
+//        }
         notifyDataSetChanged()
     }
 
@@ -70,6 +64,12 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         postList[position].like.run {
             if (isEmpty()) holder.likeCount.text = "첫 좋아요를 눌러주세요"
             else holder.likeCount.text = "${this[0]}님 외 ${this.size-1}명이 좋아합니다"
+        }
+
+        if (onShowLikeClickListener!= null) {
+            holder.likeCount.setOnClickListener { v ->
+                onShowLikeClickListener?.onClick(v, position, holder)
+            }
         }
 
         if (onCommentBtnClickListener != null) {
@@ -165,6 +165,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         }
     }
 
+    var onShowLikeClickListener : OnItemClickListener? = null
     var onCommentBtnClickListener: OnItemClickListener? = null
     var onItemClickListener: OnItemClickListener? = null
     var onShowDetailClickListener: OnItemClickListener? = null

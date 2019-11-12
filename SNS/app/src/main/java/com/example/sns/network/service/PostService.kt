@@ -6,8 +6,8 @@ import com.example.sns.network.model.Follower
 import com.example.sns.network.request.CommentRequest
 import com.example.sns.network.request.GetPostRequest
 import com.example.sns.network.request.PostId
-import com.example.sns.network.response.CommentList
 import com.example.sns.network.response.PostDetail
+import com.example.sns.network.response.PostLikeList
 import com.example.sns.network.response.PostList
 import io.reactivex.Single
 import okhttp3.MediaType
@@ -23,9 +23,12 @@ interface PostService {
     fun likePost(token: String, post: Int) : Single<retrofit2.Response<Response<Any>>>
     fun unlikePost(token: String, post: Int) : Single<retrofit2.Response<Response<Any>>>
     fun deleteComment(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
+    fun getLike(token: String, id: Int) : Single<retrofit2.Response<Response<PostLikeList>>>
 }
 
 class PostServiceImpl(private val api: PostApi) : PostService {
+
+    override fun getLike(token: String, id: Int) = api.getLike(token, PostId(id))
 
     override fun deleteComment(token: String, id: Int) = api.deleteComment(token, "/api/post/comment/$id/")
 

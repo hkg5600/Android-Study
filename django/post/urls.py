@@ -7,7 +7,8 @@ from .views import(
     CommentDetail,
     LikeToPost,
     UnlikeToPost,
-    CommentList
+    CommentList,
+    UserProfileList
 )
 
 urlpatterns = [
@@ -19,4 +20,5 @@ urlpatterns = [
     path("comment/<int:pk>/", CommentDetail.as_view()),
     path("like_post/", LikeToPost.as_view()),
     path("unlike_post/", UnlikeToPost.as_view()),
+    path("user_profile_data/", UserProfileList.as_view()),
 ]

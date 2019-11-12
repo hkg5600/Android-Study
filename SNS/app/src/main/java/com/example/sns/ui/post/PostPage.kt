@@ -17,6 +17,7 @@ import com.example.sns.network.response.UserInfo
 import com.example.sns.network.response.PostList
 import com.example.sns.ui.login.LoginActivity
 import com.example.sns.ui.post_detail.PostDetailActivity
+import com.example.sns.ui.post_detail.PostLikeActivity
 import com.example.sns.utils.UserObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -90,6 +91,13 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initListener() {
+
+        postAdapter.onShowLikeClickListener = object : PostAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
+                startActivity(Intent(context, PostLikeActivity::class.java).putExtra("id", postAdapter.postList[position].id))
+            }
+
+        }
 
         postAdapter.onCommentBtnClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
