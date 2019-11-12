@@ -18,7 +18,7 @@ class AddPostViewModel(private val postService: PostService, application: Applic
     val text = ObservableField<String>()
     fun checkNetwork() = if (UserObject.userInfo != null) addPost()  else makeToast("네트워크 연결 후 시도해 주세요")
 
-    private fun addPost() = addDisposable(postService.addPost(TokenObject.token, text.get()!!, UserObject.userInfo?.user_id!!, file), getMsgObserver())
+    private fun addPost() = addDisposable(postService.addPost(TokenObject.token, text.get()!!, UserObject.userInfo?.user?.user_id!!, file), getMsgObserver())
 
     fun getImageFromGallery(context: Activity): ArrayList<String> {
         val galleryImageUrls: ArrayList<String> = ArrayList()

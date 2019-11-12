@@ -17,7 +17,7 @@ class PostDetailActivityViewModel(private val postService: PostService, applicat
     var text = ObservableField<String>()
     fun getPostDetail() = addDisposable(postService.getPostDetail(TokenObject.token, id), getDataObserver())
 
-    fun addComment() = addDisposable(postService.addComment(TokenObject.token, CommentRequest(id, UserObject.userInfo?.user_id!!, text.get()!!)), getMsgObserver())
+    fun addComment() = addDisposable(postService.addComment(TokenObject.token, CommentRequest(id, UserObject.userInfo?.user?.user_id!!, text.get()!!)), getMsgObserver())
 
-    fun deleteComent(id: Int) = addDisposable(postService.deleteComment(TokenObject.token, id), getMsgObserver())
+    fun deleteComment(id: Int) = addDisposable(postService.deleteComment(TokenObject.token, id), getMsgObserver())
 }

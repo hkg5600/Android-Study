@@ -6,7 +6,7 @@ from datetime import timedelta
 import time
 import jwt
 from post.models import Post
-from rest_framework import serializers
+from rest_framework import serializers, status
 class UserManager(BaseUserManager):
 
     def get_by_natural_key(self, user_id):
@@ -45,7 +45,7 @@ class UserFollowing(models.Model):
     def validate_unique(self, exclude=None):
         qs = UserFollowing.objects.filter(user_id=self.user_id, following_user_id=self.following_user_id)
         if qs.filter(user_id=self.user_id).exists():
-            raise serializers.ValidationError('Name must be unique per site')
+            raise serializers.ValidationError({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"이미 팔로우한 유저입니다"})
 
     def save(self, *args, **kwargs):
         self.validate_unique()
@@ -56,8 +56,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     is_staff = models.BooleanField(default=False)
-    #followers = models.ManyToManyField('self', related_name='follower',blank=True)
-    #following = models.ManyToManyField('self', related_name='following',blank=True)
     profile_image = models.ImageField(blank=True)
 
     USERNAME_FIELD = 'user_id'

@@ -8,6 +8,8 @@ from .serializers import (
     UserLoginSerializer,
     UserSerializer,
     CheckUserIDSerializer,
+    UserFollowingSerializer,
+    UserFollowerSerializer,
 )
 #from .models import User
 from django.http import JsonResponse
@@ -44,9 +46,9 @@ class UserAPI(generics.RetrieveAPIView):
         item = model_to_dict(self.get_object())
         qs = User.objects.get(user_id=list(item.values())[3])
         serializer = UserSerializer(qs, many=False)
-        print(qs.following.all())
-        print(qs.followers.all())
-        return JsonResponse({'status':status.HTTP_200_OK, 'data':serializer.data, "message":"조회 성공"})
+        following_data = UserFollowingSerializer(qs.following.all(), many=True)
+        followers_data = UserFollowerSerializer(qs.followers.all(), many=True)
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':{'user':serializer.data, 'following':following_data.data, 'followers':followers_data.data}, "message":"조회 성공"})
 
 
 class Registration(APIView):
@@ -61,7 +63,6 @@ class Registration(APIView):
 
 class UserLogin(APIView):
     permission_classes = (AllowAny,)
-    #renderer_classes = (UserJSONRenderer,)
     serializer_class = UserLoginSerializer
 
     def post(self, request):
@@ -86,11 +87,7 @@ class AddFollower(APIView):
     def post(self, requset, format=None):
         user = User.objects.get(user_id=self.request.data.get('user_id'))
         follow = User.objects.get(user_id=self.request.data.get('follow'))
-        # user.following.add(follow)
-        # user.save()
-        # follow.followers.add(user)
-        # follow.save()
-        # print(str(user) + ", " + str(follow))
+        print('user : ' + str(user) + ' follow : ' + str(follow))
         UserFollowing.objects.create(user_id=user, following_user_id=follow)
         return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"팔로우 "+str(follow.user_id)})
 
@@ -99,11 +96,6 @@ class UnFollow(APIView):
     def post(self, requset, format=None):
         user = User.objects.get(user_id=self.request.data.get('user_id'))
         unfollow = User.objects.get(user_id=self.request.data.get('unfollow'))
-        user.following.remove(unfollow)
-        user.save()
-        user = User.objects.get(user_id=self.request.data.get('unfollow'))
-        unfollow = User.objects.get(user_id=self.request.data.get('user_id'))
-        user.followers.remove(unfollow)
-        user.save()
-        print(user)
+        test = UserFollowing.objects.filter(user_id=user, following_user_id=unfollow)
+        test.delete()
         return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"언팔로우 "+str(unfollow.user_id)})

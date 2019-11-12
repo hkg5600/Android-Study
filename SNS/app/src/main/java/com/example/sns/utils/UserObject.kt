@@ -1,7 +1,6 @@
 package com.example.sns.utils
 
-import androidx.lifecycle.MutableLiveData
-import com.example.sns.network.model.UserInfo
+import com.example.sns.network.response.UserInfo
 
 object UserObject {
     var userInfo : UserInfo? = null

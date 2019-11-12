@@ -2,8 +2,7 @@ package com.example.sns.network.service
 
 import com.example.sns.network.Response
 import com.example.sns.network.api.UserApi
-import com.example.sns.network.model.UserInfo
-import com.example.sns.room.model.Token
+import com.example.sns.network.response.UserInfo
 import io.reactivex.Single
 
 interface UserInfoService {

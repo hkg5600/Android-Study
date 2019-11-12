@@ -100,7 +100,6 @@ class AddPost(APIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, ]
     def post(self, request, format=None):
-        print(request.data)
         serializer = PostSerializer(data=request.data, context={'request':request})
 
         serializer.is_valid(raise_exception=True)

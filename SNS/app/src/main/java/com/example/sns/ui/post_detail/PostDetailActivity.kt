@@ -19,7 +19,6 @@ import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
 import com.example.sns.utils.UserObject
 import kotlinx.android.synthetic.main.app_bar.*
-import kotlinx.android.synthetic.main.post_image_item.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -102,7 +101,7 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
                 holder: CommentAdapter.CommentHolder
             ): Boolean {
                 val p = PopupMenu(applicationContext, view)
-                if (UserObject.userInfo?.user_id == commentAdapter.commentList[position].owner)
+                if (UserObject.userInfo?.user?.user_id == commentAdapter.commentList[position].owner)
                     menuInflater.inflate(R.menu.menu_my_comment, p.menu)
                 else
                     menuInflater.inflate(R.menu.menu_comment, p.menu)
@@ -113,7 +112,7 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
                                 showDialog(
                                     "삭제하시겠습니까?",
                                     {
-                                        viewModel.deleteComent(commentAdapter.commentList[position].id)
+                                        viewModel.deleteComment(commentAdapter.commentList[position].id)
                                         commentAdapter.commentList.remove(commentAdapter.commentList[position])
                                         commentAdapter.notifyDataSetChanged()
                                     },

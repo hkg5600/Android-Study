@@ -2,13 +2,26 @@ from rest_framework import serializers
 from .models import (
     User, Post, UserFollowing
 )
+from post.serializers import UserInfo
 from django.contrib.auth import authenticate
+
+class UserFollowingSerializer(serializers.ModelSerializer):
+    profile_image = UserInfo(source='following_user_id', many=False, read_only=True)
+    class Meta:
+        model = UserFollowing
+        fields = ('following_user_id','profile_image',)
+
+class UserFollowerSerializer(serializers.ModelSerializer):
+    profile_image = UserInfo(source='user_id', many=False, read_only=True)
+    class Meta:
+        model = UserFollowing
+        fields = ('user_id','profile_image',)
 
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('user_id', 'name','following','followers','profile_image')
+        fields = ('user_id', 'name','profile_image')
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)

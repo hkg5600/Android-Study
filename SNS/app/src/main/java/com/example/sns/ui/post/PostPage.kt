@@ -1,6 +1,7 @@
 package com.example.sns.ui.post
 
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -11,11 +12,10 @@ import com.example.sns.adapter.PostAdapter
 import com.example.sns.base.BaseFragment
 import com.example.sns.databinding.FragmentPagePostBinding
 import com.example.sns.network.model.Follower
-import com.example.sns.network.model.UserInfo
+import com.example.sns.network.response.UserInfo
 import com.example.sns.network.response.PostList
 import com.example.sns.ui.login.LoginActivity
 import com.example.sns.ui.post_detail.PostDetailActivity
-import com.example.sns.ui.post_detail.PostDetailActivityViewModel
 import com.example.sns.utils.UserObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -56,7 +56,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                     postAdapter.lastPage = it.last_page
                 }
                 is UserInfo -> {
-                    postAdapter.userName = it.user_id
+                    postAdapter.userName = it.user.user_id
                     UserObject.userInfo = it
                     refreshPost()
                 }
@@ -120,13 +120,13 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         postAdapter.onLikeClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
                 postAdapter.postList[position].run {
-                    if (like.contains(UserObject.userInfo?.user_id)) {
+                    if (like.contains(UserObject.userInfo?.user?.user_id)) {
                         viewModel.unlikePost(id)
-                        like.remove(UserObject.userInfo?.user_id)
+                        like.remove(UserObject.userInfo?.user?.user_id)
                         holder.btnLike.setImageResource(R.drawable.ic_unlike)
                     } else {
                         viewModel.likePost(id)
-                        like.add(UserObject.userInfo?.user_id!!)
+                        like.add(UserObject.userInfo?.user?.user_id!!)
                         holder.btnLike.setImageResource(R.drawable.ic_like)
                     }
                 }
@@ -138,7 +138,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         postAdapter.onItemClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
                 val p = PopupMenu(context, view)
-                if (UserObject.userInfo?.user_id == postAdapter.postList[position].owner)
+                if (UserObject.userInfo?.user?.user_id == postAdapter.postList[position].owner)
                     activity?.menuInflater?.inflate(R.menu.menu_my_post_option, p.menu)
                 else
                     activity?.menuInflater?.inflate(R.menu.menu_others_post_option, p.menu)
@@ -178,7 +178,6 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initViewModel() {
-        viewDataBinding.swipeRefreshLayout.isRefreshing = true
         if (UserObject.userInfo == null)
             viewModel.getUser()
     }
@@ -186,22 +185,38 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     var swipeLayout: SwipeRefreshLayout? = null
 
     override fun onRefresh() {
-        viewDataBinding.swipeRefreshLayout.isRefreshing = true
         refreshPost()
     }
 
-    fun loadPost() {
+    private fun loadPost() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
+        Log.e("Refreshing", "isRefreshing")
         UserObject.userInfo?.let {
-            viewModel.getPost(Follower(it.following), postAdapter.nextPage)
+
+            viewModel.getPost(test(it), postAdapter.nextPage)
         }
     }
 
     fun refreshPost() {
         postAdapter.postList.clear()
+        Log.e("Refreshing", "isRefreshing")
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         UserObject.userInfo?.let {
-            viewModel.getPost(Follower(it.following), 0)
+            viewModel.getPost(test(it), 0)
         }
+    }
+
+    private fun getFollowings(userInfo: UserInfo) = with(userInfo.following){
+        val data = ArrayList<String>()
+        this.forEach { userId ->
+            data.add(userId.following_user_id)
+        }
+        data
+    }
+
+    private fun test(userInfo: UserInfo) : Follower = with(userInfo.following) {
+        Follower(this.map {
+            it.following_user_id
+        })
     }
 }

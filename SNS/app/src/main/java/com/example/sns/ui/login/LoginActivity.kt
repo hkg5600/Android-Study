@@ -9,7 +9,6 @@ import com.example.sns.R
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityLoginBinding
 import com.example.sns.network.model.LoginData
-import com.example.sns.network.model.UserInfo
 import com.example.sns.ui.main.MainActivity
 import com.example.sns.utils.TokenObject
 //import kotlinx.android.synthetic.main.activity_login.*
@@ -44,7 +43,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>
         viewModel.error.observe(this, Observer {
             when (it) {
                 "failed to connect" -> makeToast(resources.getString(R.string.network_error), false)
-                "error" -> makeToast("아이디 또는 비밀번호가 일치하지 않습니다", false)
+                "Bad Request" -> makeToast("아이디 또는 비밀번호가 일치하지 않습니다", false)
             }
         })
 

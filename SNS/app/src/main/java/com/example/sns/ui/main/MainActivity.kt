@@ -1,6 +1,7 @@
 package com.example.sns.ui.main
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.Menu
@@ -91,15 +92,19 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
             when (it.itemId) {
                 R.id.menu_post -> {
                     transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
-                    isRefresh = if (isRefresh){ postPage.refreshPost()
+                    isRefresh = if (isRefresh){
+                        postPage.refreshPost()
                         false
                     } else true
                 }
-                R.id.menu_my_info -> {transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
+                R.id.menu_my_info -> {
+                    transaction.replace(R.id.frame_layout, userInfoPage).commitAllowingStateLoss()
                     isRefresh = false}
-                R.id.menu_add_post -> {startActivityForResult(Intent(this, AddPostActivity::class.java), ADD_POST)
+                R.id.menu_add_post -> {
+                    startActivityForResult(Intent(this, AddPostActivity::class.java), ADD_POST)
                     isRefresh = false}
-                R.id.menu_follower -> {transaction.replace(R.id.frame_layout, followerPage).commitAllowingStateLoss()
+                R.id.menu_follower -> {
+                    transaction.replace(R.id.frame_layout, followerPage).commitAllowingStateLoss()
                     isRefresh = false}
             }
             true
@@ -108,12 +113,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityViewModel>() 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ADD_POST) {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_layout, postPage).commitAllowingStateLoss()
+        if (requestCode == ADD_POST && resultCode == Activity.RESULT_OK) {
             postPage.refreshPost()
-            viewDataBinding.bottomNavigationView.selectedItemId = R.id.menu_post
         }
+        viewDataBinding.bottomNavigationView.selectedItemId = R.id.menu_post
     }
 
     private fun checkPermission() {

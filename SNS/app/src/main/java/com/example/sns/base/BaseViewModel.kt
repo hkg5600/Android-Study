@@ -25,7 +25,7 @@ abstract class BaseViewModel(val application: Application) : ViewModel() {
     val roomSuccess: SingleLiveEvent<String> = SingleLiveEvent()
     val error: SingleLiveEvent<String> = SingleLiveEvent()
     val message: SingleLiveEvent<String> = SingleLiveEvent()
-    val data: MutableLiveData<Any> = MutableLiveData()
+    val data: SingleLiveEvent<Any> = SingleLiveEvent()
 
     fun addDisposable(disposable: Single<*>, observer: DisposableSingleObserver<Any>) {
         compositeDisposable.add(

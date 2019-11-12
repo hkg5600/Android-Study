@@ -1,12 +1,10 @@
 package com.example.sns.network.api
 
 import com.example.sns.network.Response
-import com.example.sns.network.model.UserInfo
-import com.example.sns.room.model.Token
+import com.example.sns.network.response.UserInfo
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Headers
 
 interface UserApi {
 
