@@ -32,6 +32,7 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
     private val commentAdapter: CommentAdapter by inject()
 
     override fun initView() {
+        window.setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE)
         setSupportActionBar(toolbar)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -138,7 +139,6 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
     override fun initViewModel() {
         viewDataBinding.vm = viewModel
 
-        window.setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE)
         if (intent.hasExtra("id")) {
             viewDataBinding.swipeRefreshLayout.isRefreshing = true
             viewModel.id = intent.getIntExtra("id", -1)

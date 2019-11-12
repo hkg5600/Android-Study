@@ -205,7 +205,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         Log.e("Refreshing", "isRefreshing")
         UserObject.userInfo?.let {
 
-            viewModel.getPost(test(it), postAdapter.nextPage)
+            viewModel.getPost(getFollowings(it), postAdapter.nextPage)
         }
     }
 
@@ -214,19 +214,12 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         Log.e("Refreshing", "isRefreshing")
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
         UserObject.userInfo?.let {
-            viewModel.getPost(test(it), 0)
+            viewModel.getPost(getFollowings(it), 0)
         }
     }
 
-    private fun getFollowings(userInfo: UserInfo) = with(userInfo.following){
-        val data = ArrayList<String>()
-        this.forEach { userId ->
-            data.add(userId.following_user_id)
-        }
-        data
-    }
 
-    private fun test(userInfo: UserInfo) : Follower = with(userInfo.following) {
+    private fun getFollowings(userInfo: UserInfo) : Follower = with(userInfo.following) {
         Follower(this.map {
             it.following_user_id
         })

@@ -3,6 +3,7 @@ package com.example.sns.ui.login
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import com.example.sns.R
@@ -20,7 +21,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>
     override val viewModel: LoginActivityViewModel by viewModel()
 
     override fun initView() {
-        viewDataBinding.vm = viewModel
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
     override fun initObserver() {
@@ -50,7 +51,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>
     }
 
     override fun initViewModel() {
-
+        viewDataBinding.vm = viewModel
     }
 
     override fun initListener() {

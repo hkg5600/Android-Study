@@ -17,29 +17,34 @@ import kotlinx.android.synthetic.main.user_list_item.view.*
 
 class LikeListAdapter : RecyclerView.Adapter<LikeListAdapter.LikeListHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LikeListHolder = LikeListHolder(
-        DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.user_list_item,
-            parent,
-            false
-        ))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LikeListHolder =
+        LikeListHolder(
+            DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                R.layout.user_list_item,
+                parent,
+                false
+            )
+        )
 
-    override fun getItemCount() = likeUserList.size
+    override fun getItemCount() = showList.size
 
     override fun onBindViewHolder(holder: LikeListHolder, position: Int) {
 
-        holder.bind(likeUserList[position])
+        holder.bind(showList[position])
     }
 
     var likeUserList = ArrayList<PostLike>()
+    var showList = ArrayList<PostLike>()
 
-    fun setUserList(userList : ArrayList<PostLike>) {
+    fun setUserList(userList: ArrayList<PostLike>) {
         likeUserList = userList
+        showList = likeUserList
         notifyDataSetChanged()
     }
 
-    inner class LikeListHolder(private val binding : UserListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class LikeListHolder(private val binding: UserListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PostLike) {
             if (item.profile_image != null) {
                 itemView.run {
@@ -49,5 +54,13 @@ class LikeListAdapter : RecyclerView.Adapter<LikeListAdapter.LikeListHolder>() {
             }
             binding.item = item
         }
+    }
+
+    fun filterWithData(searchString: String) {
+        showList = if (searchString.isEmpty()) likeUserList
+        else ArrayList(likeUserList.filter {
+            it.user_id.contains(searchString)
+        })
+        notifyDataSetChanged()
     }
 }

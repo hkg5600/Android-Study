@@ -43,7 +43,6 @@ class LikeToPost(APIView):
         return self.request.user
 
     def post(self, *args, **kwargs):
-        print(self.request.data.get('post'))
         try:
             post = Post.objects.get(id=self.request.data.get('post'))
         except:

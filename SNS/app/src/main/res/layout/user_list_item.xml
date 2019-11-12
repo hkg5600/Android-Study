@@ -9,7 +9,8 @@
     </data>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:cardElevation="0dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -20,7 +21,9 @@
             android:background="@drawable/user_list_profile_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_marginStart="15dp"/>
 
             <TextView
@@ -30,10 +33,19 @@
                 app:layout_constraintTop_toTopOf="@+id/user_profile_image"
                 app:layout_constraintStart_toEndOf="@+id/user_profile_image"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:textStyle="bold"
                 tool:text = "@string/test"
                 android:text="@{item.user_id}"/>
+            <TextView
+                android:id="@+id/text_view_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_user_id"
+                app:layout_constraintStart_toEndOf="@+id/user_profile_image"
+                android:layout_marginStart="10dp"
+                tool:text = "@string/test"
+                android:text="@{item.name}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
