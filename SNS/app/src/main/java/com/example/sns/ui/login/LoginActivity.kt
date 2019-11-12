@@ -76,7 +76,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>
 
         })
 
-        viewDataBinding.editTextPw.setOnEditorActionListener  { v, actionId, event ->
+        viewDataBinding.editTextPw.setOnEditorActionListener  { _, actionId, _ ->
             return@setOnEditorActionListener  when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> {
                     if (viewDataBinding.loginBtn.isEnabled)
@@ -87,7 +87,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginActivityViewModel>
             }
         }
 
-        viewDataBinding.editTextId.setOnEditorActionListener { view, actionId, event ->
+        viewDataBinding.editTextId.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener  when (actionId) {
                 EditorInfo.IME_ACTION_NEXT -> {
                     viewDataBinding.editTextPw.requestFocus()

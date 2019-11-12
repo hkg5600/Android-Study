@@ -1,5 +1,6 @@
 package com.example.sns.adapter
 
+import android.annotation.SuppressLint
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
@@ -59,10 +60,16 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
 
     override fun getItemCount() = postList.size
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
 
         if (position > postList.size - 2 && !lastPage) {
             loadMore.call()
+        }
+
+        postList[position].like.run {
+            if (isEmpty()) holder.likeCount.text = "첫 좋아요를 눌러주세요"
+            else holder.likeCount.text = "${this[0]}님 외 ${this.size-1}명이 좋아합니다"
         }
 
         if (onCommentBtnClickListener != null) {
@@ -129,6 +136,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         val btnLike: ImageButton = binding.ImageLike
         val toDetail: ConstraintLayout = binding.toDetail
         val toDetailWithComment: ImageButton = binding.showComment
+        val likeCount: TextView = binding.likeCount
 
         var showDetail = false
 

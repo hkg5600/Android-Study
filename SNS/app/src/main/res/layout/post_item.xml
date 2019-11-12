@@ -80,6 +80,17 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/Image_like"
                     android:backgroundTint="@android:color/white"/>
+                <TextView
+                    android:id="@+id/like_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/Image_like"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="13dp"
+                    android:textStyle="bold"
+                    android:text="@string/test"
+                    android:clickable="true"
+                    android:focusable="true" />
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/to_detail"
@@ -94,6 +105,7 @@
                 android:layout_height="60dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:text="@{item.text}"
                 android:textSize="15sp"

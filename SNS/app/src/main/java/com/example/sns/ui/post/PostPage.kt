@@ -1,5 +1,6 @@
 package com.example.sns.ui.post
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import android.view.View
@@ -118,6 +119,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         }
 
         postAdapter.onLikeClickListener = object : PostAdapter.OnItemClickListener {
+            @SuppressLint("SetTextI18n")
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
                 postAdapter.postList[position].run {
                     if (like.contains(UserObject.userInfo?.user?.user_id)) {
@@ -129,6 +131,8 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                         like.add(UserObject.userInfo?.user?.user_id!!)
                         holder.btnLike.setImageResource(R.drawable.ic_like)
                     }
+                    if (like.isNotEmpty()) holder.likeCount.text = "${like[0]}님 외 ${like.size-1}명이 좋아합니다"
+                    else holder.likeCount.text = "첫 좋아요를 눌러주세요"
                 }
 
             }
