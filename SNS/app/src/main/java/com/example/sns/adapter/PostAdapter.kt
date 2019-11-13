@@ -21,6 +21,8 @@ import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
 import com.example.sns.utils.SingleLiveEvent
 import kotlinx.android.synthetic.main.post_item.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
@@ -33,12 +35,12 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     var loadMore: SingleLiveEvent<Int> = SingleLiveEvent()
 
     fun setPost(postList: ArrayList<Post>) {
-        this.postList.addAll(with(postList) {
-            this.map { Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image) }
+        this.postList.addAll(postList.also {
+            it.forEach {data ->
+                data.created_at = DateTimeConverter.jsonTimeToTime(data.created_at)
+            }
         })
-//        postList.forEach { val data = Post(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image)
-//            this.postList.add(data)
-//        }
+
         notifyDataSetChanged()
     }
 
@@ -144,7 +146,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
             binding.imgViewHolder.visibility = View.GONE
             if (item.images.isNotEmpty()) {
                 binding.imgViewHolder.visibility = View.VISIBLE
-                viewPager.adapter = PostImageAdapter(item.images)
+                viewPager.adapter = PostImageListAdapter(item.images)
                 viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
             }
             if (item.profile_image.profile_image != null) {

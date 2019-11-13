@@ -15,6 +15,13 @@ class Comment(models.Model):
     like = models.ManyToManyField(User, related_name="comment_liking", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class Reply(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    text = models.CharField(max_length=2000)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    like = models.ManyToManyField(User, related_name="reply_liking", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     image = models.FileField(blank=True)

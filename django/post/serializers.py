@@ -1,4 +1,4 @@
-from .models import Post, Image, Comment
+from .models import Post, Image, Comment, Reply
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -18,12 +18,21 @@ class FileSerializer(serializers.ModelSerializer):
         model = Image
         fields = '__all__'
 
+class ReplySerializer(serializers.ModelSerializer):
+    profile_image = UserInfo(source='owner', many=False, read_only=True)
+
+    class Meta:
+        model = Reply
+        fields = '__all__'
+
 class CommentSerializer(serializers.ModelSerializer):
     profile_image = UserInfo(source='owner', many=False, read_only=True)
+    reply = serializers.IntegerField(source='reply_set.count', read_only=True)
 
     class Meta:
         model = Comment
         fields = '__all__'
+
 
 class PostSerializer(serializers.ModelSerializer):
     images = FileSerializer(source='image_set', many=True, read_only=True)

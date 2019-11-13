@@ -4,11 +4,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import authentication, permissions, status, generics
 from users.backends import JWTUserAuthentication
 from .serializers import (
-    PostSerializer, FileSerializer, CommentSerializer,PostDetailSerializer, UserProfile
+    PostSerializer, FileSerializer, CommentSerializer,PostDetailSerializer, UserProfile, ReplySerializer
 )
 from users.serializers import UserFollowingSerializer
 from django.http import JsonResponse
-from .models import  Post, Image, Comment
+from .models import  Post, Image, Comment, Reply
 from django.forms.models import model_to_dict
 import json
 from django.conf import settings
@@ -83,9 +83,9 @@ class PostView(APIView):
         user_list = self.request.data.get('user_id')
         user_list.append(self.get_object())
         users = User.objects.filter(user_id__in=user_list).values_list('user_id').distinct()
-        queryset = Post.objects.filter(owner__in=users).order_by('-created_at')[3*page:(page+1)*3] #35
+        queryset = Post.objects.filter(owner__in=users).order_by('-created_at')[7*page:(page+1)*7] #35
         serializer = PostSerializer(queryset, many=True)
-        if (Post.objects.filter(owner__in=users).order_by('-created_at').count() <= (page+1)*3):
+        if (Post.objects.filter(owner__in=users).order_by('-created_at').count() <= (page+1)*7):
             last_page = True
 
         page += 1
@@ -159,3 +159,22 @@ class CommentDetail(APIView):
             return comment
         comment.delete()
         return JsonResponse({'status':status.HTTP_200_OK, "message":"댓글 삭제 성공",'data':""})
+
+class ReplyView(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request, format=None):
+        serializer = ReplySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return JsonResponse({'status':status.HTTP_200_OK, 'message':"답글 작성 성공", 'data':""})
+
+class ReplyList(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+    def post(self, request, format=None):
+        reply = Reply.objects.filter(comment=self.request.data.get('comment'))
+        serializer = ReplySerializer(reply, many=True)
+        return JsonResponse({'status':status.HTTP_200_OK, "message":"답글 불러오기 성공",'data':{'reply':serializer.data}})

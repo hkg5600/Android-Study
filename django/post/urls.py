@@ -8,7 +8,9 @@ from .views import(
     LikeToPost,
     UnlikeToPost,
     CommentList,
-    UserProfileList
+    UserProfileList,
+    ReplyList,
+    ReplyView
 )
 
 urlpatterns = [
@@ -21,4 +23,6 @@ urlpatterns = [
     path("like_post/", LikeToPost.as_view()),
     path("unlike_post/", UnlikeToPost.as_view()),
     path("user_profile_data/", UserProfileList.as_view()),
+    path("reply/", ReplyView.as_view()),
+    path("reply_list/", ReplyList.as_view()),
 ]

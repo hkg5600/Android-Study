@@ -3,12 +3,13 @@ package com.example.sns.ui.post_detail
 import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.sns.R
-import com.example.sns.adapter.LikeListAdapter
+import com.example.sns.adapter.LikeUserListAdapter
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityPostLikeBinding
 import com.example.sns.network.response.PostLikeList
@@ -25,7 +26,7 @@ class PostLikeActivity : BaseActivity<ActivityPostLikeBinding, PostLikeActivityV
     override val layoutResourceId = R.layout.activity_post_like
 
     override val viewModel: PostLikeActivityViewModel by viewModel()
-    private val likeAdapter: LikeListAdapter by inject()
+    private val likeAdapter: LikeUserListAdapter by inject()
 
     override fun initView() {
         setSupportActionBar(toolbar)
@@ -39,6 +40,7 @@ class PostLikeActivity : BaseActivity<ActivityPostLikeBinding, PostLikeActivityV
 
     override fun initObserver() {
         viewModel.data.observe(this, Observer {
+            viewDataBinding.swipeRefreshLayout.isRefreshing = false
             when (it) {
                 is PostLikeList -> likeAdapter.setUserList(it.user_list)
             }
@@ -53,13 +55,12 @@ class PostLikeActivity : BaseActivity<ActivityPostLikeBinding, PostLikeActivityV
                 if (edit_text_search.compoundDrawables[2] != null)
                     if (motionEvent.rawX >= edit_text_search.right - edit_text_search.compoundDrawables[2].bounds.width()) {
                         viewDataBinding.editTextSearch.text.clear()
-                        true
                     }
             }
             false
         }
 
-        viewDataBinding.editTextSearch.setOnEditorActionListener { textView, i, keyEvent ->
+        viewDataBinding.editTextSearch.setOnEditorActionListener { _, i, _ ->
             return@setOnEditorActionListener  when (i) {
                 EditorInfo.IME_ACTION_DONE -> {
                     hideKeyboard()
@@ -91,10 +92,25 @@ class PostLikeActivity : BaseActivity<ActivityPostLikeBinding, PostLikeActivityV
     }
 
     override fun initViewModel() {
-        viewModel.getLike(intent.getIntExtra("id", -1))
+        refreshLikeList()
+        viewDataBinding.editTextSearch.clearFocus()
     }
 
     override fun onRefresh() {
+        refreshLikeList()
+    }
 
+    private fun refreshLikeList() {
+        viewDataBinding.swipeRefreshLayout.isRefreshing = false
+        viewModel.getLike(intent.getIntExtra("id", -1))
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }

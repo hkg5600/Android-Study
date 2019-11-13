@@ -1,9 +1,6 @@
 package com.example.sns.di
 
-import com.example.sns.adapter.CommentAdapter
-import com.example.sns.adapter.ImageAdapter
-import com.example.sns.adapter.LikeListAdapter
-import com.example.sns.adapter.PostAdapter
+import com.example.sns.adapter.*
 import com.example.sns.network.api.LoginApi
 import com.example.sns.network.api.PostApi
 import com.example.sns.network.api.UserApi
@@ -71,23 +68,16 @@ var viewModelPart = module {
     viewModel { LoginActivityViewModel(get(), get(), get()) }
     viewModel { AddPostViewModel(get(), get()) }
     viewModel { UserInfoViewModel(get()) }
-    viewModel { PostDetailActivityViewModel(get() ,get()) }
+    viewModel { PostDetailActivityViewModel(get(), get()) }
     viewModel { PostLikeActivityViewModel(get(), get()) }
 }
 
 var adapterPart = module {
-    factory {
-        PostAdapter()
-    }
-    factory {
-        ImageAdapter(get())
-    }
-    factory {
-        CommentAdapter()
-    }
-    factory {
-        LikeListAdapter()
-    }
+    factory { PostAdapter() }
+    factory { GalleryImageAdapter(get()) }
+    factory { CommentAdapter() }
+    factory { LikeUserListAdapter() }
+    factory { ReplyAdapter() }
 }
 
 var repositoryPart = module {

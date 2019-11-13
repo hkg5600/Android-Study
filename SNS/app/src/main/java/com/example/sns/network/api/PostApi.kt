@@ -1,12 +1,14 @@
 package com.example.sns.network.api
 
 import com.example.sns.network.Response
+import com.example.sns.network.request.CommentId
 import com.example.sns.network.request.CommentRequest
 import com.example.sns.network.request.GetPostRequest
 import com.example.sns.network.request.PostId
 import com.example.sns.network.response.PostDetail
 import com.example.sns.network.response.PostLikeList
 import com.example.sns.network.response.PostList
+import com.example.sns.network.response.ReplyList
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -40,4 +42,7 @@ interface PostApi {
 
     @POST("api/post/user_profile_data/")
     fun getLike(@Header("Authorization") token: String, @Body post:PostId) : Single<retrofit2.Response<Response<PostLikeList>>>
+
+    @POST("api/post/reply_list/")
+    fun getReply(@Header("Authorization") token: String, @Body comment: CommentId) : Single<retrofit2.Response<Response<ReplyList>>>
 }

@@ -1,12 +1,11 @@
 package com.example.sns.network.model
 
-data class Comment(
+data class Reply(
     val id: Int,
+    val profile_image: ProfileImage,
     val text: String,
-    val reply: Int,
-    val like: ArrayList<String>,
     var created_at: String,
+    val comment: Int,
     val owner: String,
-    val post: Int,
-    val profile_image: ProfileImage
+    val like: ArrayList<String>
 )

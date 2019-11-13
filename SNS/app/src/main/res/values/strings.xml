@@ -23,4 +23,5 @@
     <string name="login">로그인</string>
     <string name="comment_edit">작성</string>
     <string name="menu_report">신고하기</string>
+    <string name="edit_reply">답글 달기</string>
 </resources>

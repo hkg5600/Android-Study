@@ -18,8 +18,8 @@ import com.example.sns.databinding.ImageItemBinding
 import com.example.sns.utils.SingleLiveEvent
 import kotlinx.android.synthetic.main.image_item.view.*
 
-class ImageAdapter(val application: Application) :
-    RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
+class GalleryImageAdapter(val application: Application) :
+    RecyclerView.Adapter<GalleryImageAdapter.ImageHolder>() {
     var overSize: SingleLiveEvent<Any> = SingleLiveEvent()
     var onChanged: SingleLiveEvent<Any> = SingleLiveEvent()
     var selectedItem = SparseBooleanArray(0)
@@ -118,16 +118,6 @@ class ImageAdapter(val application: Application) :
             selectedItem.put(position, false)
             notifyItemChanged(position)
         }
-    }
-
-    var onLongClickListener: OnItemLongClickListener? = null
-
-    interface OnItemLongClickListener {
-        fun onClick(
-            view: View,
-            position: Int,
-            holder: ImageHolder
-        ): Boolean
     }
 
 }

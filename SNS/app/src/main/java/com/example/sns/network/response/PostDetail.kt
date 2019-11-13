@@ -8,7 +8,7 @@ data class PostDetail(
     val id: Int,
     val text: String,
     val owner: String,
-    val created_at: String,
+    var created_at: String,
     val like: ArrayList<String>,
     val profile_image: ProfileImage,
     val comments: ArrayList<Comment>

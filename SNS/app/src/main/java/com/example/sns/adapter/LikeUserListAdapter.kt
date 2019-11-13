@@ -9,13 +9,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sns.R
 import com.example.sns.databinding.UserListItemBinding
 import com.example.sns.network.model.PostLike
-import com.example.sns.network.response.PostLikeList
-import com.example.sns.network.response.PostList
 import com.example.sns.utils.BASE_URL
-import kotlinx.android.synthetic.main.post_item.view.*
 import kotlinx.android.synthetic.main.user_list_item.view.*
 
-class LikeListAdapter : RecyclerView.Adapter<LikeListAdapter.LikeListHolder>() {
+class LikeUserListAdapter : RecyclerView.Adapter<LikeUserListAdapter.LikeListHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LikeListHolder =
         LikeListHolder(

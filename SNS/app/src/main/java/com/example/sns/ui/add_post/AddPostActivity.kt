@@ -3,13 +3,11 @@ package com.example.sns.ui.add_post
 import android.app.Activity
 import android.net.Uri
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.sns.R
-import com.example.sns.adapter.ImageAdapter
+import com.example.sns.adapter.GalleryImageAdapter
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityAddPostBinding
 import com.example.sns.utils.FileManager
@@ -25,8 +23,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
-import com.example.sns.utils.SingleLiveEvent
-import com.gc.materialdesign.widgets.ProgressDialog
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
 
@@ -36,7 +32,7 @@ class AddPostActivity : BaseActivity<ActivityAddPostBinding, AddPostViewModel>()
 
     override val viewModel: AddPostViewModel by viewModel()
 
-    private val imageAdapter: ImageAdapter by inject()
+    private val imageAdapter: GalleryImageAdapter by inject()
     override fun initView() {
         title = ""
         setSupportActionBar(toolbar)

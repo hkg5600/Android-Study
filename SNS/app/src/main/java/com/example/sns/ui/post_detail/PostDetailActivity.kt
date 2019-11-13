@@ -1,5 +1,6 @@
 package com.example.sns.ui.post_detail
 
+import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
@@ -14,7 +15,9 @@ import com.example.sns.R
 import com.example.sns.adapter.CommentAdapter
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityPostDetailBinding
+import com.example.sns.network.model.Reply
 import com.example.sns.network.response.PostDetail
+import com.example.sns.network.response.ReplyList
 import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
 import com.example.sns.utils.UserObject
@@ -30,6 +33,7 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
     override val viewModel: PostDetailActivityViewModel by viewModel()
 
     private val commentAdapter: CommentAdapter by inject()
+    lateinit var commentHolder: CommentAdapter.CommentHolder
 
     override fun initView() {
         window.setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE)
@@ -47,16 +51,25 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
         viewDataBinding.swipeRefreshLayout.setOnRefreshListener(this)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initObserver() {
         viewModel.data.observe(this, Observer {
             viewDataBinding.swipeRefreshLayout.isRefreshing = false
             when (it) {
                 is PostDetail -> {
                     viewModel.owner = it.owner
-                    viewModel.post.set(it.copy(it.id, it.text, it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.like, it.profile_image))
+                    viewModel.post.set(it.also { it.created_at = DateTimeConverter.jsonTimeToTime(it.created_at) })
                     Glide.with(applicationContext).load(BASE_URL + it.profile_image.profile_image)
-                        .apply(RequestOptions.circleCropTransform()).into(viewDataBinding.ownerProfileImage)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(viewDataBinding.ownerProfileImage)
                     commentAdapter.setCommentLIst(it.comments)
+                }
+
+                is ReplyList -> {
+                    if (it.reply.isNotEmpty()) {
+                        commentAdapter.notifyDataSetChanged()
+                        commentHolder.replyAdapter.setReplyLIst(it.reply)
+                    }
                 }
             }
         })
@@ -94,6 +107,22 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
                     viewDataBinding.editTextComment.text.toString().isNotEmpty()
             }
         })
+
+        commentAdapter.onEditReplyClickListener = object : CommentAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: CommentAdapter.CommentHolder) {
+                commentAdapter.selectedItem.put(position, true)
+                viewModel.getReply(commentAdapter.commentList[position].id)
+                commentHolder = holder
+            }
+        }
+
+        commentAdapter.onShowReplyClickListener = object : CommentAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: CommentAdapter.CommentHolder) {
+                commentAdapter.selectedItem.put(position, true)
+                viewModel.getReply(commentAdapter.commentList[position].id)
+                commentHolder = holder
+            }
+        }
 
         commentAdapter.onLongClickListener = object : CommentAdapter.OnItemLongClickListener {
             override fun onClick(
@@ -149,13 +178,13 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
     }
 
     override fun onRefresh() {
+        commentAdapter.clearSelectedItem()
         viewModel.getPostDetail()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                //makeToast("취소되었습니다", false)
                 finish()
             }
         }
