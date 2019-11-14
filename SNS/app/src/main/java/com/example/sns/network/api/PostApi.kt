@@ -31,11 +31,11 @@ interface PostApi {
     @POST("/api/post/comment/")
     fun addComment(@Header("Authorization") token: String, @Body comment:CommentRequest): Single<retrofit2.Response<Response<Any>>>
 
-    @POST("/api/post/like_post/")
-    fun likePost(@Header("Authorization") token: String, @Body post:PostId): Single<retrofit2.Response<Response<Any>>>
+    @GET
+    fun likePost(@Header("Authorization") token: String, @Url url: String): Single<retrofit2.Response<Response<Any>>>
 
-    @POST("/api/post/unlike_post/")
-    fun unlikePost(@Header("Authorization") token: String, @Body post:PostId): Single<retrofit2.Response<Response<Any>>>
+    @GET
+    fun unlikePost(@Header("Authorization") token: String, @Url url: String): Single<retrofit2.Response<Response<Any>>>
 
     @DELETE
     fun deleteComment(@Header("Authorization") token: String, @Url url: String) : Single<retrofit2.Response<Response<Any>>>
@@ -46,9 +46,15 @@ interface PostApi {
     @POST("api/post/reply_list/")
     fun getReply(@Header("Authorization") token: String, @Body comment: CommentId) : Single<retrofit2.Response<Response<ReplyList>>>
 
-    @POST("api/post/like_comment/")
-    fun likeComment(@Header("Authorization") token: String, @Body comment: CommentId) : Single<retrofit2.Response<Response<Any>>>
+    @GET
+    fun likeComment(@Header("Authorization") token: String, @Url url: String) : Single<retrofit2.Response<Response<Any>>>
 
-    @POST("api/post/unlike_comment/")
-    fun unLikeComment(@Header("Authorization") token: String, @Body comment: CommentId) : Single<retrofit2.Response<Response<Any>>>
+    @GET
+    fun unLikeComment(@Header("Authorization") token: String, @Url url: String) : Single<retrofit2.Response<Response<Any>>>
+
+    @GET
+    fun likeReply(@Header("Authorization") token: String, @Url url: String) : Single<retrofit2.Response<Response<Any>>>
+
+    @GET
+    fun unLikeReply(@Header("Authorization") token: String, @Url url: String) : Single<retrofit2.Response<Response<Any>>>
 }

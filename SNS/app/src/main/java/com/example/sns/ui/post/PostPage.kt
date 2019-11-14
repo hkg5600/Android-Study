@@ -39,6 +39,11 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
     }
 
     override fun initObserver() {
+
+        postAdapter.clickUserNameText.observe(this, Observer {
+            makeToast(it, false)
+        })
+
         viewModel.roomSuccess.observe(this, Observer {
             when (it) {
                 "delete Token" -> {
@@ -113,12 +118,12 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
                 } else {
                     postAdapter.clearSelectedItem()
                     postAdapter.selectedItem.put(position, true)
-                    val params = holder.textView.layoutParams.apply {
+                    val params = holder.textViewText.layoutParams.apply {
                         height = ViewGroup.LayoutParams.WRAP_CONTENT
                         width = 0
                     }
-                    holder.textView.layoutParams = params
-                    holder.btnShow.visibility = View.GONE
+                    holder.textViewText.layoutParams = params
+                    holder.btnShowFullText.visibility = View.GONE
                     holder.showDetail = true
                     postAdapter.notifyDataSetChanged()
                 }

@@ -35,6 +35,40 @@ class UserProfileList(APIView):
 
         return JsonResponse({'status':status.HTTP_200_OK, 'data':{'user_list':serializer.data}, 'message':"조회 성공"})
 
+class LikeToReply(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def get_object(self):
+        return self.request.user
+
+    def get(self, request, pk,format=None):
+        try:
+            reply = Reply.objects.get(id=pk)
+        except:
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 댓글이 존재하지 않습니다"})
+        user = self.get_object()
+        reply.like.add(user)
+        reply.save()
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요"})
+
+class UnlikeToReply(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def get_object(self):
+        return self.request.user
+
+    def get(self, request, pk,format=None):
+        try:
+            reply = Reply.objects.get(id=pk)
+        except:
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 댓글이 존재하지 않습니다"})
+        user = self.get_object()
+        reply.like.remove(user)
+        reply.save()
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요 취소"})
+
 class LikeToComment(APIView):
     authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
@@ -42,9 +76,9 @@ class LikeToComment(APIView):
     def get_object(self):
         return self.request.user
 
-    def post(self, *args, **kwargs):
+    def get(self, request, pk,format=None):
         try:
-            comment = Comment.objects.get(id=self.request.data.get('comment'))
+            comment = Comment.objects.get(id=pk)
         except:
             return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 댓글이 존재하지 않습니다"})
         user = self.get_object()
@@ -59,9 +93,9 @@ class UnlikeToComment(APIView):
     def get_object(self):
         return self.request.user
 
-    def post(self, *args, **kwargs):
+    def get(self, request, pk,format=None):
         try:
-            comment = Comment.objects.get(id=self.request.data.get('comment'))
+            comment = Comment.objects.get(id=pk)
         except:
             return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 댓글이 존재하지 않습니다"})
         user = self.get_object()
@@ -76,9 +110,9 @@ class LikeToPost(APIView):
     def get_object(self):
         return self.request.user
 
-    def post(self, *args, **kwargs):
+    def get(self, request, pk, page,format=None):
         try:
-            post = Post.objects.get(id=self.request.data.get('post'))
+            post = Post.objects.get(id=pk)
         except:
             return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 게시물이 존재하지 않습니다"})
         user = self.get_object()
@@ -93,9 +127,9 @@ class UnlikeToPost(APIView):
     def get_object(self):
         return self.request.user
 
-    def post(self, *args, **kwargs):
+    def get(self, request, pk, page,format=None):
         try:
-            post = Post.objects.get(id=self.request.data.get('post'))
+            post = Post.objects.get(id=pk)
         except:
             return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 게시물이 존재하지 않습니다"})
         user = self.get_object()

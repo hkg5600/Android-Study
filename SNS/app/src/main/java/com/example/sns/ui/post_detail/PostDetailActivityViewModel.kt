@@ -62,4 +62,8 @@ class PostDetailActivityViewModel(private val postService: PostService, applicat
 
     fun unLikeComment(id: Int) =
         addDisposable(postService.unLikeComment(TokenObject.token, id), getMsgObserver())
+
+    fun likeReply(id: Int) = addDisposable(postService.likeReply(TokenObject.token, id), getMsgObserver())
+
+    fun unLikeReply(id: Int) = addDisposable(postService.unLikeReply(TokenObject.token, id), getMsgObserver())
 }

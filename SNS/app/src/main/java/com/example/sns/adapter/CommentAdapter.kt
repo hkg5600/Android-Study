@@ -26,6 +26,7 @@ import com.example.sns.network.model.ProfileImage
 import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
 import com.example.sns.utils.SingleLiveEvent
+import com.example.sns.utils.UserObject
 import kotlinx.android.synthetic.main.comment_item.view.*
 
 class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
@@ -40,13 +41,15 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
         val post: Int,
         val profile_image: ProfileImage
     )
+
     var clickUserNameText : SingleLiveEvent<String> = SingleLiveEvent()
-    var userName = ""
     var commentList = ArrayList<SpanComment>()
     var selectedItem = SparseBooleanArray(0)
     var nextPage = 0
     var lastPage = false
     var loadMore: SingleLiveEvent<Int> = SingleLiveEvent()
+    var likeToReply : SingleLiveEvent<Int> = SingleLiveEvent()
+    var unLikeToReply : SingleLiveEvent<Int> = SingleLiveEvent()
 
     fun setCommentLIst(commentList: ArrayList<Comment>) {
         this.commentList.addAll(with(commentList) {
@@ -67,62 +70,88 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
     override fun getItemCount() = commentList.size
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: CommentHolder, position: Int) {
+    override fun onBindViewHolder(commentHolder: CommentHolder, position: Int) {
 
         if (position > commentList.size - 2 && !lastPage) {
             loadMore.call()
         }
 
         if (onLikeButtonClickListener != null) {
-            holder.likeComment.setOnClickListener { v ->
-                onLikeButtonClickListener?.onClick(v, position, holder)
+            commentHolder.likeComment.setOnClickListener { v ->
+                onLikeButtonClickListener?.onClick(v, position, commentHolder)
             }
         }
 
         if (onLongClickListener != null) {
-            holder.holder.setOnLongClickListener { v ->
-                onLongClickListener?.onClick(v, position, holder)!!
+            commentHolder.holder.setOnLongClickListener { v ->
+                onLongClickListener?.onClick(v, position, commentHolder)!!
             }
         }
 
         if (onEditReplyClickListener != null) {
-            holder.editReply.setOnClickListener { v ->
-                onEditReplyClickListener?.onClick(v, position, holder)
+            commentHolder.editReply.setOnClickListener { v ->
+                onEditReplyClickListener?.onClick(v, position, commentHolder)
             }
         }
 
         if (onShowReplyClickListener != null) {
-            holder.showReply.setOnClickListener { v ->
-                onShowReplyClickListener?.onClick(v, position, holder)
+            commentHolder.showReply.setOnClickListener { v ->
+                onShowReplyClickListener?.onClick(v, position, commentHolder)
             }
         }
 
-        if (commentList[position].like.contains(userName)) {
-            holder.likeComment.setImageResource(R.drawable.ic_like)
+        if (commentList[position].like.contains(UserObject.userInfo?.user?.user_id)) {
+            commentHolder.likeComment.setImageResource(R.drawable.ic_like)
         } else {
-            holder.likeComment.setImageResource(R.drawable.ic_unlike)
+            commentHolder.likeComment.setImageResource(R.drawable.ic_unlike)
         }
 
-        holder.likeCount.text = "좋아요 ${commentList[position].like.size}개"
+        commentHolder.likeCount.text = "좋아요 ${commentList[position].like.size}개"
 
         if (commentList[position].reply_count > 0) {
-            holder.showReply.text = "답글 보기 (${commentList[position].reply_count}개)"
-            holder.showReply.visibility = View.VISIBLE
+            commentHolder.showReply.text = "답글 보기 (${commentList[position].reply_count}개)"
+            commentHolder.showReply.visibility = View.VISIBLE
         } else
-            holder.showReply.visibility = View.GONE
+            commentHolder.showReply.visibility = View.GONE
 
         if (selectedItem.get(position, false)) {
-            holder.recyclerView.visibility = View.VISIBLE
-            holder.showReply.text = "이전 답글 보기 (${commentList[position].reply_count}개)"
+            commentHolder.recyclerView.visibility = View.VISIBLE
+            commentHolder.showReply.text = "이전 답글 보기 (${commentList[position].reply_count}개)"
         } else {
-            holder.recyclerView.visibility = View.GONE
+            commentHolder.recyclerView.visibility = View.GONE
         }
-        holder.textViewComment.movementMethod = LinkMovementMethod.getInstance()
-        holder.recyclerView.setHasFixedSize(true)
-        holder.recyclerView.adapter = holder.replyAdapter
+
+        commentHolder.textViewComment.movementMethod = LinkMovementMethod.getInstance()
+        commentHolder.recyclerView.setHasFixedSize(true)
+        commentHolder.recyclerView.adapter = commentHolder.replyAdapter
+
+        commentHolder.replyAdapter.onLikeButtonClickListener = object : ReplyAdapter.OnItemClickListener {
+            override fun onClick(view: View, position: Int, holder: ReplyAdapter.ReplyHolder) {
+                commentHolder.replyAdapter.replyList[position].like.run {
+                    if (contains(UserObject.userInfo?.user?.user_id)) {
+                        holder.likeButton.setImageResource(R.drawable.ic_unlike)
+                        remove(UserObject.userInfo?.user?.user_id!!)
+                        unLikeToReply.value = commentHolder.replyAdapter.replyList[position].id
+                    } else {
+                        holder.likeButton.setImageResource(R.drawable.ic_like)
+                        add(UserObject.userInfo?.user?.user_id!!)
+                        likeToReply.value = commentHolder.replyAdapter.replyList[position].id
+                    }
+                    holder.likeCount.text = "좋아요 ${commentHolder.replyAdapter.replyList[position].like.size}개"
+                }
+            }
+
+        }
+
+        commentHolder.replyAdapter.onOwnerTextClickListener = object : ReplyAdapter.OnNameClickListener {
+            override fun onClick(name: String) {
+                clickUserNameText.value = name
+            }
+
+        }
 
         val item = commentList[position]
-        holder.bind(item)
+        commentHolder.bind(item)
     }
 
     inner class CommentHolder(private val binding: CommentItemBinding) :
@@ -132,7 +161,6 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
         val recyclerView: RecyclerView = binding.recyclerViewReply
         val holder: ConstraintLayout = binding.layoutHolder
         val editReply: TextView = binding.editReply
-        val replyHolder: ConstraintLayout = binding.replyHolder
         val showReply: TextView = binding.showMoreReply
         val likeCount: TextView = binding.likeCount
         val likeComment: ImageButton = binding.likeComment
@@ -187,15 +215,15 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
     }
 
     private fun getSpannable(complete: String, clickableSpan: ClickableSpan, start: Int, end: Int): SpannableString {
-        lateinit var postText: SpannableString
+        lateinit var commentText: SpannableString
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            postText =
+            commentText =
                 SpannableString(Html.fromHtml(complete, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE))
         } else {
             @Suppress("DEPRECATION")
-            postText = SpannableString(Html.fromHtml(complete))
+            commentText = SpannableString(Html.fromHtml(complete))
         }
-        postText.setSpan(clickableSpan, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        return postText
+        commentText.setSpan(clickableSpan, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return commentText
     }
 }

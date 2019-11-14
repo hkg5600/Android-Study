@@ -6,8 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.example.sns.network.model.Reply" />
-        <import type="android.text.Html"/>
+            type="com.example.sns.adapter.ReplyAdapter.SpanReply" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -43,8 +42,10 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginStart="5dp"
                 android:textSize="15sp"
-                tool:text="테스트"
-                android:text="@{Html.fromHtml(item.text)}"/>
+                android:text="@{item.text}"
+                android:clickable="true"
+                android:focusable="true"
+                tool:text="테스트"/>
 
             <TextView
                 android:id="@+id/created_time"
@@ -60,7 +61,7 @@
                 android:layout_marginBottom="8dp"/>
 
             <TextView
-                android:id="@+id/like_reply"
+                android:id="@+id/like_count_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/text_view_reply"
@@ -68,11 +69,11 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:text ="@string/test"
                 android:layout_marginTop="5dp"
-                android:layout_marginStart="25dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginBottom="8dp"/>
 
             <ImageButton
-                android:id="@+id/like_comment"
+                android:id="@+id/like_reply"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -83,6 +84,20 @@
                 android:scaleType="fitCenter"
                 android:background="@android:color/transparent"
                 android:layout_marginEnd="15dp"/>
+
+            <TextView
+                android:id="@+id/edit_reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/edit_reply"
+                app:layout_constraintStart_toEndOf="@+id/like_count_reply"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_reply"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

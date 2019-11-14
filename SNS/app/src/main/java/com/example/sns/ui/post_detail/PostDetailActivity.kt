@@ -58,6 +58,14 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
     @SuppressLint("SetTextI18n")
     override fun initObserver() {
 
+        commentAdapter.likeToReply.observe(this, Observer {
+            viewModel.likeReply(it)
+        })
+
+        commentAdapter.unLikeToReply.observe(this, Observer {
+            viewModel.unLikeReply(it)
+        })
+
         commentAdapter.clickUserNameText.observe(this, Observer {
             makeToast(it, false)
         })
@@ -111,6 +119,7 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
     }
 
     override fun initListener() {
+
         viewDataBinding.editTextComment.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
 
@@ -195,7 +204,6 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
 
     override fun initViewModel() {
         viewDataBinding.vm = viewModel
-        commentAdapter.userName = UserObject.userInfo?.user?.user_id!!
         if (intent.hasExtra("id")) {
             viewDataBinding.swipeRefreshLayout.isRefreshing = true
             viewModel.id = intent.getIntExtra("id", -1)

@@ -1,6 +1,13 @@
 package com.example.sns.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.os.Build
+import android.text.Html
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
@@ -17,17 +24,27 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sns.R
 import com.example.sns.databinding.PostItemBinding
 import com.example.sns.network.model.Post
+import com.example.sns.network.model.PostImage
+import com.example.sns.network.model.ProfileImage
 import com.example.sns.utils.BASE_URL
 import com.example.sns.utils.DateTimeConverter
 import com.example.sns.utils.SingleLiveEvent
 import kotlinx.android.synthetic.main.post_item.view.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
-
-    var postList = ObservableArrayList<Post>()
+    data class SpanPost(
+        val id: Int,
+        val text: SpannableString,
+        val owner: String,
+        var created_at: String,
+        val images : ArrayList<PostImage>,
+        val like : ArrayList<String>,
+        val profile_image: ProfileImage
+    )
+    var clickUserNameText : SingleLiveEvent<String> = SingleLiveEvent()
+    var postList = ObservableArrayList<SpanPost>()
     var userName = ""
     var selectedItem = SparseBooleanArray(0)
     var nextPage = 0
@@ -35,11 +52,9 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
     var loadMore: SingleLiveEvent<Int> = SingleLiveEvent()
 
     fun setPost(postList: ArrayList<Post>) {
-        this.postList.addAll(postList.also {
-            it.forEach {data ->
-                data.created_at = DateTimeConverter.jsonTimeToTime(data.created_at)
-            }
-        })
+        this.postList.addAll(with(postList) {
+            ArrayList(this.map { SpanPost(it.id, getSpannable(it.text, getClickableSpan(it.owner), 0, it.owner.length), it.owner, DateTimeConverter.jsonTimeToTime(it.created_at), it.images, it.like, it.profile_image) }) }
+        )
 
         notifyDataSetChanged()
     }
@@ -75,13 +90,13 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         }
 
         if (onCommentBtnClickListener != null) {
-            holder.toDetailWithComment.setOnClickListener { v ->
+            holder.editComment.setOnClickListener { v ->
                 onCommentBtnClickListener?.onClick(v, position, holder)
             }
         }
 
         if (onItemClickListener != null) {
-            holder.btnOption.setOnClickListener { v ->
+            holder.btnPostOptions.setOnClickListener { v ->
                 onItemClickListener?.onClick(v, position, holder)
             }
         }
@@ -93,7 +108,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         }
 
         if (onShowDetailClickListener != null) {
-            holder.toDetail.setOnClickListener { v ->
+            holder.showPostDetail.setOnClickListener { v ->
                 onShowDetailClickListener?.onClick(v, position, holder)
             }
         }
@@ -105,44 +120,46 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         }
 
         if (selectedItem.get(position, false)) {
-            val params = holder.textView.layoutParams.apply {
+            val params = holder.textViewText.layoutParams.apply {
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
                 width = 0
             }
-            holder.textView.layoutParams = params
-            holder.btnShow.visibility = View.GONE
+            holder.textViewText.layoutParams = params
+            holder.btnShowFullText.visibility = View.GONE
         } else {
-            val params = holder.textView.layoutParams.apply {
+            val params = holder.textViewText.layoutParams.apply {
                 height = 60
                 width = 0
             }
-            holder.textView.layoutParams = params
+            holder.textViewText.layoutParams = params
         }
 
         if (postList[position].text.length < 20 || selectedItem.get(position, false)) {
             holder.showDetail = true
-            holder.btnShow.visibility = View.GONE
+            holder.btnShowFullText.visibility = View.GONE
         } else {
-            holder.btnShow.visibility = View.VISIBLE
+            holder.btnShowFullText.visibility = View.VISIBLE
         }
+
+        holder.textViewText.movementMethod = LinkMovementMethod.getInstance()
 
         val item = postList[position]
         holder.bind(item)
     }
 
     class PostHolder(private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        val btnShow: TextView = binding.textViewShow
-        val textView: TextView = binding.textViewText
+        val btnShowFullText: TextView = binding.textViewShow
+        val textViewText: TextView = binding.textViewText
         private val viewPager: ViewPager2 = binding.viewPager
-        val btnOption: ImageButton = binding.buttonOptions
+        val btnPostOptions: ImageButton = binding.buttonOptions
         val btnLike: ImageButton = binding.ImageLike
-        val toDetail: ConstraintLayout = binding.toDetail
-        val toDetailWithComment: ImageButton = binding.showComment
+        val showPostDetail: ConstraintLayout = binding.toDetail
+        val editComment: ImageButton = binding.showComment
         val likeCount: TextView = binding.likeCount
 
         var showDetail = false
 
-        fun bind(item: Post) {
+        fun bind(item: SpanPost) {
             binding.imgViewHolder.visibility = View.GONE
             if (item.images.isNotEmpty()) {
                 binding.imgViewHolder.visibility = View.VISIBLE
@@ -181,5 +198,27 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostHolder>() {
         )
     }
 
+    private fun getClickableSpan(name: String) = object : ClickableSpan() {
+        override fun updateDrawState(ds: TextPaint) {
+            ds.color = Color.DKGRAY
+            ds.isUnderlineText = false
+        }
 
+        override fun onClick(p0: View) {
+            clickUserNameText.value = name
+        }
+    }
+
+    private fun getSpannable(complete: String, clickableSpan: ClickableSpan, start: Int, end: Int): SpannableString {
+        lateinit var commentText: SpannableString
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            commentText =
+                SpannableString(Html.fromHtml(complete, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE))
+        } else {
+            @Suppress("DEPRECATION")
+            commentText = SpannableString(Html.fromHtml(complete))
+        }
+        commentText.setSpan(clickableSpan, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return commentText
+    }
 }
