@@ -7,5 +7,5 @@ import com.example.sns.utils.TokenObject
 
 class PostLikeActivityViewModel(private val postService: PostService, application: Application) : BaseViewModel(application) {
 
-    fun getLike(id: Int) = addDisposable(postService.getLike(TokenObject.token, id), getDataObserver())
+    fun getLike(id: Int) = addDisposable(postService.getLikePost(TokenObject.token, id), getDataObserver())
 }

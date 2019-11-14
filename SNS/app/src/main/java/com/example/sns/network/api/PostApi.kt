@@ -45,4 +45,10 @@ interface PostApi {
 
     @POST("api/post/reply_list/")
     fun getReply(@Header("Authorization") token: String, @Body comment: CommentId) : Single<retrofit2.Response<Response<ReplyList>>>
+
+    @POST("api/post/like_comment/")
+    fun likeComment(@Header("Authorization") token: String, @Body comment: CommentId) : Single<retrofit2.Response<Response<Any>>>
+
+    @POST("api/post/unlike_comment/")
+    fun unLikeComment(@Header("Authorization") token: String, @Body comment: CommentId) : Single<retrofit2.Response<Response<Any>>>
 }

@@ -4,11 +4,15 @@
     xmlns:tool="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="item"
-            type="com.example.sns.network.model.Comment" />
+            type="com.example.sns.adapter.CommentAdapter.SpanComment" />
+
+        <import type="android.text.Html"/>
     </data>
+
+
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -50,9 +54,11 @@
                     android:layout_marginEnd="3dp"
                     android:text="@{item.text}"
                     android:textSize="15sp"
-                    app:layout_constraintEnd_toStartOf="@+id/add_like_comment"
+                    app:layout_constraintEnd_toStartOf="@+id/like_comment"
                     app:layout_constraintStart_toEndOf="@+id/owner_profile_image"
                     app:layout_constraintTop_toTopOf="parent"
+                    android:clickable="true"
+                    android:focusable="true"
                     tool:text="테스트" />
 
                 <TextView
@@ -69,10 +75,10 @@
                     tool:text="0000년 00월 00일 00:00" />
 
                 <TextView
-                    android:id="@+id/like_comment"
+                    android:id="@+id/like_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="25dp"
+                    android:layout_marginStart="15dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/test"
@@ -90,17 +96,18 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/edit_reply"
-                    app:layout_constraintStart_toEndOf="@+id/like_comment"
+                    app:layout_constraintStart_toEndOf="@+id/like_count"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_comment"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <ImageButton
-                    android:id="@+id/add_like_comment"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:id="@+id/like_comment"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_marginEnd="15dp"
                     android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
                     android:src="@drawable/ic_unlike"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -123,6 +130,7 @@
                     android:text="@string/test"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/recycler_view_reply"
                     android:clickable="true"
                     android:focusable="true"
                     android:visibility="gone"/>
@@ -135,6 +143,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/show_more_reply"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     tool:listitem="@layout/reply_item"
                     android:visibility="gone"/>
 

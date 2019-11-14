@@ -20,20 +20,25 @@ interface PostService {
     fun getPost(token: String, follower: Follower, page : Int): Single<retrofit2.Response<Response<PostList>>>
     fun addPost(token: String, text: String, userName: String, file: ArrayList<MultipartBody.Part>): Single<retrofit2.Response<Response<Any>>>
     fun deletePost(token: String,id: Int) : Single<retrofit2.Response<Response<Any>>>
-    fun getPostDetail(token: String, id:Int) : Single<retrofit2.Response<Response<PostDetail>>>
+    fun getPostDetail(token: String, id:Int, page :Int) : Single<retrofit2.Response<Response<PostDetail>>>
     fun addComment(token: String, comment: CommentRequest) : Single<retrofit2.Response<Response<Any>>>
     fun likePost(token: String, post: Int) : Single<retrofit2.Response<Response<Any>>>
     fun unlikePost(token: String, post: Int) : Single<retrofit2.Response<Response<Any>>>
     fun deleteComment(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
-    fun getLike(token: String, id: Int) : Single<retrofit2.Response<Response<PostLikeList>>>
+    fun getLikePost(token: String, id: Int) : Single<retrofit2.Response<Response<PostLikeList>>>
     fun getReply(token: String, id: Int) : Single<retrofit2.Response<Response<ReplyList>>>
+    fun unLikeComment(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
+    fun likeComment(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
 }
 
 class PostServiceImpl(private val api: PostApi) : PostService {
 
+    override fun unLikeComment(token: String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.unLikeComment(token, CommentId(id))
+    override fun likeComment(token: String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.likeComment(token, CommentId(id))
+
     override fun getReply(token: String, id: Int) = api.getReply(token, CommentId(id))
 
-    override fun getLike(token: String, id: Int) = api.getLike(token, PostId(id))
+    override fun getLikePost(token: String, id: Int) = api.getLike(token, PostId(id))
 
     override fun deleteComment(token: String, id: Int) = api.deleteComment(token, "/api/post/comment/$id/")
 
@@ -43,9 +48,9 @@ class PostServiceImpl(private val api: PostApi) : PostService {
 
     override fun addComment(token: String, comment: CommentRequest) = api.addComment(token, comment)
 
-    override fun getPostDetail(token: String, id: Int) = api.getPostDetail(token, "/api/post/post/$id/")
+    override fun getPostDetail(token: String, id: Int, page: Int) = api.getPostDetail(token, "/api/post/post/$id/$page/")
 
-    override fun deletePost(token : String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.deletePost(token,"/api/post/post/$id/")
+    override fun deletePost(token : String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.deletePost(token,"/api/post/post/$id/0/")
 
     override fun addPost(token: String, text: String, userName: String, file: ArrayList<MultipartBody.Part>) =
         api.addPost(token, file, RequestBody.create(MediaType.parse("text/plain"), text), RequestBody.create(MediaType.parse("text/plain"), userName))

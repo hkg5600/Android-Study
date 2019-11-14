@@ -202,9 +202,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
     private fun loadPost() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = true
-        Log.e("Refreshing", "isRefreshing")
         UserObject.userInfo?.let {
-
             viewModel.getPost(getFollowings(it), postAdapter.nextPage)
         }
     }

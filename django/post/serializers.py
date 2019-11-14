@@ -27,7 +27,7 @@ class ReplySerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     profile_image = UserInfo(source='owner', many=False, read_only=True)
-    reply = serializers.IntegerField(source='reply_set.count', read_only=True)
+    reply_count = serializers.IntegerField(source='reply_set.count', read_only=True)
 
     class Meta:
         model = Comment

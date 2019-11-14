@@ -35,6 +35,40 @@ class UserProfileList(APIView):
 
         return JsonResponse({'status':status.HTTP_200_OK, 'data':{'user_list':serializer.data}, 'message':"조회 성공"})
 
+class LikeToComment(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def get_object(self):
+        return self.request.user
+
+    def post(self, *args, **kwargs):
+        try:
+            comment = Comment.objects.get(id=self.request.data.get('comment'))
+        except:
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 댓글이 존재하지 않습니다"})
+        user = self.get_object()
+        comment.like.add(user)
+        comment.save()
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요"})
+
+class UnlikeToComment(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def get_object(self):
+        return self.request.user
+
+    def post(self, *args, **kwargs):
+        try:
+            comment = Comment.objects.get(id=self.request.data.get('comment'))
+        except:
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 댓글이 존재하지 않습니다"})
+        user = self.get_object()
+        comment.like.remove(user)
+        comment.save()
+        return JsonResponse({'status':status.HTTP_200_OK, 'data':"", 'message':"좋아요 취소"})
+
 class LikeToPost(APIView):
     authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
@@ -100,14 +134,21 @@ class PostDetail(APIView):
         except:
             return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"해당 게시물이 존재하지 않습니다"})
 
-    def get(self, request, pk, format=None):
+    def get(self, request, pk, page,format=None):
         post = self.get_object(pk)
-        serializer = PostDetailSerializer(post, many=False)
+        last_page = False
+        cur_page = page
+        serializer = PostSerializer(post, many=False)
         if (type(post) is JsonResponse):
             return post
-        return JsonResponse({'status':status.HTTP_200_OK, "message":"게시물 조회 성공",'data':serializer.data})
+        comment = Comment.objects.filter(post=post).order_by('created_at')[15*page:(page+1)*15]
+        comment_serializer = CommentSerializer(comment, many=True)
+        if (Comment.objects.filter(post=post).order_by('created_at').count() <= (page+1)*15):
+            last_page = True
+        cur_page += 1
+        return JsonResponse({'status':status.HTTP_200_OK, "message":"게시물 조회 성공",'data':{'last_page':last_page,'nextPage':cur_page,'post':serializer.data,'comment':comment_serializer.data}})
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, pk, page,format=None):
         post = self.get_object(pk)
         if (type(post) is JsonResponse):
             return post

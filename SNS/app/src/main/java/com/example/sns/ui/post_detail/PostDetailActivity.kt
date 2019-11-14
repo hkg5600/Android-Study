@@ -1,12 +1,17 @@
 package com.example.sns.ui.post_detail
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.text.Editable
+import android.text.TextPaint
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
@@ -15,7 +20,6 @@ import com.example.sns.R
 import com.example.sns.adapter.CommentAdapter
 import com.example.sns.base.BaseActivity
 import com.example.sns.databinding.ActivityPostDetailBinding
-import com.example.sns.network.model.Reply
 import com.example.sns.network.response.PostDetail
 import com.example.sns.network.response.ReplyList
 import com.example.sns.utils.BASE_URL
@@ -53,21 +57,28 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
 
     @SuppressLint("SetTextI18n")
     override fun initObserver() {
+
+        commentAdapter.clickUserNameText.observe(this, Observer {
+            makeToast(it, false)
+        })
+
         viewModel.data.observe(this, Observer {
             viewDataBinding.swipeRefreshLayout.isRefreshing = false
             when (it) {
                 is PostDetail -> {
-                    viewModel.owner = it.owner
-                    viewModel.post.set(it.also { it.created_at = DateTimeConverter.jsonTimeToTime(it.created_at) })
-                    Glide.with(applicationContext).load(BASE_URL + it.profile_image.profile_image)
+                    viewModel.post.set(it.also { it.post.created_at = DateTimeConverter.jsonTimeToTime(it.post.created_at) })
+                    viewDataBinding.textViewPost.movementMethod = LinkMovementMethod.getInstance()
+                    viewModel.setText(it.post.text, getClickableSpan(it), 0, it.post.owner.length)
+                    Glide.with(applicationContext).load(BASE_URL + it.post.profile_image.profile_image)
                         .apply(RequestOptions.circleCropTransform())
                         .into(viewDataBinding.ownerProfileImage)
-                    commentAdapter.setCommentLIst(it.comments)
+                    commentAdapter.setCommentLIst(it.comment)
+                    commentAdapter.nextPage = it.nextPage
+                    commentAdapter.lastPage = it.last_page
                 }
 
                 is ReplyList -> {
                     if (it.reply.isNotEmpty()) {
-                        commentAdapter.notifyDataSetChanged()
                         commentHolder.replyAdapter.setReplyLIst(it.reply)
                     }
                 }
@@ -88,11 +99,14 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
                     viewDataBinding.editTextComment.text.clear()
                     viewDataBinding.editTextComment.clearFocus()
                     hideKeyboard()
-                    viewModel.getPostDetail()
+                    refreshComment()
                 }
             }
         })
 
+        commentAdapter.loadMore.observe(this, Observer {
+            loadComment()
+        })
 
     }
 
@@ -108,19 +122,33 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
             }
         })
 
+        commentAdapter.onLikeButtonClickListener = object : CommentAdapter.OnItemClickListener {
+            @SuppressLint("SetTextI18n")
+            override fun onClick(view: View, position: Int, holder: CommentAdapter.CommentHolder) {
+                commentAdapter.commentList[position].run {
+                    if (like.contains(UserObject.userInfo?.user?.user_id)) {
+                        viewModel.unLikeComment(id)
+                        like.remove(UserObject.userInfo?.user?.user_id)
+                        holder.likeComment.setImageResource(R.drawable.ic_unlike)
+                    } else {
+                        viewModel.likeComment(id)
+                        like.add(UserObject.userInfo?.user?.user_id!!)
+                        holder.likeComment.setImageResource(R.drawable.ic_like)
+                    }
+                    holder.likeCount.text = "좋아요 ${commentAdapter.commentList[position].like.size}개"
+                }
+            }
+        }
+
         commentAdapter.onEditReplyClickListener = object : CommentAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: CommentAdapter.CommentHolder) {
-                commentAdapter.selectedItem.put(position, true)
-                viewModel.getReply(commentAdapter.commentList[position].id)
-                commentHolder = holder
+                showReply(position, holder)
             }
         }
 
         commentAdapter.onShowReplyClickListener = object : CommentAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: CommentAdapter.CommentHolder) {
-                commentAdapter.selectedItem.put(position, true)
-                viewModel.getReply(commentAdapter.commentList[position].id)
-                commentHolder = holder
+                showReply(position, holder)
             }
         }
 
@@ -167,28 +195,57 @@ class PostDetailActivity : BaseActivity<ActivityPostDetailBinding, PostDetailAct
 
     override fun initViewModel() {
         viewDataBinding.vm = viewModel
-
+        commentAdapter.userName = UserObject.userInfo?.user?.user_id!!
         if (intent.hasExtra("id")) {
             viewDataBinding.swipeRefreshLayout.isRefreshing = true
             viewModel.id = intent.getIntExtra("id", -1)
-            viewModel.getPostDetail()
+            refreshComment()
         } else {
             finish()
         }
     }
 
     override fun onRefresh() {
+        refreshComment()
+    }
+
+    private fun refreshComment() {
         commentAdapter.clearSelectedItem()
-        viewModel.getPostDetail()
+        commentAdapter.commentList.clear()
+        viewModel.getPostDetail(intent.getIntExtra("id", -1), 0)
+    }
+
+
+    private fun loadComment() {
+        viewModel.getPostDetail(intent.getIntExtra("id", -1), commentAdapter.nextPage)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showReply(position: Int, holder: CommentAdapter.CommentHolder) {
+        holder.showReply.text = "이전 답글 보기 (${commentAdapter.commentList[position].reply_count}개)"
+        commentAdapter.selectedItem.put(position, true)
+        holder.recyclerView.visibility = View.VISIBLE
+        viewModel.getReply(commentAdapter.commentList[position].id)
+        commentHolder = holder
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-            }
+            android.R.id.home -> finish()
         }
 
         return super.onOptionsItemSelected(item)
     }
+
+    private fun getClickableSpan(it: PostDetail) = object : ClickableSpan() {
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = Color.DKGRAY
+                ds.isUnderlineText = false
+            }
+
+            override fun onClick(p0: View) {
+                makeToast(it.post.owner, false)
+            }
+        }
+
 }
