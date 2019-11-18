@@ -102,7 +102,7 @@ class PostLikeActivity : BaseActivity<ActivityPostLikeBinding, PostLikeActivityV
 
     private fun refreshLikeList() {
         viewDataBinding.swipeRefreshLayout.isRefreshing = false
-        viewModel.getLike(intent.getIntExtra("id", -1))
+        viewModel.getLike(intent.getIntExtra("postId", -1))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

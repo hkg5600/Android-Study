@@ -29,12 +29,14 @@ import com.example.sns.utils.SingleLiveEvent
 import com.example.sns.utils.UserObject
 import kotlinx.android.synthetic.main.comment_item.view.*
 
+
+
 class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
 
     data class SpanComment(
         val id: Int,
         val text: SpannableString,
-        val reply_count: Int,
+        var reply_count: Int,
         val like: ArrayList<String>,
         var created_at: String,
         val owner: String,
@@ -50,6 +52,8 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
     var loadMore: SingleLiveEvent<Int> = SingleLiveEvent()
     var likeToReply : SingleLiveEvent<Int> = SingleLiveEvent()
     var unLikeToReply : SingleLiveEvent<Int> = SingleLiveEvent()
+    var deleteReply : SingleLiveEvent<Int> = SingleLiveEvent()
+    var reportReply : SingleLiveEvent<Int> = SingleLiveEvent()
 
     fun setCommentLIst(commentList: ArrayList<Comment>) {
         this.commentList.addAll(with(commentList) {
@@ -116,7 +120,7 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
 
         if (selectedItem.get(position, false)) {
             commentHolder.recyclerView.visibility = View.VISIBLE
-            commentHolder.showReply.text = "이전 답글 보기 (${commentList[position].reply_count}개)"
+                commentHolder.showReply.text = "이전 답글 보기 (${commentHolder.nextCount}개)"
         } else {
             commentHolder.recyclerView.visibility = View.GONE
         }
@@ -140,6 +144,16 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
                     holder.likeCount.text = "좋아요 ${commentHolder.replyAdapter.replyList[position].like.size}개"
                 }
             }
+        }
+
+        commentHolder.replyAdapter.onLongClickListener = object : ReplyAdapter.OnItemLongClickListener {
+            override fun onClick(view: View, position: Int, holder: ReplyAdapter.ReplyHolder): Boolean {
+                if (commentHolder.replyAdapter.replyList[position].owner == UserObject.userInfo?.user?.user_id)
+                    deleteReply.value = commentHolder.replyAdapter.replyList[position].id
+                else
+                    reportReply.value = commentHolder.replyAdapter.replyList[position].id
+                return true
+            }
 
         }
 
@@ -147,7 +161,6 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
             override fun onClick(name: String) {
                 clickUserNameText.value = name
             }
-
         }
 
         val item = commentList[position]
@@ -157,6 +170,8 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
     inner class CommentHolder(private val binding: CommentItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        var nextReply = 0
+        var nextCount = 0
         val textViewComment : TextView = binding.textViewComment
         val recyclerView: RecyclerView = binding.recyclerViewReply
         val holder: ConstraintLayout = binding.layoutHolder

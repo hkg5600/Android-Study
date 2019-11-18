@@ -1,5 +1,6 @@
 package com.example.sns.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.text.Html
@@ -41,10 +42,10 @@ class ReplyAdapter : RecyclerView.Adapter<ReplyAdapter.ReplyHolder>() {
     var replyList = ArrayList<SpanReply>()
 
     fun setReplyLIst(replyLIst: ArrayList<Reply>) {
-        this.replyList.clear()
-        this.replyList.addAll(with(replyLIst) {
-            ArrayList(this.map { SpanReply(it.id, it.profile_image, getSpannable(it.text, getClickableSpan(it.owner), 0, it.owner.length), DateTimeConverter.jsonTimeToTime(it.created_at), it.comment, it.owner, it.like) }) }
-        )
+        val list = with(replyLIst) {
+            ArrayList(this.map { SpanReply(it.id, it.profile_image, getSpannable(it.text, getClickableSpan(it.owner), 0, it.owner.length), DateTimeConverter.jsonTimeToTime(it.created_at), it.comment, it.owner, it.like) })}
+        list.reverse()
+        this.replyList.addAll(0,  list)
         notifyDataSetChanged()
     }
 
@@ -59,6 +60,7 @@ class ReplyAdapter : RecyclerView.Adapter<ReplyAdapter.ReplyHolder>() {
 
     override fun getItemCount() = replyList.size
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ReplyHolder, position: Int) {
 
         if (replyList[position].like.contains(UserObject.userInfo?.user?.user_id)) {
@@ -72,6 +74,12 @@ class ReplyAdapter : RecyclerView.Adapter<ReplyAdapter.ReplyHolder>() {
         if (onLikeButtonClickListener != null) {
             holder.likeButton.setOnClickListener { v ->
                 onLikeButtonClickListener?.onClick(v, position, holder)
+            }
+        }
+
+        if (onLongClickListener != null) {
+            holder.layoutHolder.setOnLongClickListener { v ->
+                onLongClickListener?.onClick(v, position, holder)!!
             }
         }
 

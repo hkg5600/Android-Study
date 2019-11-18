@@ -7,7 +7,7 @@
     <item
         android:id="@+id/menu_add_post"
         android:icon="@drawable/ic_create"
-        android:title="Write"/>
+        android:title="WRITE"/>
     <item
         android:id="@+id/menu_follower"
         android:icon="@drawable/ic_follower"

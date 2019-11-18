@@ -72,7 +72,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/owner_profile_image"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_comment"
-                    tool:text="0000년 00월 00일 00:00" />
+                    tool:text="0000/00/00 00:00" />
 
                 <TextView
                     android:id="@+id/like_count"

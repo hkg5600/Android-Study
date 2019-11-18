@@ -15,6 +15,7 @@ from .views import(
     UnlikeToComment,
     LikeToReply,
     UnlikeToReply,
+    ReplyDetail,
 )
 
 urlpatterns = [
@@ -28,9 +29,10 @@ urlpatterns = [
     path("unlike_post/<int:pk>/", UnlikeToPost.as_view()),
     path("user_profile_data/", UserProfileList.as_view()),
     path("reply/", ReplyView.as_view()),
-    path("reply_list/", ReplyList.as_view()),
+    path("reply_list/<int:pk>/<int:page>/", ReplyList.as_view()),
     path("like_comment/<int:pk>/", LikeToComment.as_view()),
     path("unlike_comment/<int:pk>/", UnlikeToComment.as_view()),
     path("like_reply/<int:pk>/", LikeToReply.as_view()),
     path("unlike_reply/<int:pk>/", UnlikeToReply.as_view()),
+    path("reply/<int:pk>/", ReplyDetail.as_view()),
 ]

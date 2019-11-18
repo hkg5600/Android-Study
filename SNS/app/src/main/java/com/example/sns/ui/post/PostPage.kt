@@ -99,14 +99,14 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
 
         postAdapter.onShowLikeClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
-                startActivity(Intent(context, PostLikeActivity::class.java).putExtra("id", postAdapter.postList[position].id))
+                startActivity(Intent(context, PostLikeActivity::class.java).putExtra("postId", postAdapter.postList[position].id))
             }
 
         }
 
         postAdapter.onCommentBtnClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
-                startActivity(Intent(context, PostDetailActivity::class.java).putExtra("id", postAdapter.postList[position].id).putExtra("edit", true))
+                startActivity(Intent(context, PostDetailActivity::class.java).putExtra("postId", postAdapter.postList[position].id).putExtra("edit", true))
             }
 
         }
@@ -114,7 +114,7 @@ open class PostPage : BaseFragment<FragmentPagePostBinding, PostViewModel>(),
         postAdapter.onShowDetailClickListener = object : PostAdapter.OnItemClickListener {
             override fun onClick(view: View, position: Int, holder: PostAdapter.PostHolder) {
                 if (holder.showDetail) {
-                    startActivity(Intent(context, PostDetailActivity::class.java).putExtra("id", postAdapter.postList[position].id).putExtra("edit", false))
+                    startActivity(Intent(context, PostDetailActivity::class.java).putExtra("postId", postAdapter.postList[position].id).putExtra("edit", false))
                 } else {
                     postAdapter.clearSelectedItem()
                     postAdapter.selectedItem.put(position, true)

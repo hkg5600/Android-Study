@@ -3,10 +3,7 @@ package com.example.sns.network.service
 import com.example.sns.network.Response
 import com.example.sns.network.api.PostApi
 import com.example.sns.network.model.Follower
-import com.example.sns.network.request.CommentId
-import com.example.sns.network.request.CommentRequest
-import com.example.sns.network.request.GetPostRequest
-import com.example.sns.network.request.PostId
+import com.example.sns.network.request.*
 import com.example.sns.network.response.PostDetail
 import com.example.sns.network.response.PostLikeList
 import com.example.sns.network.response.PostList
@@ -26,14 +23,20 @@ interface PostService {
     fun unlikePost(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
     fun deleteComment(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
     fun getLikePost(token: String, id: Int) : Single<retrofit2.Response<Response<PostLikeList>>>
-    fun getReply(token: String, id: Int) : Single<retrofit2.Response<Response<ReplyList>>>
+    fun getReply(token: String, id: Int, page: Int) : Single<retrofit2.Response<Response<ReplyList>>>
     fun unLikeComment(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
     fun likeComment(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
     fun likeReply(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
     fun unLikeReply(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
+    fun deleteReply(token: String, id: Int) : Single<retrofit2.Response<Response<Any>>>
+    fun addReply(token: String, reply: ReplyRequest) : Single<retrofit2.Response<Response<Any>>>
 }
 
 class PostServiceImpl(private val api: PostApi) : PostService {
+
+    override fun addReply(token: String, reply: ReplyRequest) = api.addReply(token, reply)
+
+    override fun deleteReply(token: String, id: Int) = api.deleteReply(token, "/api/post/reply/$id/")
 
     override fun likeReply(token: String, id: Int) = api.likeReply(token, "/api/post/like_reply/$id/")
 
@@ -43,7 +46,7 @@ class PostServiceImpl(private val api: PostApi) : PostService {
 
     override fun likeComment(token: String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.likeComment(token, "/api/post/like_comment/$id/")
 
-    override fun getReply(token: String, id: Int) = api.getReply(token, CommentId(id))
+    override fun getReply(token: String, id: Int, page: Int) = api.getReply(token, "/api/post/reply_list/$id/$page/")
 
     override fun getLikePost(token: String, id: Int) = api.getLike(token, PostId(id))
 
@@ -60,7 +63,7 @@ class PostServiceImpl(private val api: PostApi) : PostService {
     override fun deletePost(token : String, id: Int): Single<retrofit2.Response<Response<Any>>> = api.deletePost(token,"/api/post/post/$id/0/")
 
     override fun addPost(token: String, text: String, userName: String, file: ArrayList<MultipartBody.Part>) =
-        api.addPost(token, file, RequestBody.create(MediaType.parse("text/plain"), text), RequestBody.create(MediaType.parse("text/plain"), userName))
+        api.addPost(token, file, RequestBody.create(MediaType.parse("inputText/plain"), text), RequestBody.create(MediaType.parse("inputText/plain"), userName))
 
     override fun getPost(token : String, follower: Follower, page : Int) = api.getPost(token, GetPostRequest(page, follower.user_id))
 

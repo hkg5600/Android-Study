@@ -246,10 +246,33 @@ class ReplyView(APIView):
 
         return JsonResponse({'status':status.HTTP_200_OK, 'message':"답글 작성 성공", 'data':""})
 
+class ReplyDetail(APIView):
+    authentication_classes = [JWTUserAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+    def get_object(self, pk):
+        try:
+            return Reply.objects.get(pk=pk)
+        except:
+            return JsonResponse({'status':status.HTTP_400_BAD_REQUEST, 'data':"", 'message':"답글이 없습니다"})
+
+    def delete(self, request, pk, format=None):
+        reply = self.get_object(pk)
+        if (type(reply) is JsonResponse):
+            return reply
+        reply.delete()
+        return JsonResponse({'status':status.HTTP_200_OK, "message":"답글 삭제 성공",'data':""})
+
 class ReplyList(APIView):
     authentication_classes = [JWTUserAuthentication, ]
     permission_classes = [IsAuthenticated, ]
-    def post(self, request, format=None):
-        reply = Reply.objects.filter(comment=self.request.data.get('comment'))
+
+    def get(self, request, pk, page,format=None):
+        next_count = False
+        cur_page = page
+        reply = Reply.objects.filter(comment=pk).order_by('-created_at')[2*page:(page+1)*2]
         serializer = ReplySerializer(reply, many=True)
-        return JsonResponse({'status':status.HTTP_200_OK, "message":"답글 불러오기 성공",'data':{'reply':serializer.data}})
+        next_count = Reply.objects.filter(comment=pk).order_by('-created_at').count() - 2 * (cur_page + 1)
+        if (next_count < 0):
+            next_count = 0
+        cur_page += 1
+        return JsonResponse({'status':status.HTTP_200_OK, "message":"게시물 조회 성공",'data':{'next_count':next_count,'nextPage':cur_page,'reply':serializer.data}})

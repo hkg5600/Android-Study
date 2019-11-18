@@ -3,6 +3,7 @@ package com.example.sns.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -13,8 +14,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.example.sns.utils.CustomDialog
-import com.gc.materialdesign.widgets.ProgressDialog
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.snackbar.Snackbar
+
 
 abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatActivity() {
 
@@ -73,17 +75,22 @@ abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatA
         inputMethodManager.showSoftInput(view, 0)
     }
 
-    fun makeToast(msg: String, isLong : Boolean) {
+    fun makeToast(msg: String, isLong: Boolean) {
         if (isLong)
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
         else
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    fun showDialog(msg: String, ok: () -> Unit ,cancel: () -> Unit) {
+    fun showDialog(msg: String, ok: () -> Unit, cancel: () -> Unit) {
         CustomDialog(this).run {
             Builder()
-                .setView(LayoutInflater.from(context).inflate(com.example.sns.R.layout.custom_dialog, null))
+                .setView(
+                    LayoutInflater.from(context).inflate(
+                        com.example.sns.R.layout.custom_dialog,
+                        null
+                    )
+                )
                 .setMessage(msg)
                 .show()
             Listener()
@@ -97,4 +104,18 @@ abstract class BaseActivity<T : ViewDataBinding, R : BaseViewModel> : AppCompatA
                 })
         }
     }
+
+    fun getSnackBar(viewBelow : View ,view: View, msg: String, clickMsg: String, onClick: () -> Unit) =
+        Snackbar.make(view, msg, Snackbar.LENGTH_INDEFINITE).apply {
+            val snackBarView = this.view
+            val params = snackBarView.layoutParams as CoordinatorLayout.LayoutParams
+            params.anchorId = viewBelow.id
+            params.anchorGravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            snackBarView.layoutParams = params
+            setAction(clickMsg) {
+                onClick()
+                dismiss()
+            }
+        }
 }
