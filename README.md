@@ -2,14 +2,14 @@
 
 Android 사용 기술
 
-*MVVM
-*RxJava2
-*Koin
-*DataBinding
-*Room
-*Retrofit2
-
+*MVVM<br>
+*RxJava2<br>
+*Koin<br>
+*DataBinding<br>
+*Room<br>
+*Retrofit2<br>
+<br>
 Server 사용 기술
-
+<br>
 *Django Rest Framework
 
