@@ -1,9 +1,15 @@
-# Android-Study
-Android SNS and django Server
-MVVM
-AndroidX
-Rx-Java
-Koin
-Kotlin
+#혼자서 만드는 SNS
 
+Android 사용 기술
+
+*MVVM
+*RxJava2
+*Koin
+*DataBinding
+*Room
+*Retrofit2
+
+Server 사용 기술
+
+*Django Rest Framework
 
